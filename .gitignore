@@ -1,2 +1,8 @@
 *.class
 *.log
+
+/bin/
+/.settings/
+/.cache-main
+/.classpath
+/.project
