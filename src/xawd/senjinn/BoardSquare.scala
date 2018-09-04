@@ -7,7 +7,13 @@ class BoardSquare private (val index: Int)
 {
   val (loc, rank, file)  = (1L << index, index / 8, index % 8)
   
-  def |(other: BoardSquare): Long = loc | other.loc
+  def |(other: BoardSquare): SquareSet = SquareSet(loc | other.loc)
+  
+  def <<(shift: Int): BoardSquare = BoardSquare.values(index + shift)
+  
+  def >>(shift: Int): BoardSquare = BoardSquare.values(index - shift)
+  
+  def unary_~ = SquareSet(~loc)
   
   override def toString(): String = {
     val filechar = ('h' - file).toChar
