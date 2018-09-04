@@ -1,5 +1,8 @@
 package xawd.senjinn
 
+/**
+ * 
+ */
 class SquareSet private(val squares: Long) extends AnyVal 
 {
   def |(other: SquareSet) = new SquareSet(squares | other.squares)
