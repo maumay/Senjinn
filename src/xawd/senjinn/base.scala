@@ -61,21 +61,21 @@ import SquareSet.{ boardsquare2squareset }
 /**
  * Represents a zone into which it is possible to castle.
  */
-class CastleZone private (val kingSrc: Sq, val kingTarg: Sq) 
+class CastleZone private (val kingSrc: BoardSquare, val kingTarg: BoardSquare) 
 {
   val (isWhiteZone, isKingsideZone) = (kingSrc.rank == 0, kingTarg.file - kingSrc.file < 0)
   
   val rookSrc  = if (isKingsideZone) kingSrc  >> 3 else kingSrc  << 4
   val rookTarg = if (isKingsideZone) kingTarg << 1 else kingTarg >> 1
   
-  /** The squares which must be free of enemy control before castling is legal. */
-  val reqUncontrolledSquares = isKingsideZone match {
+  /** The BoardSquareuares which must be free of enemy control before castling is legal. */
+  val reqUncontrolledBoardSquareuares = isKingsideZone match {
     case true => (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_ | _)
     case _    => (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_ | _)
   }
   
-  /** The squares which must be free of all pieces before castling is legal. */
-  val reqClearSquares = isKingsideZone match {
+  /** The BoardSquareuares which must be free of all pieces before castling is legal. */
+  val reqClearBoardSquareuares = isKingsideZone match {
     case true => (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_ | _)
     case _    => (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_ | _)
   }
@@ -87,7 +87,7 @@ class CastleZone private (val kingSrc: Sq, val kingTarg: Sq)
  */
 object CastleZone
 {
-  import Sq._
+  import BoardSquare._
   private val cons = new CastleZone(_, _)
   
   val whiteKingside  = cons(e1, g1)
