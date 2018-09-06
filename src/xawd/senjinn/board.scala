@@ -30,20 +30,21 @@ class BoardSquare private (val index: Int)
     BoardSquare(rank + dir.deltaRank, file + dir.deltaFile)
   }
   
-  def allSquares(dirs: Iterable[Direction], proximity: Int = 8): Vector[BoardSquare] = {
-    dirs.iterator.flatMap(dir => allSquaresImpl(dir, proximity)).toVector
+  def squaresLeft(dir: Direction): Int = nextSquare(dir) match {
+    case None     => 0
+    case Some(sq) => 1 + sq.squaresLeft(dir)
   }
   
-  private def allSquaresImpl(dir: Direction, proximity: Int): Vector[BoardSquare] = {
-    if (proximity == 0) {
-      return Vector()
-    }
-    else {
-      nextSquare(dir) match {
+  def allSquares(dirs: Iterable[Direction], proximity: Int = 8): Vector[BoardSquare] = {
+    dirs.iterator.flatMap(dir => allSquares(dir, proximity)).toVector
+  }
+  
+  def allSquares(dir: Direction, proximity: Int): Vector[BoardSquare] = proximity match {
+    case 0 => Vector()
+    case _ => nextSquare(dir) match {
         case None     => Vector()
-        case Some(sq) => sq +: allSquaresImpl(dir, proximity - 1)
+        case Some(sq) => sq +: allSquares(dir, proximity - 1)
       }
-    }
   }
   
   override def toString(): String = {
@@ -128,6 +129,8 @@ object SquareSet
   def apply(args: Long*) = new SquareSet(args.foldLeft(0L)(_ | _))
   
   implicit def boardsquare2squareset(square: BoardSquare): SquareSet = SquareSet(square.loc)
+  
+//  implicit def convert[B, A <% B](l: Vector[A]): Vector[B] = l map { a => a: B }
   
   implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
 }
