@@ -11,15 +11,23 @@ import scala.annotation.tailrec
  */
 class BoardSquare private (val index: Int) 
 {
-  val (loc, rank, file)  = (1L << index, index / 8, index % 8)
+  val (loc, rank, file) = (1L << index, index / 8, index % 8)
   
-  def |(other: BoardSquare): SquareSet = SquareSet(loc | other.loc)
+  def |(other: BoardSquare): SquareSet = {
+    SquareSet(loc | other.loc)
+  }
   
-  def <<(shift: Int): BoardSquare = BoardSquare.values(index + shift)
+  def <<(shift: Int): BoardSquare = {
+    BoardSquare.values(index + shift)
+  }
   
-  def >>(shift: Int): BoardSquare = BoardSquare.values(index - shift)
+  def >>(shift: Int): BoardSquare = {
+    BoardSquare.values(index - shift)
+  }
   
-  def unary_~ = SquareSet(~loc)
+  def unary_~ = {
+    SquareSet(~loc)
+  }
   
   def nextSquare(dir: Direction): Option[BoardSquare] = {
     BoardSquare(rank + dir.deltaRank, file + dir.deltaFile)
@@ -29,7 +37,6 @@ class BoardSquare private (val index: Int)
     dirs.iterator.flatMap(dir => allSquaresImpl(dir, proximity)).toVector
   }
   
-//  @tailrec
   private def allSquaresImpl(dir: Direction, proximity: Int): Vector[BoardSquare] = {
     if (proximity == 0) {
       return Vector()
@@ -76,9 +83,14 @@ object BoardSquare
   
   def apply(rank: Int, file: Int): Option[BoardSquare] = {
     val inRange: Int => Boolean = x => -1 < x && x < 9
-    
-    if (inRange(rank) && inRange(file)) { Some(BoardSquare.values(8 * rank + file)) }
+    if (inRange(rank) && inRange(file)) { 
+      Some(BoardSquare.values(8 * rank + file)) 
+    }
     else { None }
+  }
+  
+  def apply(index: Int) = {
+    values(index)
   }
   
   def unapply(square: BoardSquare) = Some((square.index, square.loc))
@@ -112,6 +124,8 @@ class SquareSet private(val src: Long) extends AnyVal
 
 object SquareSet
 {
+  def apply() = new SquareSet(0L)
+  
   def apply(arg: Long) = new SquareSet(arg)
   
   def apply(args: Long*) = new SquareSet(args.foldLeft(0L)(_ | _))
