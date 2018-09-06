@@ -1,7 +1,10 @@
 package xawd.senjinn
 
+// |----------------------------------------------------------------------------------------|
+// |----------------------------------------------------------------------------------------|
 /**
- * 
+ * Represents one of the 64 squares on a chessboard, constructor is private and all 
+ * possible values are enumerated in the companion object. 
  */
 class BoardSquare private (val index: Int) 
 {
@@ -49,3 +52,39 @@ object BoardSquare
   
   def unapply(square: BoardSquare) = Some((square.index, square.loc))
 }
+
+// |----------------------------------------------------------------------------------------|
+// |----------------------------------------------------------------------------------------|
+
+/**
+ * Wrapper for a primitive 64 bit integer which represents a collection of squares
+ * on a chess board.
+ */
+class SquareSet private(val squares: Long) extends AnyVal 
+{
+  def |(other: SquareSet) = SquareSet(squares | other.squares)
+  
+  def &(other: SquareSet) = SquareSet(squares & other.squares)
+  
+  def ^(other: SquareSet) = SquareSet(squares ^ other.squares)
+  
+  def <<(shift: Int) = SquareSet(squares << shift)
+  
+  def >>(shift: Int) = SquareSet(squares >> shift)
+  
+  def unary_~ = SquareSet(~squares)
+}
+
+object SquareSet
+{
+  def apply(arg: Long) = new SquareSet(arg)
+  
+  def apply(args: Long*) = new SquareSet(args.foldLeft(0L)(_ | _))
+  
+  implicit def boardsquare2squareset(square: BoardSquare): SquareSet = SquareSet(square.loc)
+  
+  implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
+}
+
+// |----------------------------------------------------------------------------------------|
+// |----------------------------------------------------------------------------------------|
