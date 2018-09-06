@@ -1,5 +1,8 @@
 package xawd.senjinn
 
+import scala.collection.immutable.Vector
+import scala.annotation.tailrec
+
 // |----------------------------------------------------------------------------------------|
 // |----------------------------------------------------------------------------------------|
 /**
@@ -17,6 +20,27 @@ class BoardSquare private (val index: Int)
   def >>(shift: Int): BoardSquare = BoardSquare.values(index - shift)
   
   def unary_~ = SquareSet(~loc)
+  
+  def nextSquare(dir: Direction): Option[BoardSquare] = {
+    BoardSquare(rank + dir.deltaRank, file + dir.deltaFile)
+  }
+  
+  def allSquares(dirs: Iterable[Direction], proximity: Int = 8): Vector[BoardSquare] = {
+    dirs.iterator.flatMap(dir => allSquaresImpl(dir, proximity)).toVector
+  }
+  
+//  @tailrec
+  private def allSquaresImpl(dir: Direction, proximity: Int): Vector[BoardSquare] = {
+    if (proximity == 0) {
+      return Vector()
+    }
+    else {
+      nextSquare(dir) match {
+        case None     => Vector()
+        case Some(sq) => sq +: allSquaresImpl(dir, proximity - 1)
+      }
+    }
+  }
   
   override def toString(): String = {
     val filechar = ('h' - file).toChar
@@ -50,6 +74,13 @@ object BoardSquare
     }
   }
   
+  def apply(rank: Int, file: Int): Option[BoardSquare] = {
+    val inRange: Int => Boolean = x => -1 < x && x < 9
+    
+    if (inRange(rank) && inRange(file)) { Some(BoardSquare.values(8 * rank + file)) }
+    else { None }
+  }
+  
   def unapply(square: BoardSquare) = Some((square.index, square.loc))
 }
 
@@ -60,19 +91,23 @@ object BoardSquare
  * Wrapper for a primitive 64 bit integer which represents a collection of squares
  * on a chess board.
  */
-class SquareSet private(val squares: Long) extends AnyVal 
+class SquareSet private(val src: Long) extends AnyVal
 {
-  def |(other: SquareSet) = SquareSet(squares | other.squares)
+  def |(other: SquareSet) = SquareSet(src | other.src)
   
-  def &(other: SquareSet) = SquareSet(squares & other.squares)
+  def &(other: SquareSet) = SquareSet(src & other.src)
   
-  def ^(other: SquareSet) = SquareSet(squares ^ other.squares)
+  def ^(other: SquareSet) = SquareSet(src ^ other.src)
   
-  def <<(shift: Int) = SquareSet(squares << shift)
+  def <<(shift: Int) = SquareSet(src << shift)
   
-  def >>(shift: Int) = SquareSet(squares >> shift)
+  def >>(shift: Int) = SquareSet(src >> shift)
   
-  def unary_~ = SquareSet(~squares)
+  def unary_~ = SquareSet(~src)
+  
+  def squares: Iterator[BoardSquare] = (0 to 63).iterator
+                                       .filter(i => ((1L << i) & src) != 0)
+                                       .map(i => BoardSquare.values(i))
 }
 
 object SquareSet
