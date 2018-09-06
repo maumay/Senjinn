@@ -27,6 +27,14 @@ package object senjinn
         )
   }
   
+  def foldSquares(squares: Iterable[BoardSquare]): SquareSet = {
+    foldSquares(squares.iterator)
+  }
+  
+  def foldSquares(squares: Iterator[BoardSquare]): SquareSet = {
+    squares.foldLeft(SquareSet())((a, b) => a | b)
+  }
+  
 //  val InitialAlpha = -2 * (MaxNegatableInt / 3)
 //  val InitialBeta 
 }
