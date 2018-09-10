@@ -14,6 +14,10 @@ class BoardSquare private (val index: Int)
     SquareSet(loc | other.loc)
   }
   
+//  def &(other: SquareSet): SquareSet = {
+//    SquareSet(loc & other.src)
+//  }
+  
   def <<(shift: Int): BoardSquare = {
     BoardSquare.values(index + shift)
   }
@@ -115,6 +119,10 @@ class SquareSet private(val src: Long) extends AnyVal
   
   def unary_~ = SquareSet(~src)
   
+  def intersects(square: BoardSquare): Boolean = {
+    (square.loc & src) != 0
+  }
+  
   def squares: Iterator[BoardSquare] = (0 to 63).iterator
                                        .filter(i => ((1L << i) & src) != 0)
                                        .map(i => BoardSquare.values(i))
@@ -130,9 +138,9 @@ object SquareSet
   
   implicit def boardsquare2squareset(square: BoardSquare): SquareSet = SquareSet(square.loc)
   
-//  implicit def convert[B, A <% B](l: Vector[A]): Vector[B] = l map { a => a: B }
-  
   implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
+  
+  implicit def squareset2long(s: SquareSet): Long = s.src
 }
 
 // |----------------------------------------------------------------------------------------|

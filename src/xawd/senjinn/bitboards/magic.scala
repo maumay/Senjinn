@@ -3,7 +3,7 @@ package xawd.senjinn.bitboards
 import xawd.senjinn.SquareSet
 import xawd.senjinn.BoardSquare
 import xawd.senjinn.Direction
-import java.lang.Long
+import xawd.senjinn.SquareSet.{boardsquare2squareset, squareset2long}
 
 /**
  * 
@@ -11,19 +11,22 @@ import java.lang.Long
 private object MagicBitboardImpl
 {
   import xawd.senjinn.{ PieceMovementDirs => pmd }
+  private type Arr       = Array[Long]
+	private type SquareArr = Array[Arr]
   
   // Occupancy variations
-  val bishopOccupancyVariations = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
-  val rookOccupancyVariations   = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
+  val bishopOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
+  val rookOccupancyVariations:   SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
   
-  private def genOccupancyVariations(square: BoardSquare, dirs: Iterable[Direction]): Array[SquareSet] = {
+  
+  private def genOccupancyVariations(square: BoardSquare, dirs: Iterable[Direction]): Arr = {
     val relevantSquares = dirs.iterator
     .map(d => (d, square.squaresLeft(d) - 1))
     .flatMap(p => square.allSquares(p._1, Math.max(0, p._2)))
     .map(x => x: SquareSet)
     .toVector
     
-    bitwiseOrPowerset(relevantSquares).toArray
+    bitwiseOrPowerset(relevantSquares).map(_.src).toArray
   }
   
   private def bitwiseOrPowerset(input: Vector[SquareSet]): Vector[SquareSet] = input match {
@@ -35,17 +38,17 @@ private object MagicBitboardImpl
     }
     
   // Occupancy masks
-  val bishopOccupancyMasks = bishopOccupancyVariations.map(_.last)
-  val rookOccupancyMasks   = rookOccupancyVariations.map(_.last)
+  val bishopOccupancyMasks: Arr = bishopOccupancyVariations.map(_.last)
+  val rookOccupancyMasks:   Arr = rookOccupancyVariations.map(_.last)
   
   
   // Magic bitshifts
-  val bishopMagicBitshifts = bishopOccupancyMasks.map(x => 64 - Long.bitCount(x.src))
-  val rookMagicBitshifts   = rookOccupancyMasks.map(x => 64 - Long.bitCount(x.src))
+  val bishopMagicBitshifts: Array[Int] = bishopOccupancyMasks.map(x => 64 - java.lang.Long.bitCount(x))
+  val rookMagicBitshifts:   Array[Int] = rookOccupancyMasks.map(x => 64 - java.lang.Long.bitCount(x))
   
   
   // Magic numbers
-  val bishopMagicNumbers = Array (
+  val bishopMagicNumbers: Arr = Array (
 			0x8480100440302L, 0x200200a1010000L, 0x4010040441508100L, 0x491040080030021L,
 			0x21104080208000L, 0x1032011000000L, 0x41c0128080000L, 0x2002020201040200L,
 			0x120430040040L, 0x201040812084209L, 0x4220801002204L, 0x8044502000000L,
@@ -64,7 +67,7 @@ private object MagicBitboardImpl
 			0x2200000010020200L, 0x220021a0200L, 0x402041006020400L, 0x20110102040840L
 			)
 
-	val rookMagicNumbers = Array(
+	val rookMagicNumbers: Arr = Array(
 			0x10800480a0104000L, 0x40002000403000L, 0x80281000200080L, 0x800c0800500280L,
 			0x8200200410081200L, 0x4a00080200040510L, 0x2180408002000100L, 0x180004100002080L,
 			0x4000800080204000L, 0x802010814000L, 0x444801000822001L, 0x801000680080L,
@@ -82,4 +85,30 @@ private object MagicBitboardImpl
 			0x408001102501L, 0x11008042002852L, 0x8800406001043009L, 0x1012000821100442L,
 			0x1000442080011L, 0x1001000c00020801L, 0x400082104821004L, 0x2080010140208402L
 			)
+			
+	// Magic move databases
+  
+	private def genMagicMoveDatabase(allOccVars: SquareArr, magicNums: Arr, magicShifts: Arr, dirs: Iterable[Direction]): SquareArr = {
+//    for (i <- 0 to 63) yield { 
+//      Array[Long]() 
+//    }
+    
+//    
+//    (0 to 63).map(i => {
+//      val (occVars, mn, ms) = (allOccVars(i), magicNums(i), magicShifts(i))
+//      occVars.map(ov => {
+//        val magicIndex = 
+//      })
+//    })
+    throw new RuntimeException
+  }
+  
+  private def calcControlSet(sq: BoardSquare, occupancyVariation: SquareSet, dirs: Iterable[Direction]): SquareSet = {
+    val ov = occupancyVariation
+    dirs.iterator
+    .map(dir => sq.allSquares(dir, 8))
+    .flatMap(sqs => sqs.span(!ov.intersects(_)) match {case (h, t) => h ++ t.take(1)})
+    .map(x => x: SquareSet)
+    .reduce(_ | _)
+  }
 }
