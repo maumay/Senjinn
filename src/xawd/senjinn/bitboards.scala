@@ -109,15 +109,31 @@ private object BasicBitboardImpl
 //  }
 }
 
-private object MagicBitboardImpl
+object MagicBitboards
 {
+  // Api
+  def rookMagicMove(pieces: SquareSet, square: BoardSquare): SquareSet = {
+    val occupancyvariation = pieces & rookOccupancyMasks(square.index)
+    val magicnumber = rookMagicNumbers(square.index)
+    val magicshift = rookMagicBitshifts(square.index)
+    rookMagicMoves(square.index)(((occupancyvariation * magicnumber) >> magicshift).toInt)
+  }
+  
+  def bishMagicMove(pieces: SquareSet, square: BoardSquare): SquareSet = {
+    val occupancyvariation = pieces & bishOccupancyMasks(square.index)
+    val magicnumber = bishMagicNumbers(square.index)
+    val magicshift = bishMagicBitshifts(square.index)
+    bishMagicMoves(square.index)(((occupancyvariation * magicnumber) >> magicshift).toInt)
+  }
+  
+  // Implementation  
   import xawd.senjinn.{ PieceMovementDirs => pmd }
   private type Arr       = Array[Long]
 	private type SquareArr = Array[Arr]
   
   // Occupancy variations
-  val bishOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
-  val rookOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
+  private def bishOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
+  private def rookOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
   
   
   private def genOccupancyVariations(square: BoardSquare, dirs: Iterable[Direction]): Arr = {
@@ -139,17 +155,17 @@ private object MagicBitboardImpl
     }
     
   // Occupancy masks
-  val bishOccupancyMasks: Arr = bishOccupancyVariations.map(_.last)
-  val rookOccupancyMasks: Arr = rookOccupancyVariations.map(_.last)
+  private val bishOccupancyMasks: Arr = bishOccupancyVariations.map(_.last)
+  private val rookOccupancyMasks: Arr = rookOccupancyVariations.map(_.last)
   
   
   // Magic bitshifts
-  val bishMagicBitshifts: Array[Int] = bishOccupancyMasks.map(x => 64 - java.lang.Long.bitCount(x))
-  val rookMagicBitshifts: Array[Int] = rookOccupancyMasks.map(x => 64 - java.lang.Long.bitCount(x))
+  private val bishMagicBitshifts: Array[Int] = bishOccupancyMasks.map(x => 64 - java.lang.Long.bitCount(x))
+  private val rookMagicBitshifts: Array[Int] = rookOccupancyMasks.map(x => 64 - java.lang.Long.bitCount(x))
   
   
   // Magic numbers
-  val bishMagicNumbers: Arr = Array (
+  private val bishMagicNumbers: Arr = Array (
 			0x8480100440302L, 0x200200a1010000L, 0x4010040441508100L, 0x491040080030021L,
 			0x21104080208000L, 0x1032011000000L, 0x41c0128080000L, 0x2002020201040200L,
 			0x120430040040L, 0x201040812084209L, 0x4220801002204L, 0x8044502000000L,
@@ -168,7 +184,7 @@ private object MagicBitboardImpl
 			0x2200000010020200L, 0x220021a0200L, 0x402041006020400L, 0x20110102040840L
 			)
 
-	val rookMagicNumbers: Arr = Array(
+	private val rookMagicNumbers: Arr = Array(
 			0x10800480a0104000L, 0x40002000403000L, 0x80281000200080L, 0x800c0800500280L,
 			0x8200200410081200L, 0x4a00080200040510L, 0x2180408002000100L, 0x180004100002080L,
 			0x4000800080204000L, 0x802010814000L, 0x444801000822001L, 0x801000680080L,
@@ -188,8 +204,8 @@ private object MagicBitboardImpl
 			)
 			
 	// Magic move databases
-	val rookMagicMoves = genMagicMoveDatabase(rookOccupancyVariations, rookMagicNumbers, rookMagicBitshifts, pmd("r"))
-	val bishMagicmoves = genMagicMoveDatabase(bishOccupancyVariations, bishMagicNumbers, bishMagicBitshifts, pmd("b"))
+	private val rookMagicMoves: SquareArr = genMagicMoveDatabase(rookOccupancyVariations, rookMagicNumbers, rookMagicBitshifts, pmd("r"))
+	private val bishMagicMoves: SquareArr = genMagicMoveDatabase(bishOccupancyVariations, bishMagicNumbers, bishMagicBitshifts, pmd("b"))
 			
 	private type MagicMoveCons = (SquareArr, Arr, Array[Int], Iterable[Direction])
 	

@@ -10,11 +10,15 @@ sealed trait ChessPiece
   val index: Int
   val side: Side
   
-  def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+  def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+  
+  def getEmptyBoardMoveset(loc: BoardSquare): SquareSet
+  
+  def getEmptyBoardControlset(loc: BoardSquare): SquareSet
 }
 
 object ChessPiece
@@ -27,20 +31,28 @@ case object WhitePawn extends ChessPiece
   val index = 0
   val side = Side.white
   
-  def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    getAreaControlled(loc, whites, blacks) & blacks
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+    getControlset(loc, whites, blacks) & blacks
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     val li = loc.index
     val empty = ~(whites | blacks)
     val push = (1L << (li + 8)) & empty
     val fpush = if (li < 16 && push != 0) push | ((1L << (li + 16)) & empty) else push
-    fpush | getAttacks(loc, whites, blacks)
+    fpush | getAttackset(loc, whites, blacks)
+  }
+  
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    emptyBoardMoves(loc.index)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
   }
   
   override def toString = "White Pawn"
@@ -60,19 +72,29 @@ case object WhiteKnight extends ChessPiece
   val index = 1
   val side = Side.white
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+    emptyBoardControl(loc.index)
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+    emptyBoardControl(loc.index) & blacks
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+    emptyBoardControl(loc.index) & ~whites
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  override def toString = "White Knight"
+  
+  private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("n"), 1)
 }
 
 
@@ -81,19 +103,19 @@ case object WhiteBishop extends ChessPiece
   val index = 2
   val side = Side.white
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  override def toString = ""
+  override def toString = "White Bishop"
 }
 
 case object WhiteRook extends ChessPiece
@@ -101,15 +123,15 @@ case object WhiteRook extends ChessPiece
   val index = 3
   val side = Side.white
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -121,15 +143,15 @@ case object WhiteQueen extends ChessPiece
   val index = 4
   val side = Side.white
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -142,15 +164,15 @@ case object WhiteKing extends ChessPiece
   val index = 5
   val side = Side.white
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -162,15 +184,15 @@ case object BlackPawn extends ChessPiece
   val index = 6
   val side = Side.black
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -182,15 +204,15 @@ case object BlackKnight extends ChessPiece
   val index = 7
   val side = Side.black
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -202,15 +224,15 @@ case object BlackBishop extends ChessPiece
   val index = 8
   val side = Side.black
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -222,15 +244,15 @@ case object BlackRook extends ChessPiece
   val index = 9
   val side = Side.black
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -242,15 +264,15 @@ case object BlackQueen extends ChessPiece
   val index = 10
   val side = Side.black
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -262,17 +284,18 @@ case object BlackKing extends ChessPiece
   val index = 11
   val side = Side.black
   
-   def getAreaControlled(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getAttacks(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
-  def getMoves(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
   override def toString = ""
 }
+
