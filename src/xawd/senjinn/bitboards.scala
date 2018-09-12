@@ -7,24 +7,6 @@ import xawd.senjinn.SquareSet.long2squareset
 import xawd.senjinn.SquareSet.squareset2long
 
 
-object BasicBitboardApi
-{
-  def rank(index: Int): SquareSet = BasicBitboardImpl.ranks(index)
-  
-  def file(index: Int): SquareSet = BasicBitboardImpl.files(index)
-  
-  def diag(index: Int): SquareSet = BasicBitboardImpl.diagonals(index)
-  
-  def adiag(index: Int): SquareSet = BasicBitboardImpl.antidiagonals(index)
-  
-  def genEmptyBoardBitboards(dirs: Iterable[Direction], proximity: Int = 8): Array[Long] = {
-    BoardSquare.values.map(sq => foldSquares(sq.allSquares(dirs, proximity)).src).toArray
-  }
-}
-
-
-
-
 /**
  * Encapsulates the basic areas on a chessboard. More specifically it contains:
  * <ul>
@@ -34,15 +16,21 @@ object BasicBitboardApi
  * <li>The squares controlled on an empty board for each piece type.</li>
  * </ul>
  */
-private object BasicBitboardImpl
+object BasicBitboards
 {
-  val ranks: Array[Long] = {
+  def rank(index: Int): SquareSet = ranks(index)
+  
+  private val ranks: Array[Long] = {
     (0 to 7).map(i => (0 to 7).map(j => (1L << 8 * i) << j).reduce(_ | _)).toArray
   }
   
-  val files: Array[Long] = {
+  def file(index: Int): SquareSet = files(index)
+  
+  private val files: Array[Long] = {
     (0 to 7).map(i => (0 to 7).map(j => (1L << i) << 8 * j).reduce(_ | _)).toArray
   }
+  
+  def diag(index: Int): SquareSet = diagonals(index)
   
   val diagonals: Array[Long] = {
     (0 to 14)
@@ -52,6 +40,8 @@ private object BasicBitboardImpl
     .toArray
   }
   
+  def adiag(index: Int): SquareSet = antidiagonals(index)
+  
   val antidiagonals: Array[Long] = {
     (0 to 14)
     .map(i => if (i < 8) 7 - i else 8 *(i - 7))
@@ -59,54 +49,10 @@ private object BasicBitboardImpl
     .map(sq => foldSquares(sq +: sq.allSquares(Array(Direction.nw))).src)
     .toArray
   }
-//  
-//  /**
-//   * The possible moves for each piece types (white and black pawns are 
-//   * distinguished) and for each square on the board.
-//   */
-//  val emptyBoardMoves: Array[Array[Long]] = {
-//    import xawd.senjinn.{ PieceMovementDirs => pmd}
-//    Array(
-//        genWhitePawnMoves,
-//        genBlackPawnMoves,
-//        genEmptyBoardBitboards(pmd("n"), 1),
-//        genEmptyBoardBitboards(pmd("b")),
-//        genEmptyBoardBitboards(pmd("r")),
-//        genEmptyBoardBitboards(pmd("q")),
-//        genEmptyBoardBitboards(pmd("k"), 1)
-//        )
-//  }
-//  
-//  /**
-//   * The areas of control for each piece types (white and black pawns 
-//   * are distinguished) and for each square on the board.
-//   */
-//  val emptyBoardControl: Array[Array[Long]] = {
-//    import xawd.senjinn.{ PieceMovementDirs => pmd}
-//    Array(
-//        genEmptyBoardBitboards(pmd("wpa"), 1),
-//        genEmptyBoardBitboards(pmd("bpa"), 1),
-//        emptyBoardMoves(2),
-//        emptyBoardMoves(3),
-//        emptyBoardMoves(4),
-//        emptyBoardMoves(5),
-//        emptyBoardMoves(6)
-//        )
-//  }
-//  
-//  private def genWhitePawnMoves: Array[Long] = {
-//    import xawd.senjinn.{ PieceMovementDirs => pmd}
-//    val arr = genEmptyBoardBitboards(pmd("wpm"), 1).toArray
-//    (8 to 15).foreach(i => arr(i) |= BoardSquare(i + 16).loc)
-//    arr.toArray
-//  }
-//  
-//  private def genBlackPawnMoves: Array[Long] = {
-//    import xawd.senjinn.{ PieceMovementDirs => pmd}
-//    val arr = genEmptyBoardBitboards(pmd("bpm"), 1).toArray
-//    (48 to 56).foreach(i => arr(i) |= BoardSquare(i - 16).loc)
-//    arr.toArray
-//  }
+  
+  def genEmptyBoardBitboards(dirs: Iterable[Direction], proximity: Int = 8): Array[Long] = {
+    BoardSquare.values.map(sq => foldSquares(sq.allSquares(dirs, proximity)).src).toArray
+  }
 }
 
 object MagicBitboards

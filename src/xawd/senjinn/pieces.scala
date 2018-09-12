@@ -1,7 +1,7 @@
 package xawd.senjinn
 
 import xawd.senjinn.{ PieceMovementDirs => pmd }
-import xawd.senjinn.BasicBitboardApi.{genEmptyBoardBitboards}
+import xawd.senjinn.BasicBitboards.{genEmptyBoardBitboards}
 import xawd.senjinn.SquareSet.{long2squareset}
 
 
@@ -291,18 +291,26 @@ case object BlackBishop extends ChessPiece
   val side = Side.black
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    MagicBitboards.bishMagicMove(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & whites
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~blacks
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    WhiteBishop.getEmptyBoardMoveset(loc)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    WhiteBishop.getEmptyBoardControlset(loc)
+  }
+  
+  override def toString = "Black Bishop"
 }
 
 case object BlackRook extends ChessPiece
@@ -311,18 +319,26 @@ case object BlackRook extends ChessPiece
   val side = Side.black
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    MagicBitboards.rookMagicMove(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & whites
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~blacks
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    WhiteRook.getEmptyBoardMoveset(loc)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    WhiteRook.getEmptyBoardControlset(loc)
+  }
+  
+  override def toString = "Black Rook"
 }
 
 case object BlackQueen extends ChessPiece
@@ -331,18 +347,26 @@ case object BlackQueen extends ChessPiece
   val side = Side.black
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    BlackBishop.getControlset(loc, whites, blacks) | BlackRook.getControlset(loc, whites, blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & whites
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~blacks
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    BlackBishop.getEmptyBoardMoveset(loc) | BlackRook.getEmptyBoardMoveset(loc)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    getEmptyBoardMoveset(loc)
+  }
+  
+  override def toString = "Black Queen"
 }
 
 case object BlackKing extends ChessPiece
@@ -351,17 +375,25 @@ case object BlackKing extends ChessPiece
   val side = Side.black
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    WhiteKing.getControlset(loc, whites, blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & whites
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~blacks
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    WhiteKing.getEmptyBoardMoveset(loc)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    WhiteKing.getEmptyBoardControlset(loc)
+  }
+  
+  override def toString = "Black King"
 }
 
