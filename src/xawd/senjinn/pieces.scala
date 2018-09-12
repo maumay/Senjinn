@@ -63,7 +63,7 @@ case object WhitePawn extends ChessPiece
     arr
   }
   
-  private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("bpa"), 1)
+  private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("wpa"), 1)
 }
 
 
@@ -104,18 +104,28 @@ case object WhiteBishop extends ChessPiece
   val side = Side.white
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    MagicBitboards.bishMagicMove(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & blacks
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~whites
+  }
+  
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
   }
   
   override def toString = "White Bishop"
+  
+  private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("b"))
 }
 
 case object WhiteRook extends ChessPiece
@@ -124,18 +134,28 @@ case object WhiteRook extends ChessPiece
   val side = Side.white
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    MagicBitboards.rookMagicMove(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & blacks
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~whites
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  override def toString = "White Rook"
+  
+  private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("r"))
 }
 
 case object WhiteQueen extends ChessPiece
@@ -144,18 +164,26 @@ case object WhiteQueen extends ChessPiece
   val side = Side.white
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    WhiteBishop.getControlset(loc, whites, blacks) | WhiteRook.getControlset(loc, whites, blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & blacks
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~whites
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    WhiteBishop.getEmptyBoardMoveset(loc) | WhiteRook.getEmptyBoardMoveset(loc)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    getEmptyBoardMoveset(loc)
+  }
+  
+  override def toString = "White Queen"
 }
 
 
@@ -165,18 +193,28 @@ case object WhiteKing extends ChessPiece
   val side = Side.white
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    emptyBoardControl(loc.index)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    emptyBoardControl(loc.index) & blacks
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    emptyBoardControl(loc.index) & ~whites
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  override def toString = "White King"
+  
+  private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("k"), 1)
 }
 
 case object BlackPawn extends ChessPiece
@@ -185,18 +223,38 @@ case object BlackPawn extends ChessPiece
   val side = Side.black
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    emptyBoardControl(loc.index)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & whites
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    val li = loc.index
+    val empty = ~(whites | blacks)
+    val push = (1L << (li - 8)) & empty
+    val fpush = if (li < 16 && push != 0) push | ((1L << (li - 16)) & empty) else push
+    fpush | getAttackset(loc, whites, blacks)
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    emptyBoardMoves(loc.index)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    emptyBoardControl(loc.index)
+  }
+  
+  override def toString = "Black Pawn"
+  
+  private val emptyBoardMoves: Array[Long] = {
+    val arr = genEmptyBoardBitboards(pmd("bpm"), 1).toArray
+    (8 to 15).foreach(i => arr(i) |= BoardSquare(i + 16).loc)
+    arr
+  }
+  
+  private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("bpa"), 1)
 }
 
 case object BlackKnight extends ChessPiece
@@ -205,18 +263,26 @@ case object BlackKnight extends ChessPiece
   val side = Side.black
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    WhiteKnight.getControlset(loc, whites, blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & whites
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & ~blacks
   }
   
-  override def toString = ""
+  def getEmptyBoardMoveset(loc: BoardSquare) = {
+    WhiteKnight.getEmptyBoardMoveset(loc)
+  }
+  
+  def getEmptyBoardControlset(loc: BoardSquare) = {
+    WhiteKnight.getEmptyBoardControlset(loc)
+  }
+  
+  override def toString = "Black Knight"
 }
 
 case object BlackBishop extends ChessPiece

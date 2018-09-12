@@ -112,18 +112,18 @@ private object BasicBitboardImpl
 object MagicBitboards
 {
   // Api
-  def rookMagicMove(pieces: SquareSet, square: BoardSquare): SquareSet = {
-    val occupancyvariation = pieces & rookOccupancyMasks(square.index)
-    val magicnumber = rookMagicNumbers(square.index)
-    val magicshift = rookMagicBitshifts(square.index)
-    rookMagicMoves(square.index)(((occupancyvariation * magicnumber) >> magicshift).toInt)
+  def rookMagicMove(loc: BoardSquare, pieces: SquareSet): SquareSet = {
+    val occupancyvariation = pieces & rookOccupancyMasks(loc.index)
+    val magicnumber = rookMagicNumbers(loc.index)
+    val magicshift = rookMagicBitshifts(loc.index)
+    rookMagicMoves(loc.index)(((occupancyvariation * magicnumber) >> magicshift).toInt)
   }
   
-  def bishMagicMove(pieces: SquareSet, square: BoardSquare): SquareSet = {
-    val occupancyvariation = pieces & bishOccupancyMasks(square.index)
-    val magicnumber = bishMagicNumbers(square.index)
-    val magicshift = bishMagicBitshifts(square.index)
-    bishMagicMoves(square.index)(((occupancyvariation * magicnumber) >> magicshift).toInt)
+  def bishMagicMove(loc: BoardSquare, pieces: SquareSet): SquareSet = {
+    val occupancyvariation = pieces & bishOccupancyMasks(loc.index)
+    val magicnumber = bishMagicNumbers(loc.index)
+    val magicshift = bishMagicBitshifts(loc.index)
+    bishMagicMoves(loc.index)(((occupancyvariation * magicnumber) >> magicshift).toInt)
   }
   
   // Implementation  
