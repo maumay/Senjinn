@@ -7,20 +7,45 @@ import xawd.senjinn.SquareSet.{long2squareset}
 
 sealed trait ChessPiece 
 {
+  /** The set of 12 indices from each chesspiece must be equal to the range (0 until 12) */
   val index: Int
+  /** The side this chesspiece belongs to */
   val side: Side
+  /** A unique short string identifier for the piece */
   val shortName: String
   
+  /** 
+   *  Get the set of squares this piece is controlling given the locations of all pieces
+   *  on the board.
+   */
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
   
+  /** 
+   *  Get the set of squares this piece can 'legally' move to which would result in a capture 
+   *  of an enemy given the location of all pieces on the board. Note that this method is
+   *  <b>not</b> expected to take into account illegal moves where the king is put into check.
+   */
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
   
+  /** 
+   *  Get the set of squares this piece can 'legally' move to given the location of all pieces.
+   *  Note that this method is <b>not</b> expected to take into account illegal moves where 
+   *  the king is put into check.
+   */
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
   
+  /**
+   * Get the set of squares this piece can legally move to if it was the only piece on the 
+   * board.
+   */
   def getEmptyBoardMoveset(loc: BoardSquare): SquareSet
   
+  /**
+   * Get the set of squares this piece controls if it was the only piece on the board.
+   */
   def getEmptyBoardControlset(loc: BoardSquare): SquareSet
 }
+
 
 object ChessPiece
 {
@@ -29,9 +54,16 @@ object ChessPiece
   val pieces = (whitePieces ++ blackPieces).sortBy(_.index)
   val nameMap = pieces.map(p => (p.shortName, p)).toMap
   
+  /** Retrieve a piece from it's index */
   def apply(index: Int): ChessPiece = pieces(index)
+  
+  /** Retrieve a piece from its shorthand identifier */
   def apply(shortName: String): ChessPiece = nameMap(shortName)
+  
+  /** Retrieve all pieces on a given side ordered by their index. */
+  def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) whitePieces else blackPieces
 }
+
 
 case object WhitePawn extends ChessPiece
 {
@@ -138,6 +170,7 @@ case object WhiteBishop extends ChessPiece
   private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("b"))
 }
 
+
 case object WhiteRook extends ChessPiece
 {
   val index = 3
@@ -168,6 +201,7 @@ case object WhiteRook extends ChessPiece
   
   private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("r"))
 }
+
 
 case object WhiteQueen extends ChessPiece
 {
@@ -230,6 +264,7 @@ case object WhiteKing extends ChessPiece
   private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("k"), 1)
 }
 
+
 case object BlackPawn extends ChessPiece
 {
   val index = 6
@@ -271,6 +306,7 @@ case object BlackPawn extends ChessPiece
   private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("bpa"), 1)
 }
 
+
 case object BlackKnight extends ChessPiece
 {
   val index = 7
@@ -299,6 +335,7 @@ case object BlackKnight extends ChessPiece
   
   override def toString = "Black Knight"
 }
+
 
 case object BlackBishop extends ChessPiece
 {
@@ -329,6 +366,7 @@ case object BlackBishop extends ChessPiece
   override def toString = "Black Bishop"
 }
 
+
 case object BlackRook extends ChessPiece
 {
   val index = 9
@@ -357,6 +395,7 @@ case object BlackRook extends ChessPiece
   
   override def toString = "Black Rook"
 }
+
 
 case object BlackQueen extends ChessPiece
 {
@@ -387,6 +426,7 @@ case object BlackQueen extends ChessPiece
   override def toString = "Black Queen"
 }
 
+
 case object BlackKing extends ChessPiece
 {
   val index = 11
@@ -415,4 +455,3 @@ case object BlackKing extends ChessPiece
   
   override def toString = "Black King"
 }
-
