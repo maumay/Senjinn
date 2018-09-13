@@ -32,15 +32,21 @@ package object senjinn
     squares.foldLeft(SquareSet())((a, b) => a | b)
   }
   
-  def loadResource(cls: java.lang.Class[_], name: String): Vector[String] = {
+  
+  /*
+   * Resource loading functionality
+   */
+  type ResourceLocator = (java.lang.Package, String)
+  
+  def loadResource(locator: ResourceLocator): Vector[String] = {
     import java.util.stream._, scala.collection.JavaConversions._
-    processResource(cls, name, buf => buf.lines().collect(Collectors.toList()).toVector)
+    processResource(locator, buf => buf.lines().collect(Collectors.toList()).toVector)
   }
   
-  def processResource[R](cls: java.lang.Class[_], name: String, action: java.io.BufferedReader => R): R = {
+  def processResource[R](locator: ResourceLocator, action: java.io.BufferedReader => R): R = {
     import java.io._
-    val absname = "/" + cls.getPackage.getName.replace('.', '/') + "/" + name
-    val in = cls.getResourceAsStream(absname)
+    val absname = "/" + locator._1.getName.replace('.', '/') + "/" + locator._2
+    val in = getClass.getResourceAsStream(absname)
     autoClose(new BufferedReader(new InputStreamReader(in)))(action)
   }
   
