@@ -2,22 +2,34 @@ package xawd.senjinn.board
 
 import xawd.senjinn.BoardSquare
 import xawd.senjinn.SquareSet
+import xawd.senjinn.ChessPiece
 
 
-class MutableSquareSet(private var _locs: SquareSet) extends Iterable[BoardSquare]
+
+class PieceLocations private(private val locs: Array[Long]) extends Iterable[SquareSet]
 {
-  def locs = _locs
+  require(locs.length == 12)
   
-  def contains(square: BoardSquare): Boolean = _locs.intersects(square)
+  def locs(piece: ChessPiece): SquareSet = locs(piece.index)
   
-  def pieceCount = java.lang.Long.bitCount(_locs.src)
+  def contains(piece: ChessPiece, loc: BoardSquare): Boolean = locs(piece).intersects(loc)
   
-  def addSquare(square: BoardSquare) { assert(!_locs.intersects(square)); _locs |= square }
+  def pieceCount(piece: ChessPiece): Int = java.lang.Long.bitCount(locs(piece.index))
   
-  def removeSquare(square: BoardSquare) { assert(_locs.intersects(square)); _locs ^= square }
+  def addSquare(piece: ChessPiece, square: BoardSquare) { 
+    assert(!locs(piece).intersects(square))
+    locs(piece.index) |= square.loc
+  }
   
-  override def iterator: Iterator[BoardSquare] = _locs.squares
+  def removeSquare(piece: ChessPiece, square: BoardSquare) {
+    assert(locs(piece).intersects(square))
+    locs(piece.index) ^= square.loc
+  }
   
-  // Need to do hashcode / equals etc.
+  def iterator = locs.iterator.map(x => x: SquareSet)
 }
 
+object PieceLocations
+{
+//  def evaluateLocations(tables: Piece
+}

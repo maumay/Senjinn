@@ -2,6 +2,7 @@ package xawd.senjinn.eval
 
 import xawd.senjinn.BoardSquare
 import xawd.senjinn.ChessPiece
+import xawd.senjinn.board.PieceLocations
 
 
 class PieceValues private (private val values: Array[Int]) extends Iterable[Int]
@@ -38,12 +39,9 @@ object PieceSquareTable
   import xawd.senjinn.{ loadResource }
   import xawd.senjinn.Side
   
-  def pkg = getClass.getPackage
-  def midgameLocators = ChessPiece(Side.white).map(p => (pkg, p.shortName + "-midgame"))
-  def endgameLocators = ChessPiece(Side.white).map(p => (pkg, p.shortName + "-endgame"))
-  
-  val midgame = PieceValues.midgame.zip(midgameLocators).map(p => parse(p._1, loadResource(p._2)))
-  val endgame = PieceValues.endgame.zip(midgameLocators).map(p => parse(p._1, loadResource(p._2)))
+  private def pkg = getClass.getPackage
+  private def midgameLocators = ChessPiece(Side.white).map(p => (pkg, p.shortName + "-midgame"))
+  private def endgameLocators = ChessPiece(Side.white).map(p => (pkg, p.shortName + "-endgame"))
   
   private def parse(piecevalue: Int, lines: Vector[String]): PieceSquareTable = {
     require(lines.length == 8)
@@ -56,6 +54,24 @@ object PieceSquareTable
     val res = locationValues.iterator.map(_ + pieceValue).toArray
     require(res.length == 64)
     new PieceSquareTable(res)
+  }
+  
+  val midgame = {
+    val white = PieceValues.midgame.zip(midgameLocators).map(p => parse(p._1, loadResource(p._2)))
+    white ++ white.map(_.invert)
+  }
+  
+  val endgame = {
+    val white = PieceValues.endgame.zip(midgameLocators).map(p => parse(p._1, loadResource(p._2)))
+    white ++ white.map(_.invert)
+  }
+  
+  def midgameEvaluation(locs: PieceLocations): Int = {
+    midgame.zip(locs).map(p => p._2.squares.foldLeft(0)((n, sq) => n + p._1.valueAt(sq))).reduce(_ + _)
+  }
+  
+  def endgameEvaluation(locs: PieceLocations): Int = {
+    endgame.zip(locs).map(p => p._2.squares.foldLeft(0)((n, sq) => n + p._1.valueAt(sq))).reduce(_ + _)
   }
 }
 
