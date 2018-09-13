@@ -12,8 +12,6 @@ import xawd.senjinn.SquareSet.squareset2long
  * <ul>
  * <li>The ranks and files</li>
  * <li>The north-east diagonals and north-west diagonals (anti-diagonals)</li>
- * <li>The possible moves on an empty board for each piece type</li>
- * <li>The squares controlled on an empty board for each piece type.</li>
  * </ul>
  */
 object BasicBitboards
@@ -58,14 +56,22 @@ object BasicBitboards
 object MagicBitboards
 {
   // Api
-  def rookMagicMove(loc: BoardSquare, pieces: SquareSet): SquareSet = {
+  /**
+   * Given the location of a rook and the locations of all pieces on the board this
+   * function efficiently calculates the control set of the rook.
+   */
+  def getRookControlset(loc: BoardSquare, pieces: SquareSet): SquareSet = {
     val occupancyvariation = pieces & rookOccupancyMasks(loc.index)
     val magicnumber = rookMagicNumbers(loc.index)
     val magicshift = rookMagicBitshifts(loc.index)
     rookMagicMoves(loc.index)(((occupancyvariation * magicnumber) >> magicshift).toInt)
   }
   
-  def bishMagicMove(loc: BoardSquare, pieces: SquareSet): SquareSet = {
+  /**
+   * Given the location of a bishop and the locations of all pieces on the board this
+   * function efficiently calculates the control set of the bishop.
+   */
+  def getBishControlset(loc: BoardSquare, pieces: SquareSet): SquareSet = {
     val occupancyvariation = pieces & bishOccupancyMasks(loc.index)
     val magicnumber = bishMagicNumbers(loc.index)
     val magicshift = bishMagicBitshifts(loc.index)

@@ -146,7 +146,7 @@ case object WhiteBishop extends ChessPiece
   val shortName = "wb"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    MagicBitboards.bishMagicMove(loc, whites | blacks)
+    MagicBitboards.getBishControlset(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -178,7 +178,7 @@ case object WhiteRook extends ChessPiece
   val shortName = "wr"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    MagicBitboards.rookMagicMove(loc, whites | blacks)
+    MagicBitboards.getRookControlset(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -344,7 +344,7 @@ case object BlackBishop extends ChessPiece
   val shortName = "bb"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    MagicBitboards.bishMagicMove(loc, whites | blacks)
+    MagicBitboards.getBishControlset(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -374,7 +374,7 @@ case object BlackRook extends ChessPiece
   val shortName = "br"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    MagicBitboards.rookMagicMove(loc, whites | blacks)
+    MagicBitboards.getRookControlset(loc, whites | blacks)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
