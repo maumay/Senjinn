@@ -18,14 +18,15 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
     ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tables.value(p._1, sq))).reduce(_ + _)
   }
   
-  private var endgameEval: Int = {
+  private var _endgameEval: Int = {
     val squareLocs = locs.map(loc => loc.squares)
     val tables = PieceSquareTableSet.endgame
     ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tables.value(p._1, sq))).reduce(_ + _)
   }
   
-  private var whites: SquareSet = ChessPiece.white.map(p => locs(p.index)).reduce(_ | _)
-  private var blacks: SquareSet = ChessPiece.black.map(p => locs(p.index)).reduce(_ | _)
+  private var _whites: SquareSet = ChessPiece.white.map(p => locs(p.index)).reduce(_ | _)
+  private var _blacks: SquareSet = ChessPiece.black.map(p => locs(p.index)).reduce(_ | _)
+  
   
   def locs(piece: ChessPiece): SquareSet = {
     locs(piece.index)
@@ -42,14 +43,26 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
   def addSquare(piece: ChessPiece, square: BoardSquare) { 
     assert(!locs(piece).intersects(square))
     locs(piece.index) |= square.loc
+    if (piece.side.isWhite) _whites |= square.loc else _blacks |= square.loc
+    _midgameEval += PieceSquareTableSet.midgame.value(piece, square)
+    _endgameEval += PieceSquareTableSet.endgame.value(piece, square)
   }
   
   def removeSquare(piece: ChessPiece, square: BoardSquare) {
     assert(locs(piece).intersects(square))
     locs(piece.index) ^= square.loc
+    if (piece.side.isWhite) _whites ^= square.loc else _blacks ^= square.loc
+    _midgameEval -= PieceSquareTableSet.midgame.value(piece, square)
+    _endgameEval -= PieceSquareTableSet.endgame.value(piece, square)
   }
   
   def iterator = locs.iterator.map(x => x: SquareSet)
+  
+  // getters
+  def midgameEval = _midgameEval
+  def endgameEval = _endgameEval
+  def whites = _whites
+  def blacks = _blacks
 }
 
 object PieceLocations
