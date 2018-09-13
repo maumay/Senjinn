@@ -1,10 +1,8 @@
 package xawd
 
+import scala.util.Try
 package object senjinn 
 {
-//  type Sq = BoardSquare
-//  val  Sq = BoardSquare
-  
   val MaxNegatableInt: Int = Integer.MAX_VALUE - 1
   val GameWinValue = MaxNegatableInt / 2
   
@@ -35,6 +33,29 @@ package object senjinn
     squares.foldLeft(SquareSet())((a, b) => a | b)
   }
   
-//  val InitialAlpha = -2 * (MaxNegatableInt / 3)
-//  val InitialBeta 
+  def autoClose[C <: java.io.Closeable, R](src: C)(action: C => R): R = {
+    try {
+      action(src)
+    }
+    finally {
+      try {
+        src.close()
+      }
+      catch {
+        case _: java.io.IOException => throw new RuntimeException
+      }
+    }
+  }
+  
+  
+  def loadResource(cls: java.lang.Class[_], name: String): Vector[String] = {
+    import java._, collection.JavaConversions._
+    val absname = "/" + cls.getPackage.getName.replace('.', '/') + "/" + name
+    val in = cls.getResourceAsStream(absname)
+    autoClose(new io.BufferedReader(new io.InputStreamReader(in))) { buf => 
+      buf.lines().collect(util.stream.Collectors.toList()).toVector
+    }
+  }
+  
+//  def loadResourceReader
 }
