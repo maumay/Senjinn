@@ -97,3 +97,45 @@ object CastleZone
   
   val values = Vector(whiteKingside, whiteQueenside, blackKingside, blackQueenside)
 }
+
+// |----------------------------------------------------------------------------------------|
+// |----------------------------------------------------------------------------------------|
+
+class DevelopmentPiece private(val startSquare: BoardSquare)
+{
+}
+
+object DevelopmentPiece
+{
+  private def cons = new DevelopmentPiece(_)
+  
+  val whiteKingsideKnight  = cons(BoardSquare.g1)
+  val whiteKingsideBishop  = cons(BoardSquare.f1)
+  val whiteKingsidePawn    = cons(BoardSquare.e2)
+  val whiteQueensidePawn   = cons(BoardSquare.d2)
+  val whiteQueensideBishop = cons(BoardSquare.c1)
+  val whiteQueensideKnight = cons(BoardSquare.b1)
+  
+  val blackKingsideKnight  = cons(BoardSquare.g8)
+  val blackKingsideBishop  = cons(BoardSquare.f8)
+  val blackKingsidePawn    = cons(BoardSquare.e7)
+  val blackQueensidePawn   = cons(BoardSquare.d7)
+  val blackQueensideBishop = cons(BoardSquare.c8)
+  val blackQueensideKnight = cons(BoardSquare.b8)
+  
+  private val retrievalBySquareMap = Vector(
+      whiteKingsideKnight,
+      whiteKingsideBishop,
+      whiteKingsidePawn,
+      whiteQueensidePawn,
+      whiteQueensideBishop,
+      whiteQueensideKnight,
+      blackKingsideKnight,
+      blackKingsideBishop,
+      blackKingsidePawn,
+      blackQueensidePawn,
+      blackQueensideBishop,
+      blackQueensideKnight).map(p => (p.startSquare, p)).toMap
+      
+  def apply(startsquare: BoardSquare): DevelopmentPiece = retrievalBySquareMap(startsquare)
+}
