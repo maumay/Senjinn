@@ -62,6 +62,14 @@ object ChessPiece
   
   /** Retrieve all pieces on a given side ordered by their index. */
   def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) whitePieces else blackPieces
+  
+  // Put this kind of stuff in a unit test on piece indices.
+//  require(WhitePawn.index == BlackPawn.index - 6)
+//  require(WhiteKnight.index == BlackKnight.index - 6)
+//  require(WhiteBishop.index == BlackBishop.index - 6)
+//  require(WhiteRook.index == BlackRook.index - 6)
+//  require(WhiteQueen.index == BlackQueen.index - 6)
+//  require(WhiteKing.index == BlackKing.index - 6)
 }
 
 

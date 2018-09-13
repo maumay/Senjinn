@@ -40,7 +40,10 @@ package object senjinn
   
   def loadResource(locator: ResourceLocator): Vector[String] = {
     import java.util.stream._, scala.collection.JavaConversions._
-    processResource(locator, buf => buf.lines().collect(Collectors.toList()).toVector)
+    processResource(locator, {buf => 
+      val xs = buf.lines().collect(Collectors.toList()).toVector
+      xs.map(_.trim).filter(!_.startsWith("//"))
+    })
   }
   
   def processResource[R](locator: ResourceLocator, action: java.io.BufferedReader => R): R = {
