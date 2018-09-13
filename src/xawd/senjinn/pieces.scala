@@ -9,6 +9,7 @@ sealed trait ChessPiece
 {
   val index: Int
   val side: Side
+  val shortName: String
   
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
   
@@ -23,13 +24,20 @@ sealed trait ChessPiece
 
 object ChessPiece
 {
-  val pieces = Vector(WhitePawn)
+  val whitePieces = Vector(WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing).sortBy(_.index)
+  val blackPieces = Vector(BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing).sortBy(_.index)
+  val pieces = (whitePieces ++ blackPieces).sortBy(_.index)
+  val nameMap = pieces.map(p => (p.shortName, p)).toMap
+  
+  def apply(index: Int): ChessPiece = pieces(index)
+  def apply(shortName: String): ChessPiece = nameMap(shortName)
 }
 
 case object WhitePawn extends ChessPiece
 {
   val index = 0
   val side = Side.white
+  val shortName = "wp"
   
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
@@ -71,6 +79,7 @@ case object WhiteKnight extends ChessPiece
 {
   val index = 1
   val side = Side.white
+  val shortName = "wn"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
@@ -102,6 +111,7 @@ case object WhiteBishop extends ChessPiece
 {
   val index = 2
   val side = Side.white
+  val shortName = "wb"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.bishMagicMove(loc, whites | blacks)
@@ -132,6 +142,7 @@ case object WhiteRook extends ChessPiece
 {
   val index = 3
   val side = Side.white
+  val shortName = "wr"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.rookMagicMove(loc, whites | blacks)
@@ -162,6 +173,7 @@ case object WhiteQueen extends ChessPiece
 {
   val index = 4
   val side = Side.white
+  val shortName = "wq"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     WhiteBishop.getControlset(loc, whites, blacks) | WhiteRook.getControlset(loc, whites, blacks)
@@ -191,6 +203,7 @@ case object WhiteKing extends ChessPiece
 {
   val index = 5
   val side = Side.white
+  val shortName = "wk"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
@@ -221,6 +234,7 @@ case object BlackPawn extends ChessPiece
 {
   val index = 6
   val side = Side.black
+  val shortName = "bp"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
@@ -261,6 +275,7 @@ case object BlackKnight extends ChessPiece
 {
   val index = 7
   val side = Side.black
+  val shortName = "bn"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     WhiteKnight.getControlset(loc, whites, blacks)
@@ -289,6 +304,7 @@ case object BlackBishop extends ChessPiece
 {
   val index = 8
   val side = Side.black
+  val shortName = "bb"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.bishMagicMove(loc, whites | blacks)
@@ -317,6 +333,7 @@ case object BlackRook extends ChessPiece
 {
   val index = 9
   val side = Side.black
+  val shortName = "br"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.rookMagicMove(loc, whites | blacks)
@@ -345,6 +362,7 @@ case object BlackQueen extends ChessPiece
 {
   val index = 10
   val side = Side.black
+  val shortName = "bq"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     BlackBishop.getControlset(loc, whites, blacks) | BlackRook.getControlset(loc, whites, blacks)
@@ -373,6 +391,7 @@ case object BlackKing extends ChessPiece
 {
   val index = 11
   val side = Side.black
+  val shortName = "bk"
   
    def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     WhiteKing.getControlset(loc, whites, blacks)
