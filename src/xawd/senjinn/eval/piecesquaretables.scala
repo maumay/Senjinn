@@ -50,7 +50,7 @@ private object PieceSquareTable
   }
 }
 
-class PieceSquareTableSet private(private val tables: Vector[PieceSquareTable])
+class PieceSquareTableSet private(private val tables: Vector[PieceSquareTable])// extends Iterable[Pie
 {
   require(tables.length == 12)
   

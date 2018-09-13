@@ -49,19 +49,19 @@ sealed trait ChessPiece
 
 object ChessPiece
 {
-  val whitePieces = Vector(WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing).sortBy(_.index)
-  val blackPieces = Vector(BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing).sortBy(_.index)
-  val pieces = (whitePieces ++ blackPieces).sortBy(_.index)
-  val nameMap = pieces.map(p => (p.shortName, p)).toMap
+  val white = Vector(WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing).sortBy(_.index)
+  val black = Vector(BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing).sortBy(_.index)
+  val all = (white ++ black).sortBy(_.index)
+  val nameMap = all.map(p => (p.shortName, p)).toMap
   
   /** Retrieve a piece from it's index */
-  def apply(index: Int): ChessPiece = pieces(index)
+  def apply(index: Int): ChessPiece = all(index)
   
   /** Retrieve a piece from its shorthand identifier */
   def apply(shortName: String): ChessPiece = nameMap(shortName)
   
   /** Retrieve all pieces on a given side ordered by their index. */
-  def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) whitePieces else blackPieces
+  def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) white else black
   
   // Put this kind of stuff in a unit test on piece indices.
 //  require(WhitePawn.index == BlackPawn.index - 6)
