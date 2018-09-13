@@ -10,6 +10,8 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
 {
   require(locs.length == 12)
   
+  
+  
   def locs(piece: ChessPiece): SquareSet = locs(piece.index)
   
   def contains(piece: ChessPiece, loc: BoardSquare): Boolean = locs(piece).intersects(loc)
@@ -33,3 +35,11 @@ object PieceLocations
 {
 //  def evaluateLocations(tables: Piece
 }
+
+//  def midgameEvaluation(locs: PieceLocations): Int = {
+//    midgame.zip(locs).map(p => p._2.squares.foldLeft(0)((n, sq) => n + p._1.valueAt(sq))).reduce(_ + _)
+//  }
+//  
+//  def endgameEvaluation(locs: PieceLocations): Int = {
+//    endgame.zip(locs).map(p => p._2.squares.foldLeft(0)((n, sq) => n + p._1.valueAt(sq))).reduce(_ + _)
+//  }

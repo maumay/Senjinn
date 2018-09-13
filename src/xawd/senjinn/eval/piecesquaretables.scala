@@ -25,8 +25,10 @@ object PieceValues
 }
 
 
-class PieceSquareTable private (private val values: Array[Int])
+private class PieceSquareTable private (private val values: Array[Int])
 {
+  require(values.length == 64)
+  
   def valueAt(square: BoardSquare): Int = values(square.index)
   
   def invert: PieceSquareTable = {
@@ -34,8 +36,30 @@ class PieceSquareTable private (private val values: Array[Int])
   }
 }
 
-object PieceSquareTable
+private object PieceSquareTable
 {
+  def apply(pieceValue: Int, locationValues: Iterable[Int]): PieceSquareTable = {
+    new PieceSquareTable(locationValues.iterator.map(_ + pieceValue).toArray)
+  }
+  
+   def parse(piecevalue: Int, lines: Vector[String]): PieceSquareTable = {
+    require(lines.length == 8)
+    val np = "-?[0-9]+".r
+    val parsedLines = lines.reverseMap(np.findAllMatchIn(_).map(_.group(1).toInt).toVector).flatMap(_.reverse)
+    PieceSquareTable(piecevalue, parsedLines)
+  }
+}
+
+class PieceSquareTableSet private(private val tables: Vector[PieceSquareTable])
+{
+  require(tables.length == 12)
+  
+  def value(piece: ChessPiece, location: BoardSquare): Int = tables(piece.index).valueAt(location)
+}
+
+object PieceSquareTableSet
+{
+  import xawd.senjinn.eval.PieceSquareTable.{ parse }
   import xawd.senjinn.{ loadResource }
   import xawd.senjinn.Side
   
@@ -43,35 +67,14 @@ object PieceSquareTable
   private def midgameLocators = ChessPiece(Side.white).map(p => (pkg, p.shortName + "-midgame"))
   private def endgameLocators = ChessPiece(Side.white).map(p => (pkg, p.shortName + "-endgame"))
   
-  private def parse(piecevalue: Int, lines: Vector[String]): PieceSquareTable = {
-    require(lines.length == 8)
-    val np = "-?[0-9]+".r
-    val parsedLines = lines.reverseMap(np.findAllMatchIn(_).map(_.group(1).toInt).toVector).flatMap(_.reverse)
-    PieceSquareTable(piecevalue, parsedLines)
-  }
-  
-  private def apply(pieceValue: Int, locationValues: Iterable[Int]): PieceSquareTable = {
-    val res = locationValues.iterator.map(_ + pieceValue).toArray
-    require(res.length == 64)
-    new PieceSquareTable(res)
-  }
-  
-  val midgame = {
+  val midgame: PieceSquareTableSet = {
     val white = PieceValues.midgame.zip(midgameLocators).map(p => parse(p._1, loadResource(p._2)))
-    white ++ white.map(_.invert)
+    new PieceSquareTableSet((white ++ white.map(_.invert)).toVector)
   }
   
-  val endgame = {
+  val endgame: PieceSquareTableSet = {
     val white = PieceValues.endgame.zip(midgameLocators).map(p => parse(p._1, loadResource(p._2)))
-    white ++ white.map(_.invert)
-  }
-  
-  def midgameEvaluation(locs: PieceLocations): Int = {
-    midgame.zip(locs).map(p => p._2.squares.foldLeft(0)((n, sq) => n + p._1.valueAt(sq))).reduce(_ + _)
-  }
-  
-  def endgameEvaluation(locs: PieceLocations): Int = {
-    endgame.zip(locs).map(p => p._2.squares.foldLeft(0)((n, sq) => n + p._1.valueAt(sq))).reduce(_ + _)
+    new PieceSquareTableSet((white ++ white.map(_.invert)).toVector)
   }
 }
 
