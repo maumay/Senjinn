@@ -2,6 +2,7 @@
 *.log
 
 /bin/
+/target/
 /.settings/
 /.cache-main
 /.classpath
