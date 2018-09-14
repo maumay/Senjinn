@@ -3,7 +3,9 @@
 
 /bin/
 /target/
+/project/
 /.settings/
 /.cache-main
 /.classpath
 /.project
+/.ensime
