@@ -25,7 +25,20 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
         updateIndexer()
     }
 
-    
+    def hasthreeRepetitions = {
+        if (moveCount < HashCache.size) false else {
+            val cpy = cache.sorted
+            var samecount = 1
+            var last = cache.head
+            var index = 1
+            while (index < HashCache.size && samecount < 3) {
+                index += 1
+                val next = cpy(index)
+                if (next == last) samecount += 1 else {samecount = 0; last = next}
+            }
+            samecount == 3
+        }
+    }
 
     def copy = new HashCache(cache.clone(), moveCount)
 
@@ -34,6 +47,12 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
 
 object HashCache
 {
+    import xawd.senjinn.SquareSet
+
     val size = 12
 
+    def apply(cache: Array[Long], moveCount: Int): HashCache = {
+        require(cache.length == size)
+        new HashCache(cache.clone, moveCount)
+    }
 }
