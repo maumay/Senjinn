@@ -12,28 +12,27 @@ import xawd.senjinn.ImplicitAreaConverters._
  */
 class PieceLocations private(private val _locs: Array[Long]) extends Iterable[SquareSet]
 {
-  
   require(_locs.length == 12)
   
   /** Self-updating hash value of all the piece-square features. */
   private var _positionHash: Long = {
     val square_locs = _locs.map(_.squares)
     val sf = BoardHasher.squareFeature(_, _)
-    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0L)((h, sq) => h ^  sf(p._1, sq))).reduce(_ ^ _)
+    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0L)( _ ^ sf(p._1, _))).reduce(_ ^ _)
   }
   
   /** Self-updating evaluation of the piece locations using the midgame tables. */
   private var _midgameEval: Int = {
     val square_locs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.midgame.value(_, _)
-    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
+    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_ + _)
   }
   
   /** Self-updating evaluation of the piece locations using the endgame tables. */
   private var _endgameEval: Int = {
     val square_locs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.endgame.value(_, _)
-    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
+    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_ + _)
   }
   
   /** Self-updating set tracking location of all white pieces. */

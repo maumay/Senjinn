@@ -51,8 +51,21 @@ object HashCache
 
     val size = 12
 
+    def apply(): HashCache = {
+        apply(new Array[Long](size), 0)
+    }
+
     def apply(cache: Array[Long], moveCount: Int): HashCache = {
         require(cache.length == size)
         new HashCache(cache.clone, moveCount)
     }
+}
+
+import xawd.senjinn.CastleZone
+import scala.collection.{mutable => mutable}
+
+class CastlingTracker private(private val _rights: mutable.Set[CastleZone], 
+    private var _white: Option[CastleZone], private var _black: Option[CastleZone])
+{
+
 }
