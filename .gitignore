@@ -5,6 +5,7 @@
 /target/
 /project/
 /.settings/
+/.ensime_cache/
 /.cache-main
 /.classpath
 /.project
