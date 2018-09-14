@@ -21,7 +21,8 @@ object BoardHasher
   private val enpassantFeatures: Arr = (1 to 8).map(genLong).toArray
   
   // Api
-  def castleFeature(piece: ChessPiece, square: BoardSquare) = squareFeatures(piece.index)(square.index)
+  def squareFeature(piece: ChessPiece, square: BoardSquare) = squareFeatures(piece.index)(square.index)
+  def castleFeature(zone: CastleZone) = castleFeatures(zone.index)
   def enpassantFeature(enpassantSquare: BoardSquare) = enpassantFeatures(enpassantSquare.file)
   val blackMoveFeature: Long = genLong(Unit)
 }

@@ -12,16 +12,22 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
   import xawd.senjinn.SquareSet.{long2squareset}
   require(locs.length == 12)
   
+  private var _positionHash: Long = {
+    val squareLocs = locs.map(_.squares)
+    val sf = BoardHasher.squareFeature(_, _)
+    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0L)((h, sq) => h ^  sf(p._1, sq))).reduce(_ ^ _)
+  }
+  
   private var _midgameEval: Int = {
-    val squareLocs = locs.map(loc => loc.squares)
-    val tables = PieceSquareTableSet.midgame
-    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tables.value(p._1, sq))).reduce(_ + _)
+    val squareLocs = locs.map(_.squares)
+    val tv = PieceSquareTableSet.midgame.value(_, _)
+    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
   }
   
   private var _endgameEval: Int = {
-    val squareLocs = locs.map(loc => loc.squares)
-    val tables = PieceSquareTableSet.endgame
-    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tables.value(p._1, sq))).reduce(_ + _)
+    val squareLocs = locs.map(_.squares)
+    val tv = PieceSquareTableSet.endgame.value(_, _)
+    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
   }
   
   private var _whites: SquareSet = ChessPiece.white.map(p => locs(p.index)).reduce(_ | _)
@@ -46,6 +52,7 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
     if (piece.side.isWhite) _whites |= square.loc else _blacks |= square.loc
     _midgameEval += PieceSquareTableSet.midgame.value(piece, square)
     _endgameEval += PieceSquareTableSet.endgame.value(piece, square)
+    _positionHash ^= BoardHasher.squareFeature(piece, square)
   }
   
   def removeSquare(piece: ChessPiece, square: BoardSquare) {
@@ -54,11 +61,13 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
     if (piece.side.isWhite) _whites ^= square.loc else _blacks ^= square.loc
     _midgameEval -= PieceSquareTableSet.midgame.value(piece, square)
     _endgameEval -= PieceSquareTableSet.endgame.value(piece, square)
+    _positionHash ^= BoardHasher.squareFeature(piece, square)
   }
   
   def iterator = locs.iterator.map(x => x: SquareSet)
   
   // getters
+  def positionHash = _positionHash
   def midgameEval = _midgameEval
   def endgameEval = _endgameEval
   def whites = _whites

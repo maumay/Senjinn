@@ -61,8 +61,9 @@ import SquareSet.{ boardsquare2squareset }
 /**
  * Represents a zone into which it is possible to castle.
  */
-class CastleZone private (val kingSrc: BoardSquare, val kingTarg: BoardSquare) 
+class CastleZone private (val index: Int, val kingSrc: BoardSquare, val kingTarg: BoardSquare) 
 {
+  require(0 <= index && index < 4)
   val (isWhiteZone, isKingsideZone) = (kingSrc.rank == 0, kingTarg.file - kingSrc.file < 0)
   
   val rookSrc  = if (isKingsideZone) kingSrc  >> 3 else kingSrc  << 4
@@ -88,12 +89,12 @@ class CastleZone private (val kingSrc: BoardSquare, val kingTarg: BoardSquare)
 object CastleZone
 {
   import BoardSquare._
-  private val cons = new CastleZone(_, _)
+  private val cons = new CastleZone(_, _, _)
   
-  val whiteKingside  = cons(e1, g1)
-  val whiteQueenside = cons(e1, c1)
-  val blackKingside  = cons(e8, g8)
-  val blackQueenside = cons(e8, c8)
+  val whiteKingside  = cons(0, e1, g1)
+  val whiteQueenside = cons(1, e1, c1)
+  val blackKingside  = cons(2, e8, g8)
+  val blackQueenside = cons(3, e8, c8)
   
   val values = Vector(whiteKingside, whiteQueenside, blackKingside, blackQueenside)
 }
