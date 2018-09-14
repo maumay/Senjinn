@@ -2,7 +2,7 @@ package xawd.senjinn
 
 import xawd.senjinn.{ PieceMovementDirs => pmd }
 import xawd.senjinn.BasicBitboards.{genEmptyBoardBitboards}
-import xawd.senjinn.SquareSet.{long2squareset}
+import xawd.senjinn.ImplicitAreaConverters._
 
 
 sealed trait ChessPiece 

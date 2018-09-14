@@ -14,10 +14,6 @@ class BoardSquare private (val index: Int)
     SquareSet(loc | other.loc)
   }
   
-//  def &(other: SquareSet): SquareSet = {
-//    SquareSet(loc & other.src)
-//  }
-  
   def <<(shift: Int): BoardSquare = {
     BoardSquare.values(index + shift)
   }
@@ -134,14 +130,20 @@ object SquareSet
   
   def apply(arg: Long) = new SquareSet(arg)
   
-  def apply(args: Long*) = new SquareSet(args.foldLeft(0L)(_ | _))
+  def apply(args: BoardSquare*) = new SquareSet(args.foldLeft(0L)(_ | _.loc))
   
+}
+
+// |----------------------------------------------------------------------------------------|
+// |----------------------------------------------------------------------------------------|
+
+object ImplicitAreaConverters
+{
   implicit def boardsquare2squareset(square: BoardSquare): SquareSet = SquareSet(square.loc)
   
   implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
   
   implicit def squareset2long(s: SquareSet): Long = s.src
-}
 
-// |----------------------------------------------------------------------------------------|
-// |----------------------------------------------------------------------------------------|
+  implicit def boardsquare2long(square: BoardSquare): Long = square.loc
+}

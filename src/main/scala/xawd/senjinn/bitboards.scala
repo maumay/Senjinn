@@ -2,9 +2,7 @@ package xawd.senjinn
 
 
 import xawd.senjinn.BoardSquare._
-import xawd.senjinn.SquareSet.boardsquare2squareset
-import xawd.senjinn.SquareSet.long2squareset
-import xawd.senjinn.SquareSet.squareset2long
+import xawd.senjinn.ImplicitAreaConverters._
 
 
 /**
@@ -34,7 +32,7 @@ object BasicBitboards
     (0 to 14)
     .map(i => if (i < 8) i else 8 *(i - 7) + 7)
     .map(BoardSquare(_))
-    .map(sq => foldSquares(sq +: sq.allSquares(Array(Direction.ne))).src)
+    .map(sq => (sq +: sq.allSquares(Array(Direction.ne))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
@@ -44,12 +42,12 @@ object BasicBitboards
     (0 to 14)
     .map(i => if (i < 8) 7 - i else 8 *(i - 7))
     .map(BoardSquare(_))
-    .map(sq => foldSquares(sq +: sq.allSquares(Array(Direction.nw))).src)
+    .map(sq => (sq +: sq.allSquares(Array(Direction.nw))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
   def genEmptyBoardBitboards(dirs: Iterable[Direction], proximity: Int = 8): Array[Long] = {
-    BoardSquare.values.map(sq => foldSquares(sq.allSquares(dirs, proximity)).src).toArray
+    BoardSquare.values.map(sq => sq.allSquares(dirs, proximity).foldLeft(0L)(_ | _.loc)).toArray
   }
 }
 

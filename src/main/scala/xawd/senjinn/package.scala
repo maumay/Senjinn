@@ -1,5 +1,8 @@
 package xawd
 
+import xawd.senjinn.ImplicitAreaConverters._
+
+
 package object senjinn 
 {
   val MaxNegatableInt: Int = Integer.MAX_VALUE - 1
@@ -23,15 +26,6 @@ package object senjinn
         "k"   -> q
         )
   }
-  
-  def foldSquares(squares: Iterable[BoardSquare]): SquareSet = {
-    foldSquares(squares.iterator)
-  }
-  
-  def foldSquares(squares: Iterator[BoardSquare]): SquareSet = {
-    squares.foldLeft(SquareSet())((a, b) => a | b)
-  }
-  
   
   /*
    * Resource loading functionality

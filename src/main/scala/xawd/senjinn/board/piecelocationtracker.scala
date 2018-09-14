@@ -4,51 +4,56 @@ import xawd.senjinn.BoardSquare
 import xawd.senjinn.SquareSet
 import xawd.senjinn.ChessPiece
 import xawd.senjinn.eval.PieceSquareTableSet
+import xawd.senjinn.ImplicitAreaConverters._
 
 
-
-class PieceLocations private(private val locs: Array[Long]) extends Iterable[SquareSet]
+/**
+ * This is a mutable class designed to track the locations of all pieces.
+ */
+class PieceLocations private(private val _locs: Array[Long]) extends Iterable[SquareSet]
 {
-  import xawd.senjinn.SquareSet.{long2squareset}
-  require(locs.length == 12)
   
+  require(_locs.length == 12)
+  
+  /** Self-updating hash value of all the piece-square features. */
   private var _positionHash: Long = {
-    val squareLocs = locs.map(_.squares)
+    val square_locs = _locs.map(_.squares)
     val sf = BoardHasher.squareFeature(_, _)
-    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0L)((h, sq) => h ^  sf(p._1, sq))).reduce(_ ^ _)
+    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0L)((h, sq) => h ^  sf(p._1, sq))).reduce(_ ^ _)
   }
   
+  /** Self-updating evaluation of the piece locations using the midgame tables. */
   private var _midgameEval: Int = {
-    val squareLocs = locs.map(_.squares)
+    val square_locs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.midgame.value(_, _)
-    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
+    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
   }
   
+  /** Self-updating evaluation of the piece locations using the endgame tables. */
   private var _endgameEval: Int = {
-    val squareLocs = locs.map(_.squares)
+    val square_locs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.endgame.value(_, _)
-    ChessPiece.all.zip(squareLocs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
+    ChessPiece.all.zip(square_locs).map(p => p._2.foldLeft(0)((n, sq) => n + tv(p._1, sq))).reduce(_ + _)
   }
   
-  private var _whites: SquareSet = ChessPiece.white.map(p => locs(p.index)).reduce(_ | _)
-  private var _blacks: SquareSet = ChessPiece.black.map(p => locs(p.index)).reduce(_ | _)
+  /** Self-updating set tracking location of all white pieces. */
+  private var _whites: SquareSet = ChessPiece.white.map(p => _locs(p.index)).reduce(_ | _)
+
+  /** Self-updating set tracking location of all black pieces. */
+  private var _blacks: SquareSet = ChessPiece.black.map(p => _locs(p.index)).reduce(_ | _)
   
-  
-  def locs(piece: ChessPiece): SquareSet = {
-    locs(piece.index)
-  }
   
   def contains(piece: ChessPiece, loc: BoardSquare): Boolean = {
     locs(piece).intersects(loc)
   }
   
   def pieceCount(piece: ChessPiece): Int = {
-    java.lang.Long.bitCount(locs(piece.index))
+    java.lang.Long.bitCount(locs(piece))
   }
   
   def addSquare(piece: ChessPiece, square: BoardSquare) { 
     assert(!locs(piece).intersects(square))
-    locs(piece.index) |= square.loc
+    _locs(piece.index) |= square.loc
     if (piece.side.isWhite) _whites |= square.loc else _blacks |= square.loc
     _midgameEval += PieceSquareTableSet.midgame.value(piece, square)
     _endgameEval += PieceSquareTableSet.endgame.value(piece, square)
@@ -57,16 +62,17 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
   
   def removeSquare(piece: ChessPiece, square: BoardSquare) {
     assert(locs(piece).intersects(square))
-    locs(piece.index) ^= square.loc
+    _locs(piece.index) ^= square.loc
     if (piece.side.isWhite) _whites ^= square.loc else _blacks ^= square.loc
     _midgameEval -= PieceSquareTableSet.midgame.value(piece, square)
     _endgameEval -= PieceSquareTableSet.endgame.value(piece, square)
     _positionHash ^= BoardHasher.squareFeature(piece, square)
   }
   
-  def iterator = locs.iterator.map(x => x: SquareSet)
+  def iterator = _locs.iterator.map(x => x: SquareSet)
   
   // getters
+  def locs(piece: ChessPiece): SquareSet = _locs(piece.index)
   def positionHash = _positionHash
   def midgameEval = _midgameEval
   def endgameEval = _endgameEval
@@ -76,7 +82,11 @@ class PieceLocations private(private val locs: Array[Long]) extends Iterable[Squ
 
 object PieceLocations
 {
-//  def evaluateLocations(tables: Piece
+  def apply(locs: Map[ChessPiece, Set[BoardSquare]]): PieceLocations = {
+    val xs = ChessPiece.all.map(locs.getOrElse(_, Set()).foldLeft(0L)((n, sq) => n | sq.loc)).toArray
+    val x = Set()
+    null
+  }
 }
 
 //  def midgameEvaluation(locs: PieceLocations): Int = {
