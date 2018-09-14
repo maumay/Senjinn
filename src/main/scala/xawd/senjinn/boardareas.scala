@@ -48,9 +48,7 @@ class BoardSquare private (val index: Int)
   }
   
   override def toString(): String = {
-    val filechar = ('h' - file).toChar
-    val rankchar = ('1' + rank).toChar
-    new String(Array(filechar, rankchar))
+    new String(Array(('h' - file).toChar, ('1' + rank).toChar))
   }
 }
 
@@ -121,7 +119,7 @@ class SquareSet private(val src: Long) extends AnyVal
   
   def squares: Iterator[BoardSquare] = (0 to 63).iterator
                                        .filter(i => ((1L << i) & src) != 0)
-                                       .map(i => BoardSquare.values(i))
+                                       .map(BoardSquare(_))
 }
 
 object SquareSet
