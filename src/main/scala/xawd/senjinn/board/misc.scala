@@ -1,7 +1,10 @@
+package xawd.senjinn.board
+
 
 class HalfMoveCounter(private var _count: Int)
 {
     def count = _count
+    def count_=(x: Int) {_count = x }
     def increment { _count += 1 }
     def reset { _count = 0 }
     def copy = new HalfMoveCounter(_count)
@@ -98,4 +101,22 @@ object CastlingTracker
     def apply(): CastlingTracker = {
         apply(mutable.HashSet(CastleZone.values: _*), None, None)
     }
+}
+
+import xawd.senjinn.{ChessPiece, DevelopmentPiece, BoardSquare}
+
+class MoveReverser
+{
+    var consumed = true
+    var discardedCastleRights: Set[CastleZone] = Set()
+    var pieceTaken: Option[ChessPiece] = None
+    var pieceDeveloped: Option[DevelopmentPiece] = None
+    var discardedEnpassant: Option[BoardSquare] = None
+    var discardedHash: Long = 0L
+    var discardedHalfmoveClock: Int = -1
+}
+
+object MoveReverser
+{
+    def apply() = new MoveReverser()
 }
