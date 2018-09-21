@@ -3,12 +3,11 @@ package xawd.senjinn
 import xawd.senjinn.ImplicitAreaConverters._
 
 // |----------------------------------------------------------------------------------------|
-// |----------------------------------------------------------------------------------------|
+
 /**
- * An instance of the Direction class represents a movement direction on 
- * a board in terms of the change in rank index and change in file index.
- * The constructor is private, access instances through the companion 
- * object.
+ * Represents a movement direction on a board in terms of the change 
+ * in rank index and change in file index. The constructor is private, 
+ * access instances through the companion object.
  */
 class Direction private (val deltaRank: Int, val deltaFile: Int) 
 {
@@ -30,12 +29,10 @@ object Direction
 }
 
 // |----------------------------------------------------------------------------------------|
-// |----------------------------------------------------------------------------------------|
 
 /**
- * An instance of this class represents one of the sides in a chess game.
- * The constructor is private, access instances through the companion 
- * object.
+ * Represents one of the sides in a chess game. The constructor is 
+ * private, access instances through the companion object.
  */
 class Side private (val isWhite: Boolean) 
 {
@@ -56,7 +53,6 @@ object Side
 }
 
 // |----------------------------------------------------------------------------------------|
-// |----------------------------------------------------------------------------------------|
 
 /**
  * Represents a zone into which it is possible to castle.
@@ -70,13 +66,13 @@ class CastleZone private (val index: Int, val kingSrc: BoardSquare, val kingTarg
   val rookTarg = if (isKingsideZone) kingTarg << 1 else kingTarg >> 1
   
   /** The BoardSquareuares which must be free of enemy control before castling is legal. */
-  val reqUncontrolledBoardSquareuares = isKingsideZone match {
+  val reqUncontrolledBoardSquares = isKingsideZone match {
     case true => (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_ | _)
     case _    => (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_ | _)
   }
   
   /** The BoardSquareuares which must be free of all pieces before castling is legal. */
-  val reqClearBoardSquareuares = isKingsideZone match {
+  val reqClearBoardSquares = isKingsideZone match {
     case true => (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_ | _)
     case _    => (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_ | _)
   }
@@ -100,8 +96,11 @@ object CastleZone
 }
 
 // |----------------------------------------------------------------------------------------|
-// |----------------------------------------------------------------------------------------|
 
+/**
+ * Represents a piece which needs to be developed in the opening phase
+ * of the game.
+ */
 class DevelopmentPiece private(val startSquare: BoardSquare)
 {
 }

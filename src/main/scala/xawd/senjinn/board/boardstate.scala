@@ -33,8 +33,11 @@ object BoardState
 
 }
 
-
- class HalfMoveCounter(private var _count: Int)
+/**
+ * Keeps track of the state of the half move count in a game,
+ * it is required to implement the 50 move rule. 
+ */
+class HalfMoveCounter(private var _count: Int)
 {
     def count = _count
     def count_=(x: Int) {_count = x }
