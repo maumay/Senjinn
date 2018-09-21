@@ -3,6 +3,7 @@ package xawd.senjinn.board
 import xawd.senjinn.BoardSquare
 import xawd.senjinn.ChessPiece
 import xawd.senjinn.CastleZone
+import xawd.senjinn.Side
 
 
 object BoardHasher 
@@ -25,4 +26,11 @@ object BoardHasher
   def castleFeature(zone: CastleZone) = castleFeatures(zone.index)
   def enpassantFeature(enpassantSquare: BoardSquare) = enpassantFeatures(enpassantSquare.file)
   val blackMoveFeature: Long = genLong(Unit)
+
+  def hashFeatures(active: Side, enpassant: Option[BoardSquare], castling: CastlingTracker) = {
+    val activehash = if (active.isWhite) 0L else blackMoveFeature
+    val enpassantHash = enpassant.map(enpassantFeature(_)).getOrElse(0L)
+    val castlingHash = castling.rights.map(castleFeature(_)).foldLeft(0L)(_ ^ _)
+    activehash ^ enpassantHash ^ castlingHash
+  }
 }
