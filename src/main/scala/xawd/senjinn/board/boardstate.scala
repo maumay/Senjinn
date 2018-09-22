@@ -33,6 +33,8 @@ object BoardState
 
 }
 
+// |----------------------------------------------------------------------------------------|
+
 /**
  * Keeps track of the state of the half move count in a game,
  * it is required to implement the 50 move rule. 
@@ -46,6 +48,8 @@ class HalfMoveCounter(private var _count: Int)
     def copy = new HalfMoveCounter(_count)
 }
 
+// |----------------------------------------------------------------------------------------|
+
 class HashCache private(private val cache: Array[Long], private var moveCount: Int)
 {
     private var indexer: Int = moveCount % HashCache.size 
@@ -58,7 +62,7 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
         discard
     }
 
-    def decrement(oldPosition: Long): Unit = {
+    def decrement(oldPosition: Long) {
         cache(indexer) = oldPosition
         moveCount -= 1
         updateIndexer()
@@ -100,12 +104,11 @@ object HashCache
     }
 }
 
+// |----------------------------------------------------------------------------------------|
 
-
-class CastlingTracker private(private val _rights: mutable.Set[CastleZone], 
+class CastlingTracker private(val rights: mutable.Set[CastleZone], 
     private var _white: Option[CastleZone], private var _black: Option[CastleZone])
 {
-    def rights = _rights
     def white = _white
     def black = _black
     def status(side: Side) = if (side.isWhite) _white else _black
@@ -121,7 +124,7 @@ class CastlingTracker private(private val _rights: mutable.Set[CastleZone],
         }
     }
 
-    def copy = CastlingTracker(_rights, _white, _black)
+    def copy = CastlingTracker(rights, _white, _black)
 }
 
 object CastlingTracker
@@ -138,7 +141,7 @@ object CastlingTracker
     }
 }
 
-
+// |----------------------------------------------------------------------------------------|
 
 class MoveReverser
 {
