@@ -1,6 +1,7 @@
+package xawd.senjinn
+
 import org.scalatest.FlatSpec
 import xawd.senjinn.BoardSquare._
-import xawd.senjinn.Direction
 
 
 class BoardSquareTest extends FlatSpec 
