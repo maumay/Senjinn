@@ -1,6 +1,7 @@
 package xawd.senjinn
 
 import xawd.senjinn.ImplicitAreaConverters._
+import scala.math.{abs}
 
 // |----------------------------------------------------------------------------------------|
 
@@ -9,8 +10,9 @@ import xawd.senjinn.ImplicitAreaConverters._
  * in rank index and change in file index. The constructor is private, 
  * access instances through the companion object.
  */
-class Direction private (val deltaRank: Int, val deltaFile: Int) 
+class Direction private (val name: String, val deltaRank: Int, val deltaFile: Int) 
 {
+  override def toString = name
 }
 
 /**
@@ -19,11 +21,11 @@ class Direction private (val deltaRank: Int, val deltaFile: Int)
  */
 object Direction 
 {
-  private val cons = new Direction(_, _)
-  val (  n,   e,   s,   w) = (cons(1,  0), cons( 0, -1), cons(-1, 0),  cons(0, 1)  )
-  val ( ne,  se,  sw,  nw) = (cons(1, -1), cons(-1, -1), cons(-1, 1),  cons(1, 1)  )
-  val (nne, nee, see, sse) = (cons(2, -1), cons(1, -2),  cons(-1, -2), cons(-2, -1))
-  val (ssw, sww, nww, nnw) = (cons(-2, 1), cons(-1, 2),  cons(1, 2),   cons(2, 1)  )
+  private val c = new Direction(_, _, _)
+  val (  n,   e,   s,   w) = (c("n", 1,  0), c("e", 0, -1), c("s", -1, 0),  c("w", 0, 1))
+  val ( ne,  se,  sw,  nw) = (c("ne", 1, -1), c("se", -1, -1), c("sw", -1, 1),  c("nw", 1, 1))
+  val (nne, nee, see, sse) = (c("nne", 2, -1), c("nee", 1, -2),  c("see", -1, -2), c("sse", -2, -1))
+  val (ssw, sww, nww, nnw) = (c("ssw", -2, 1), c("sww", -1, 2),  c("nww", 1, 2),   c("nnw", 2, 1))
   
   val values = Vector(n, e, s, w, ne, se, sw, nw, nne, nee, see, sse, ssw, sww, nww, nnw)
 }

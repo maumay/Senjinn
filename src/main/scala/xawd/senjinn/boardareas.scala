@@ -77,7 +77,7 @@ object BoardSquare
   }
   
   def apply(rank: Int, file: Int): Option[BoardSquare] = {
-    val inRange: Int => Boolean = x => -1 < x && x < 9
+    val inRange: Int => Boolean = x => -1 < x && x < 8
     if (inRange(rank) && inRange(file)) { 
       Some(BoardSquare.values(8 * rank + file)) 
     }
