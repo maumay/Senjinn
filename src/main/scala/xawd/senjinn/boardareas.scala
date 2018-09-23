@@ -142,3 +142,4 @@ object ImplicitAreaConverters
 
   implicit def boardsquare2long(square: BoardSquare): Long = square.loc
 }
+
