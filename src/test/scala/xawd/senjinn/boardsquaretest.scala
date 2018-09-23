@@ -15,50 +15,50 @@ class BoardSquareTest extends FlatSpec
     Dir.sww, Dir.ssw, Dir.sse, Dir.see)
     .foreach(dir => {
       s"Number of squares $dir of A1" must "be zero" in {
-		assert(a1.squaresLeft(dir) == 0)
-	  }
+        assert(a1.squaresLeft(dir) == 0)
+      }
     })
   
   Seq(Dir.n, Dir.e, Dir.ne)
     .foreach(dir => {
       s"Number of squares $dir of A1" must "be seven" in {
         assert(a1.squaresLeft(dir) == 7)
-	  }
+      }
     })
 
   Seq(Dir.nne, Dir.nee)
     .foreach(dir => {
       s"Number of squares $dir of A1" must "be three" in {
         assert(a1.squaresLeft(dir) == 3)
-	  }
+      }
     })
 
   Seq(Dir.w, Dir.s, Dir.sw)
     .foreach(dir => {
       s"Number of squares $dir of D4" must "be three" in {
         assert(d4.squaresLeft(dir) == 3)
-	  }
+      }
     })
 
   Seq(Dir.sse, Dir.ssw, Dir.sww, Dir.nww)
     .foreach(dir => {
       s"Number of squares $dir of D4" must "be one" in {
         assert(d4.squaresLeft(dir) == 1)
-	  }
+      }
     })
 
   Seq(Dir.n, Dir.e, Dir.ne)
     .foreach(dir => {
       s"Number of squares $dir of D4" must "be four" in {
         assert(d4.squaresLeft(dir) == 4)
-	  }
+      }
     })
 
   Seq(Dir.nne, Dir.nnw, Dir.nee, Dir.see)
     .foreach(dir => {
       s"Number of squares $dir of D4" must "be two" in {
         assert(d4.squaresLeft(dir) == 2)
-	  }
+      }
     })
 
   /*
