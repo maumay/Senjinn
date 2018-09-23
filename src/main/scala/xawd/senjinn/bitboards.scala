@@ -32,7 +32,7 @@ object BasicBitboards
     (0 to 14)
     .map(i => if (i < 8) i else 8 *(i - 7) + 7)
     .map(BoardSquare(_))
-    .map(sq => (sq +: sq.allSquares(Array(Direction.ne))).foldLeft(0L)(_ | _.loc))
+    .map(sq => (sq +: sq.allSquares(Array(Dir.ne))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
@@ -42,11 +42,11 @@ object BasicBitboards
     (0 to 14)
     .map(i => if (i < 8) 7 - i else 8 *(i - 7))
     .map(BoardSquare(_))
-    .map(sq => (sq +: sq.allSquares(Array(Direction.nw))).foldLeft(0L)(_ | _.loc))
+    .map(sq => (sq +: sq.allSquares(Array(Dir.nw))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
-  def genEmptyBoardBitboards(dirs: Iterable[Direction], proximity: Int = 8): Array[Long] = {
+  def genEmptyBoardBitboards(dirs: Iterable[Dir], proximity: Int = 8): Array[Long] = {
     BoardSquare.values.map(sq => sq.allSquares(dirs, proximity).foldLeft(0L)(_ | _.loc)).toArray
   }
 }
@@ -86,7 +86,7 @@ object MagicBitboards
   private def rookOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
   
   
-  private def genOccupancyVariations(square: BoardSquare, dirs: Iterable[Direction]): Arr = {
+  private def genOccupancyVariations(square: BoardSquare, dirs: Iterable[Dir]): Arr = {
     val relevantSquares = dirs.iterator
     .map(d => (d, square.squaresLeft(d) - 1))
     .flatMap(p => square.allSquares(p._1, Math.max(0, p._2)))
@@ -157,7 +157,7 @@ object MagicBitboards
 	private val rookMagicMoves: SquareArr = genMagicMoveDatabase(rookOccupancyVariations, rookMagicNumbers, rookMagicBitshifts, pmd("r"))
 	private val bishMagicMoves: SquareArr = genMagicMoveDatabase(bishOccupancyVariations, bishMagicNumbers, bishMagicBitshifts, pmd("b"))
 			
-	private type MagicMoveCons = (SquareArr, Arr, Array[Int], Iterable[Direction])
+	private type MagicMoveCons = (SquareArr, Arr, Array[Int], Iterable[Dir])
 	
 	private def genMagicMoveDatabase(c: MagicMoveCons): SquareArr = {
     val (allOccVars, magicNums, magicShifts, dirs) = c
@@ -169,7 +169,7 @@ object MagicBitboards
     }).toArray
   }
   
-  private def calcControlSet(sq: BoardSquare, occupancyVariation: SquareSet, dirs: Iterable[Direction]): SquareSet = {
+  private def calcControlSet(sq: BoardSquare, occupancyVariation: SquareSet, dirs: Iterable[Dir]): SquareSet = {
     val ov = occupancyVariation
     dirs.iterator
     .map(dir => sq.allSquares(dir, 8))

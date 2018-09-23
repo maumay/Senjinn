@@ -25,20 +25,20 @@ class BoardSquare private (val index: Int)
     SquareSet(~loc)
   }
   
-  def nextSquare(dir: Direction): Option[BoardSquare] = {
+  def nextSquare(dir: Dir): Option[BoardSquare] = {
     BoardSquare(rank + dir.deltaRank, file + dir.deltaFile)
   }
   
-  def squaresLeft(dir: Direction): Int = nextSquare(dir) match {
+  def squaresLeft(dir: Dir): Int = nextSquare(dir) match {
     case None     => 0
     case Some(sq) => 1 + sq.squaresLeft(dir)
   }
   
-  def allSquares(dirs: Iterable[Direction], proximity: Int = 8): Vector[BoardSquare] = {
+  def allSquares(dirs: Iterable[Dir], proximity: Int = 8): Vector[BoardSquare] = {
     dirs.iterator.flatMap(dir => allSquares(dir, proximity)).toVector
   }
   
-  def allSquares(dir: Direction, proximity: Int): Vector[BoardSquare] = proximity match {
+  def allSquares(dir: Dir, proximity: Int): Vector[BoardSquare] = proximity match {
     case 0 => Vector()
     case _ => nextSquare(dir) match {
         case None     => Vector()

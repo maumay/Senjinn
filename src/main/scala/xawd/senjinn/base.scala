@@ -10,18 +10,18 @@ import scala.math.{abs}
  * in rank index and change in file index. The constructor is private, 
  * access instances through the companion object.
  */
-class Direction private (val name: String, val deltaRank: Int, val deltaFile: Int) 
+class Dir private (val name: String, val deltaRank: Int, val deltaFile: Int) 
 {
   override def toString = name
 }
 
 /**
- * Instantiates all possible instances of the Direction class, named values
+ * Instantiates all possible instances of the Dir class, named values
  * are provided as well as a Vector of all possibilities.
  */
-object Direction 
+object Dir 
 {
-  private val c = new Direction(_, _, _)
+  private val c = new Dir(_, _, _)
   val (  n,   e,   s,   w) = (c("n", 1,  0), c("e", 0, -1), c("s", -1, 0),  c("w", 0, 1))
   val ( ne,  se,  sw,  nw) = (c("ne", 1, -1), c("se", -1, -1), c("sw", -1, 1),  c("nw", 1, 1))
   val (nne, nee, see, sse) = (c("nne", 2, -1), c("nee", 1, -2),  c("see", -1, -2), c("sse", -2, -1))
