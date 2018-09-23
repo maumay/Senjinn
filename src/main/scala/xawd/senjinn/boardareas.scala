@@ -42,7 +42,7 @@ class BoardSquare private (val index: Int)
     case 0 => Vector()
     case _ => nextSquare(dir) match {
         case None     => Vector()
-        case Some(sq) => sq +: allSquares(dir, proximity - 1)
+        case Some(sq) => sq +: sq.allSquares(dir, proximity - 1)
       }
   }
   
