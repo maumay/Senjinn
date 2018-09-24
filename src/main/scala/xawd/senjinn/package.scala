@@ -26,6 +26,14 @@ package object senjinn
         "k"   -> q
         )
   }
+
+  def compressedPowerset(input: Vector[Long]): Vector[Long] = input match {
+    case head +: tail => {
+      val recursed = compressedPowerset(tail)
+      recursed ++ recursed.map(sqs => sqs | head)
+    }
+    case x => x
+  }
   
   /*
    * Resource loading functionality

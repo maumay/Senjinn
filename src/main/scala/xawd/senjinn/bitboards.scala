@@ -32,7 +32,7 @@ object BasicBitboards
     (0 to 14)
     .map(i => if (i < 8) i else 8 *(i - 7) + 7)
     .map(BoardSquare(_))
-    .map(sq => (sq +: sq.allSquares(Array(Dir.ne))).foldLeft(0L)(_ | _.loc))
+    .map(sq => (sq +: sq.allSquares(Seq(Dir.ne))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
@@ -42,7 +42,7 @@ object BasicBitboards
     (0 to 14)
     .map(i => if (i < 8) 7 - i else 8 *(i - 7))
     .map(BoardSquare(_))
-    .map(sq => (sq +: sq.allSquares(Array(Dir.nw))).foldLeft(0L)(_ | _.loc))
+    .map(sq => (sq +: sq.allSquares(Seq(Dir.nw))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
@@ -79,30 +79,24 @@ object MagicBitboards
   // Implementation  
   import xawd.senjinn.{ PieceMovementDirs => pmd }
   private type Arr       = Array[Long]
-	private type SquareArr = Array[Arr]
+  private type SquareArr = Array[Arr]
   
   // Occupancy variations
-  private def bishOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
-  private def rookOccupancyVariations: SquareArr = BoardSquare.values.map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
-  
-  
+  private def bishOccupancyVariations: SquareArr = BoardSquare.values
+    .map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
+
+  private def rookOccupancyVariations: SquareArr = BoardSquare.values
+    .map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
+    
   private def genOccupancyVariations(square: BoardSquare, dirs: Iterable[Dir]): Arr = {
     val relevantSquares = dirs.iterator
     .map(d => (d, square.squaresLeft(d) - 1))
     .flatMap(p => square.allSquares(p._1, Math.max(0, p._2)))
-    .map(x => x: SquareSet)
+    .map(_.loc)
     .toVector
     
-    bitwiseOrPowerset(relevantSquares).map(_.src).toArray
+    compressedPowerset(relevantSquares).toArray
   }
-  
-  private def bitwiseOrPowerset(input: Vector[SquareSet]): Vector[SquareSet] = input match {
-      case head +: tail => {
-        val recursed = bitwiseOrPowerset(tail)
-        recursed ++ recursed.map(sqs => sqs | head)
-      }
-      case x => x
-    }
     
   // Occupancy masks
   private val bishOccupancyMasks: Arr = bishOccupancyVariations.map(_.last)
