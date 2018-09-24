@@ -66,21 +66,11 @@ class BoardSquareTest extends FlatSpec
    * a given direction.
    */
   // f8
-  Map(Dir.nww -> None,
-    Dir.nnw -> None,
-    Dir.nw -> None,
-    Dir.n -> None,
-    Dir.ne -> None,
-    Dir.nne -> None,
-    Dir.nee -> None,
-    Dir.e -> Some(g8),
-    Dir.se -> Some(g7),
-    Dir.see -> Some(h7),
-    Dir.sse -> Some(g6),
-    Dir.s -> Some(f7),
-    Dir.ssw -> Some(e6),
-    Dir.sww -> Some(d7),
-    Dir.sw -> Some(e7),
+  Map(Dir.nww -> None, Dir.nnw -> None, Dir.nw -> None,
+    Dir.n -> None, Dir.ne -> None, Dir.nne -> None,
+    Dir.nee -> None, Dir.e -> Some(g8), Dir.se -> Some(g7),
+    Dir.see -> Some(h7), Dir.sse -> Some(g6), Dir.s -> Some(f7),
+    Dir.ssw -> Some(e6), Dir.sww -> Some(d7), Dir.sw -> Some(e7),
     Dir.w -> Some(e8)).foreach(pair => {
       val (dir, target) = pair
       s"The next square $dir of f8" must s"be $target" in {
@@ -89,21 +79,11 @@ class BoardSquareTest extends FlatSpec
     })
 
   // c3
-  Map(Dir.nww -> Some(a4),
-    Dir.nnw -> Some(b5),
-    Dir.nw -> Some(b4),
-    Dir.n -> Some(c4),
-    Dir.ne -> Some(d4),
-    Dir.nne -> Some(d5),
-    Dir.nee -> Some(e4),
-    Dir.e -> Some(d3),
-    Dir.se -> Some(d2),
-    Dir.see -> Some(e2),
-    Dir.sse -> Some(d1),
-    Dir.s -> Some(c2),
-    Dir.ssw -> Some(b1),
-    Dir.sww -> Some(a2),
-    Dir.sw -> Some(b2),
+  Map(Dir.nww -> Some(a4), Dir.nnw -> Some(b5), Dir.nw -> Some(b4),
+    Dir.n -> Some(c4), Dir.ne -> Some(d4), Dir.nne -> Some(d5),
+    Dir.nee -> Some(e4), Dir.e -> Some(d3), Dir.se -> Some(d2),
+    Dir.see -> Some(e2), Dir.sse -> Some(d1), Dir.s -> Some(c2),
+    Dir.ssw -> Some(b1), Dir.sww -> Some(a2), Dir.sw -> Some(b2),
     Dir.w -> Some(b3)).foreach(pair => {
       val (dir, target) = pair
       s"The next square $dir of f8" must s"be $target" in {
@@ -111,7 +91,10 @@ class BoardSquareTest extends FlatSpec
       }
     })
 
-  Seq((c3, Seq(Dir.nnw, Dir.se), None: Option[Int], Set(b5, a7, d2, e1))
+  Seq((c3, Seq(Dir.nnw, Dir.se), None, Set(b5, a7, d2, e1)),
+    (b5, Seq(Dir.ne, Dir.s), Some(0), Set()),
+    (f4, Seq(Dir.sse, Dir.nw), Some(3), Set(g2, e5, d6, c7)),
+    (g6, Seq(Dir.w), None, Set(f6, e6, d6, c6, b6, a6))
   ).foreach(quad => {
     val (src, dirs, prox, res) = quad
     s"The squares $dirs of $src within a proximity of $prox" must s"be $res" in {
@@ -122,5 +105,6 @@ class BoardSquareTest extends FlatSpec
       }
     }
   })
+
 }
 
