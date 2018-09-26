@@ -1,6 +1,7 @@
+package xawd.senjinn
+
 import org.scalatest.FlatSpec
 import xawd.senjinn.BoardSquare._
-import xawd.senjinn.SquareSet
 
 class SquareSetTest extends FlatSpec
 {
@@ -10,4 +11,17 @@ class SquareSetTest extends FlatSpec
       assert(SquareSet(squareset: _*).squares.toSet == squareset.toSet)
     }
   })
+
+  Map(Set(h3, f4) -> setBits(16, 26), Set() -> 0L, Set(b2, g7, c4) -> setBits(14, 49, 29))
+    .foreach({p =>
+      val (sqs, expectedsqs) = p
+      s"The set $sqs" must "match $expectedsqs" in {
+        assert(SquareSet(sqs.toSeq: _*).src == expectedsqs)
+      }
+    })
+
+  def setBits(indices: Int*) = {
+    indices.foreach(i => require(0 <= i && i < 64))
+    indices.foldLeft(0L)((x, i) => x | (1L << i))
+  }
 }

@@ -32,7 +32,7 @@ package object senjinn
       val recursed = compressedPowerset(tail)
       recursed ++ recursed.map(sqs => sqs | head)
     }
-    case x => x
+    case x => Vector(0L)
   }
   
   /*
