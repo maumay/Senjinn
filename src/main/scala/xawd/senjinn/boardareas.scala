@@ -24,6 +24,10 @@ class BoardSquare private (val index: Int)
   def unary_~ = {
     SquareSet(~loc)
   }
+
+  def intersects(squares: SquareSet): Boolean = {
+    squares.intersects(this)
+  }
   
   def nextSquare(dir: Dir): Option[BoardSquare] = {
     BoardSquare(rank + dir.deltaRank, file + dir.deltaFile)

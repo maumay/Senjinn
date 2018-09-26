@@ -18,6 +18,9 @@ class IndexAlignmentTest extends FlatSpec
 object ConstraintWhitePawn extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+
+    
+
     throw new RuntimeException
   }
   
@@ -26,7 +29,13 @@ object ConstraintWhitePawn extends Moveable
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    val all = whites | blacks
+    val push = loc.nextSquare(Dir.n).filterNot(_.intersects(all))
+    val secondpush = push.filter(sq => 7 < sq.index && sq.index < 16)
+      .flatMap(_.nextSquare(Dir.n))
+      .filterNot(_.intersects(all))
+    val both = Seq(push, secondpush).filter(_.isDefined).map(_.get.loc).fold(0L)(_|_)
+    SquareSet(both) | getAttackset(loc, whites, blacks)
   }
 }
 
