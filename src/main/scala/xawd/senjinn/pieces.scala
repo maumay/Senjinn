@@ -1,19 +1,14 @@
-package xawd.senjinn
+package xawd.senjinn.pieces
 
 import xawd.senjinn.{ PieceMovementDirs => pmd }
 import xawd.senjinn.BasicBitboards.{genEmptyBoardBitboards}
 import xawd.senjinn.ImplicitAreaConverters._
-
-
-sealed trait ChessPiece 
+import xawd.senjinn.{BoardSquare, SquareSet, Side, MagicBitboards}
+/**
+ * Supertype of all chesspieces.  
+ */
+trait Moveable
 {
-  /** The set of 12 indices from each chesspiece must be equal to the range (0 until 12) */
-  val index: Int
-  /** The side this chesspiece belongs to */
-  val side: Side
-  /** A unique short string identifier for the piece */
-  val shortName: String
-  
   /** 
    *  Get the set of squares this piece is controlling given the locations of all pieces
    *  on the board.
@@ -33,6 +28,17 @@ sealed trait ChessPiece
    *  the king is put into check.
    */
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+}
+
+
+sealed trait ChessPiece extends Moveable
+{
+  /** The set of 12 indices from each chesspiece must be equal to the range (0 until 12) */
+  val index: Int
+  /** The side this chesspiece belongs to */
+  val side: Side
+  /** A unique short string identifier for the piece */
+  val shortName: String
   
   /**
    * Get the set of squares this piece can legally move to if it was the only piece on the 
@@ -62,14 +68,6 @@ object ChessPiece
   
   /** Retrieve all pieces on a given side ordered by their index. */
   def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) white else black
-  
-  // Put this kind of stuff in a unit test on piece indices.
-//  require(WhitePawn.index == BlackPawn.index - 6)
-//  require(WhiteKnight.index == BlackKnight.index - 6)
-//  require(WhiteBishop.index == BlackBishop.index - 6)
-//  require(WhiteRook.index == BlackRook.index - 6)
-//  require(WhiteQueen.index == BlackQueen.index - 6)
-//  require(WhiteKing.index == BlackKing.index - 6)
 }
 
 

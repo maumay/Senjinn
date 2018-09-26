@@ -2,7 +2,7 @@ package xawd.senjinn.board
 
 import xawd.senjinn.BoardSquare
 import xawd.senjinn.SquareSet
-import xawd.senjinn.ChessPiece
+import xawd.senjinn.pieces.ChessPiece
 import xawd.senjinn.eval.PieceSquareTableSet
 import xawd.senjinn.ImplicitAreaConverters._
 

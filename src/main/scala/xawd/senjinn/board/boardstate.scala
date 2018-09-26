@@ -1,8 +1,8 @@
 package xawd.senjinn.board
 
 import scala.collection.{mutable => mutable}
-import xawd.senjinn.{DevelopmentPiece, Side, BoardSquare, ChessPiece, CastleZone}
-
+import xawd.senjinn.{DevelopmentPiece, Side, BoardSquare, CastleZone}
+import xawd.senjinn.pieces.ChessPiece
 /**
  * A mutable representation of the state of a chessboard, it
  * is designed so that a move can mutate it in the forward 

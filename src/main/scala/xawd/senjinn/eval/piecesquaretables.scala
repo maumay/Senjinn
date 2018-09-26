@@ -1,7 +1,7 @@
 package xawd.senjinn.eval
 
 import xawd.senjinn.BoardSquare
-import xawd.senjinn.ChessPiece
+import xawd.senjinn.pieces.ChessPiece
 import xawd.senjinn.board.PieceLocations
 
 
