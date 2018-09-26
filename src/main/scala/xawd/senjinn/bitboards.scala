@@ -95,7 +95,7 @@ object MagicBitboards
     .map(_.loc)
     .toVector
     
-    compressedPowerset(relevantSquares).toArray
+    foldedPowerset(relevantSquares).toArray
   }
     
   // Occupancy masks

@@ -1,6 +1,7 @@
 package xawd
 
 import xawd.senjinn.ImplicitAreaConverters._
+import xawd.senjinn.Dir._
 
 
 package object senjinn 
@@ -8,9 +9,10 @@ package object senjinn
   val MaxNegatableInt: Int = Integer.MAX_VALUE - 1
   val GameWinValue = MaxNegatableInt / 2
   
-  
+  /**
+   * A map describing the directions each piece can legally move/attack.
+   */
   val PieceMovementDirs = {
-    import xawd.senjinn.Dir._
     val b = Vector(Dir.ne, se, sw, nw)
     val r = Vector(n, e, s, w)
     val q = b ++ r
@@ -23,13 +25,16 @@ package object senjinn
         "b"   -> b,
         "r"   -> r,
         "q"   -> q,
-        "k"   -> q
-        )
+        "k"   -> q)
   }
 
-  def compressedPowerset(input: Vector[Long]): Vector[Long] = input match {
+  /**
+   * For the given input set this function returns the powerset with each
+   * member set folded together using the bitwise or operator.
+   */
+  def foldedPowerset(input: Vector[Long]): Vector[Long] = input match {
     case head +: tail => {
-      val recursed = compressedPowerset(tail)
+      val recursed = foldedPowerset(tail)
       recursed ++ recursed.map(sqs => sqs | head)
     }
     case x => Vector(0L)
