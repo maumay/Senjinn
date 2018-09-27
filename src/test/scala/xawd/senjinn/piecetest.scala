@@ -25,7 +25,7 @@ object ConstraintWhitePawn extends Moveable
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    throw new RuntimeException
+    getControlset(loc, whites, blacks) & blacks
   }
   
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -42,6 +42,21 @@ object ConstraintWhitePawn extends Moveable
 object ConstraintWhiteKnight extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+    loc.allSquares(pmd("n"), 1).foldLeft(SquareSet())(_|_)
+  }
+  
+  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+    getControlset(loc, whites, blacks) & blacks
+  }
+  
+  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+    getControlset(loc, whites, blacks) & ~whites
+  }
+}
+
+object ConstraintWhiteBishop extends Moveable
+{
+  def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     throw new RuntimeException
   }
   
@@ -53,3 +68,14 @@ object ConstraintWhiteKnight extends Moveable
     throw new RuntimeException
   }
 }
+
+private object Utils
+{
+  def getSlidingPieceSquaresOfControl(all: SquareSet, loc: BoardSquare, dirs: Iterable[Dir]) = {
+    dirs.iterator.flatMap(dir => {
+      val squares = loc.allSquares(dir, 8).span(_.intersects(all))
+      squares._1 ++ squares._2.take(1)
+    }).foldLeft(SquareSet())(_|_)
+  }
+}
+
