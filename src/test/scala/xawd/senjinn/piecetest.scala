@@ -2,26 +2,26 @@ package xawd.senjinn
 
 import org.scalatest.FlatSpec
 import xawd.senjinn.pieces._
+import xawd.senjinn.{PieceMovementDirs => pmd}
+import xawd.senjinn.ImplicitAreaConverters._
+
 
 class IndexAlignmentTest extends FlatSpec
 {
   "Piece indices" must "be consistent between the different sides" in {
-    require(WhitePawn.index == BlackPawn.index - 6)
-    require(WhiteKnight.index == BlackKnight.index - 6)
-    require(WhiteBishop.index == BlackBishop.index - 6)
-    require(WhiteRook.index == BlackRook.index - 6)
-    require(WhiteQueen.index == BlackQueen.index - 6)
-    require(WhiteKing.index == BlackKing.index - 6)
+    assert(WhitePawn.index == BlackPawn.index - 6)
+    assert(WhiteKnight.index == BlackKnight.index - 6)
+    assert(WhiteBishop.index == BlackBishop.index - 6)
+    assert(WhiteRook.index == BlackRook.index - 6)
+    assert(WhiteQueen.index == BlackQueen.index - 6)
+    assert(WhiteKing.index == BlackKing.index - 6)
   }
 }
 
 object ConstraintWhitePawn extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-
-    
-
-    throw new RuntimeException
+    loc.allSquares(pmd("wpa"), 1).foldLeft(SquareSet())(_|_)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
