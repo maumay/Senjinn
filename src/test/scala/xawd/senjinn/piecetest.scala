@@ -20,9 +20,17 @@ class IndexAlignmentTest extends FlatSpec
 
 class MoveIntegrationTest extends FlatSpec
 {
-  //val 
-  type PieceLocs = (SquareSet, SquareSet)
+  val testResource = (getClass.getPackage, "movementIntegrationTestData")
 
+  val positions = processResource(testResource, {buf =>
+    import scala.collection.JavaConversions._, java.lang.Long.parseUnsignedLong
+    val lines = buf.lines.collect(java.util.stream.Collectors.toList()).toVector
+    val hex = raw"(?<=:)[1-9a-f]+[0-9a-f]*".r
+    val hexMatched = lines.map(hex.findAllMatchIn(_).map(_.group(0)).toVector)
+    hexMatched.map(vec => (parseUnsignedLong(vec(0)), parseUnsignedLong(vec(1))))
+  })
+
+  println(positions(0))
 }
 
 object Utils

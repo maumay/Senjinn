@@ -15,7 +15,7 @@ class SquareSetTest extends FlatSpec
   Map(Set(h3, f4) -> setBits(16, 26), Set() -> 0L, Set(b2, g7, c4) -> setBits(14, 49, 29))
     .foreach({p =>
       val (sqs, expectedsqs) = p
-      s"The set $sqs" must "match $expectedsqs" in {
+      s"The set $sqs" must s"match $expectedsqs" in {
         assert(SquareSet(sqs.toSeq: _*).src == expectedsqs)
       }
     })
