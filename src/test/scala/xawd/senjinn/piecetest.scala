@@ -27,10 +27,20 @@ class MoveIntegrationTest extends FlatSpec
     val lines = buf.lines.collect(java.util.stream.Collectors.toList()).toVector
     val hex = raw"(?<=:)[1-9a-f]+[0-9a-f]*".r
     val hexMatched = lines.map(hex.findAllMatchIn(_).map(_.group(0)).toVector)
-    hexMatched.map(vec => (parseUnsignedLong(vec(0)), parseUnsignedLong(vec(1))))
+    hexMatched.map(vec => (parseUnsignedLong(vec(0), 16), parseUnsignedLong(vec(1), 16)))
   })
 
-  println(positions(0))
+  def assertGeneratedMovesAreCorrect(loc: BoardSquare, pieces: Seq[ChessPiece]) {
+    pieces.foreach(p => {
+      val consp = Utils.pieceMap(p)
+      positions.foreach(pos => {
+        val (w, b) = pos
+        assert(p.getControlset(loc, w, b) == consp.getControlset(loc, w, b))
+        assert(p.getMoveset(loc, w, b) == consp.getMoveset(loc, w, b))
+        assert(p.getAttackset(loc, w, b) == consp.getAttackset(loc, w, b))
+      })
+    })
+  }
 }
 
 object Utils
@@ -42,7 +52,8 @@ object Utils
     }).foldLeft(SquareSet())(_|_)
   }
 
-  val pieceMap = Map(WhitePawn -> ConstraintWhitePawn,
+  val pieceMap = Map[ChessPiece, Moveable](
+    WhitePawn -> ConstraintWhitePawn,
     WhiteKnight -> ConstraintWhiteKnight,
     WhiteBishop -> ConstraintWhiteBishop,
     WhiteRook -> ConstraintWhiteRook,
