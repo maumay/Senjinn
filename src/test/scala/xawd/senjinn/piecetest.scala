@@ -41,10 +41,19 @@ class MoveIntegrationTest extends FlatSpec
   }
 
 
-  ChessPiece.all.filterNot(ChessPiece.pawns contains _).foreach(piece => {
-    // BoardSquare.all foreach {
-    // }
-    s"$piece" must "generate the correc" in {
+  // ChessPiece.all.filterNot(ChessPiece.pawns contains _).foreach(piece => {
+  //   BoardSquare.all foreach {sq =>
+  //     s"$piece" must s"generate the correct moves at $sq" in {
+  //       assertGeneratedMovesAreCorrect(sq, piece)
+  //     }
+  //   }
+  // })
+
+  ChessPiece.rooks.foreach(piece => {
+    BoardSquare.all foreach {sq =>
+      s"$piece" must s"generate the correct moves at $sq" in {
+        assertGeneratedMovesAreCorrect(sq, piece)
+      }
     }
   })
 }
@@ -53,7 +62,7 @@ object Utils
 {
   def getSlidingPieceSquaresOfControl(all: SquareSet, loc: BoardSquare, dirs: Iterable[Dir]) = {
     dirs.iterator.flatMap(dir => {
-      val squares = loc.allSquares(dir, 8).span(_.intersects(all))
+      val squares = loc.allSquares(dir, 8).span(!_.intersects(all))
       squares._1 ++ squares._2.take(1)
     }).foldLeft(SquareSet())(_|_)
   }
@@ -208,7 +217,7 @@ object ConstraintBlackKnight extends Moveable
 object ConstraintBlackBishop extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    loc.allSquares(pmd("b"), 1).foldLeft(SquareSet())(_|_)
+    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("b"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -223,7 +232,7 @@ object ConstraintBlackBishop extends Moveable
 object ConstraintBlackRook extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    loc.allSquares(pmd("r"), 1).foldLeft(SquareSet())(_|_)
+    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("r"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -238,7 +247,7 @@ object ConstraintBlackRook extends Moveable
 object ConstraintBlackQueen extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    loc.allSquares(pmd("q"), 1).foldLeft(SquareSet())(_|_)
+    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("q"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {

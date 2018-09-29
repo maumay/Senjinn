@@ -122,6 +122,8 @@ class SquareSet private(val src: Long) extends AnyVal
   def squares: Iterator[BoardSquare] = (0 to 63).iterator
                                        .filter(i => ((1L << i) & src) != 0)
                                        .map(BoardSquare(_))
+
+  override def toString = src.toString
 }
 
 object SquareSet
