@@ -39,6 +39,8 @@ sealed trait ChessPiece extends Moveable
   val side: Side
   /** A unique short string identifier for the piece */
   val shortName: String
+
+  def isWhite = side.isWhite
   
   /**
    * Get the set of squares this piece can legally move to if it was the only piece on the 
@@ -55,9 +57,16 @@ sealed trait ChessPiece extends Moveable
 
 object ChessPiece
 {
-  val white = Vector(WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing).sortBy(_.index)
-  val black = Vector(BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing).sortBy(_.index)
-  val all = (white ++ black).sortBy(_.index)
+  val pawns   = Vector(WhitePawn, BlackPawn)
+  val knights = Vector(WhiteKnight, BlackKnight)
+  val bishops = Vector(WhiteBishop, BlackBishop)
+  val rooks   = Vector(WhiteRook, BlackRook)
+  val queens  = Vector(WhiteQueen, BlackQueen)
+  val kings   = Vector(WhiteKing, BlackKing)
+
+  val all = (pawns ++ knights ++ bishops ++ rooks ++ queens ++ kings).sortBy(_.index)
+  val (whites, blacks) = (all.filter(_.isWhite), all.filterNot(_.isWhite))
+
   val nameMap = all.map(p => (p.shortName, p)).toMap
   
   /** Retrieve a piece from it's index */
@@ -67,7 +76,7 @@ object ChessPiece
   def apply(shortName: String): ChessPiece = nameMap(shortName)
   
   /** Retrieve all pieces on a given side ordered by their index. */
-  def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) white else black
+  def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) whites else blacks
 }
 
 

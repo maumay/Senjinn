@@ -3,7 +3,7 @@ package xawd.senjinn
 // |----------------------------------------------------------------------------------------|
 /**
  * Represents one of the 64 squares on a chessboard, constructor is private and all 
- * possible values are enumerated in the companion object. 
+ * possible all are enumerated in the companion object. 
  */
 class BoardSquare private (val index: Int) 
 {
@@ -14,11 +14,11 @@ class BoardSquare private (val index: Int)
   }
   
   def <<(shift: Int): BoardSquare = {
-    BoardSquare.values(index + shift)
+    BoardSquare.all(index + shift)
   }
   
   def >>(shift: Int): BoardSquare = {
-    BoardSquare.values(index - shift)
+    BoardSquare.all(index - shift)
   }
   
   def unary_~ = {
@@ -57,9 +57,9 @@ class BoardSquare private (val index: Int)
 
 object BoardSquare 
 {
-  val values = (0 to 63).map(new BoardSquare(_)).toVector
+  val all = (0 to 63).map(new BoardSquare(_)).toVector
   
-  private val v = values
+  private val v = all
   val (h1, g1, f1, e1, d1, c1, b1, a1) = ( v(0),  v(1),  v(2),  v(3),  v(4),  v(5),  v(6),  v(7))
   val (h2, g2, f2, e2, d2, c2, b2, a2) = ( v(8),  v(9), v(10), v(11), v(12), v(13), v(14), v(15))
   val (h3, g3, f3, e3, d3, c3, b3, a3) = (v(16), v(17), v(18), v(19), v(20), v(21), v(22), v(23))
@@ -83,13 +83,13 @@ object BoardSquare
   def apply(rank: Int, file: Int): Option[BoardSquare] = {
     val inRange: Int => Boolean = x => -1 < x && x < 8
     if (inRange(rank) && inRange(file)) { 
-      Some(BoardSquare.values(8 * rank + file)) 
+      Some(BoardSquare.all(8 * rank + file)) 
     }
     else { None }
   }
   
   def apply(index: Int) = {
-    values(index)
+    all(index)
   }
   
   def unapply(square: BoardSquare) = Some((square.index, square.loc))

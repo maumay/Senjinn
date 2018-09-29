@@ -30,17 +30,23 @@ class MoveIntegrationTest extends FlatSpec
     hexMatched.map(vec => (parseUnsignedLong(vec(0), 16), parseUnsignedLong(vec(1), 16)))
   })
 
-  def assertGeneratedMovesAreCorrect(loc: BoardSquare, pieces: Seq[ChessPiece]) {
-    pieces.foreach(p => {
-      val consp = Utils.pieceMap(p)
-      positions.foreach(pos => {
-        val (w, b) = pos
-        assert(p.getControlset(loc, w, b) == consp.getControlset(loc, w, b))
-        assert(p.getMoveset(loc, w, b) == consp.getMoveset(loc, w, b))
-        assert(p.getAttackset(loc, w, b) == consp.getAttackset(loc, w, b))
-      })
-    })
+  def assertGeneratedMovesAreCorrect(loc: BoardSquare, piece: ChessPiece) {
+     val consp = Utils.pieceMap(piece)
+     positions.foreach(pos => {
+       val (w, b) = pos
+       assert(piece.getControlset(loc, w, b) == consp.getControlset(loc, w, b))
+       assert(piece.getMoveset(loc, w, b) == consp.getMoveset(loc, w, b))
+       assert(piece.getAttackset(loc, w, b) == consp.getAttackset(loc, w, b))
+     })
   }
+
+
+  ChessPiece.all.filterNot(ChessPiece.pawns contains _).foreach(piece => {
+    // BoardSquare.all foreach {
+    // }
+    s"$piece" must "generate the correc" in {
+    }
+  })
 }
 
 object Utils

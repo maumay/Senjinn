@@ -36,10 +36,10 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   }
   
   /** Self-updating set tracking location of all white pieces. */
-  private var _whites: SquareSet = ChessPiece.white.map(p => _locs(p.index)).reduce(_ | _)
+  private var _whites: SquareSet = ChessPiece.whites.map(p => _locs(p.index)).reduce(_ | _)
 
   /** Self-updating set tracking location of all black pieces. */
-  private var _blacks: SquareSet = ChessPiece.black.map(p => _locs(p.index)).reduce(_ | _)
+  private var _blacks: SquareSet = ChessPiece.blacks.map(p => _locs(p.index)).reduce(_ | _)
   
   
   def contains(piece: ChessPiece, loc: BoardSquare): Boolean = {

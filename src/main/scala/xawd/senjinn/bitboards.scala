@@ -47,7 +47,7 @@ object BasicBitboards
   }
   
   def genEmptyBoardBitboards(dirs: Iterable[Dir], proximity: Int = 8): Array[Long] = {
-    BoardSquare.values.map(sq => sq.allSquares(dirs, proximity).foldLeft(0L)(_ | _.loc)).toArray
+    BoardSquare.all.map(sq => sq.allSquares(dirs, proximity).foldLeft(0L)(_ | _.loc)).toArray
   }
 }
 
@@ -82,10 +82,10 @@ object MagicBitboards
   private type SquareArr = Array[Arr]
   
   // Occupancy variations
-  private def bishOccupancyVariations: SquareArr = BoardSquare.values
+  private def bishOccupancyVariations: SquareArr = BoardSquare.all
     .map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
 
-  private def rookOccupancyVariations: SquareArr = BoardSquare.values
+  private def rookOccupancyVariations: SquareArr = BoardSquare.all
     .map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
     
   private def genOccupancyVariations(square: BoardSquare, dirs: Iterable[Dir]): Arr = {

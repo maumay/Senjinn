@@ -13,7 +13,7 @@ object BoardHasher
   private val genLong: Any => Long = _ => prng.nextLong()
   
   private val squareFeatures: SquareArr = {
-    ChessPiece.all.map(i => BoardSquare.values.map(genLong).toArray).toArray
+    ChessPiece.all.map(i => BoardSquare.all.map(genLong).toArray).toArray
   }
   
   private val castleFeatures: Arr = CastleZone.values.map(genLong).toArray
