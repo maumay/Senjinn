@@ -1,7 +1,7 @@
-package xawd.senjinn
+package senjinn.base
 
 import org.scalatest.FlatSpec
-import xawd.senjinn.BoardSquare._
+import senjinn.base.BoardSquare._
 
 class SquareSetTest extends FlatSpec
 {

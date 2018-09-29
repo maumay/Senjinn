@@ -1,10 +1,9 @@
-package xawd.senjinn.board
+package senjinn.board
 
-import xawd.senjinn.BoardSquare
-import xawd.senjinn.SquareSet
-import xawd.senjinn.pieces.ChessPiece
-import xawd.senjinn.eval.PieceSquareTableSet
-import xawd.senjinn.ImplicitAreaConverters._
+import senjinn.base.{BoardSquare, SquareSet}
+import senjinn.base.ImplicitAreaConverters._
+import senjinn.pieces.ChessPiece
+import senjinn.eval.PieceSquareTableSet
 
 
 /**

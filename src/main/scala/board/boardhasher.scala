@@ -1,7 +1,7 @@
-package xawd.senjinn.board
+package senjinn.board
 
-import xawd.senjinn.{BoardSquare, CastleZone, Side}
-import xawd.senjinn.pieces.ChessPiece
+import senjinn.base.{BoardSquare, CastleZone, Side}
+import senjinn.pieces.ChessPiece
 
 
 object BoardHasher 

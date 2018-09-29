@@ -1,4 +1,4 @@
-package xawd.senjinn
+package senjinn.base
 
 import org.scalatest.FlatSpec
 

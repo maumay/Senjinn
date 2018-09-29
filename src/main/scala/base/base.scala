@@ -1,9 +1,8 @@
-package xawd.senjinn
+package senjinn.base
 
-import xawd.senjinn.ImplicitAreaConverters._
+import senjinn.base.ImplicitAreaConverters._
 import scala.math.{abs}
 
-// |----------------------------------------------------------------------------------------|
 
 /**
  * Represents a movement direction on a board in terms of the change 

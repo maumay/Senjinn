@@ -1,10 +1,10 @@
-package xawd
+package senjinn
 
-import xawd.senjinn.ImplicitAreaConverters._
-import xawd.senjinn.Dir._
+import senjinn.base.ImplicitAreaConverters._
+import senjinn.base.Dir._
 
 
-package object senjinn 
+package object base
 {
   val MaxNegatableInt: Int = Integer.MAX_VALUE - 1
   val GameWinValue = MaxNegatableInt / 2

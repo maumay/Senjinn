@@ -1,8 +1,8 @@
-package xawd.senjinn
+package senjinn.base
 
 
-import xawd.senjinn.BoardSquare._
-import xawd.senjinn.ImplicitAreaConverters._
+import senjinn.base.BoardSquare._
+import senjinn.base.ImplicitAreaConverters._
 
 
 /**
@@ -77,7 +77,7 @@ object MagicBitboards
   }
   
   // Implementation  
-  import xawd.senjinn.{ PieceMovementDirs => pmd }
+  import senjinn.base.{ PieceMovementDirs => pmd }
   private type Arr       = Array[Long]
   private type SquareArr = Array[Arr]
   

@@ -1,9 +1,9 @@
-package xawd.senjinn
+package senjinn.pieces
 
 import org.scalatest.FlatSpec
-import xawd.senjinn.pieces._
-import xawd.senjinn.{PieceMovementDirs => pmd}
-import xawd.senjinn.ImplicitAreaConverters._
+import senjinn.base.{BoardSquare, SquareSet, Dir}
+import senjinn.base.{processResource, PieceMovementDirs => pmd}
+import senjinn.base.ImplicitAreaConverters._
 
 
 class IndexAlignmentTest extends FlatSpec
@@ -31,26 +31,25 @@ class MoveIntegrationTest extends FlatSpec
   })
 
   def assertGeneratedMovesAreCorrect(loc: BoardSquare, piece: ChessPiece) {
-     val consp = Utils.pieceMap(piece)
-     positions.foreach(pos => {
-       val (w, b) = pos
-       assert(piece.getControlset(loc, w, b) == consp.getControlset(loc, w, b))
-       assert(piece.getMoveset(loc, w, b) == consp.getMoveset(loc, w, b))
-       assert(piece.getAttackset(loc, w, b) == consp.getAttackset(loc, w, b))
-     })
+    val consp = ConstraintPieces.pieceMap(piece)
+    positions.foreach(pos => {
+      val (w, b) = pos
+      assert(piece.getControlset(loc, w, b) == consp.getControlset(loc, w, b))
+      assert(piece.getMoveset(loc, w, b) == consp.getMoveset(loc, w, b))
+      assert(piece.getAttackset(loc, w, b) == consp.getAttackset(loc, w, b))
+    })
   }
 
-
-  // ChessPiece.all.filterNot(ChessPiece.pawns contains _) foreach {piece => 
-  //   BoardSquare.all foreach {sq =>
-  //     s"$piece" must s"generate the correct moves at $sq" in {
-  //       assertGeneratedMovesAreCorrect(sq, piece)
-  //     }
-  //   }
-  // }
+  ChessPiece.all.filterNot(ChessPiece.pawns contains _) foreach {piece =>
+    BoardSquare.all foreach {sq =>
+      s"$piece" must s"generate the correct moves at $sq" in {
+        assertGeneratedMovesAreCorrect(sq, piece)
+      }
+    }
+  }
 
   ChessPiece.pawns foreach {pawn =>
-    BoardSquare.all.drop(8).dropRight(8) foreach {sq => 
+    BoardSquare.all.drop(8).dropRight(8) foreach {sq =>
       s"$pawn" must s"generate the correct moves at $sq" in {
         assertGeneratedMovesAreCorrect(sq, pawn)
       }
@@ -58,7 +57,7 @@ class MoveIntegrationTest extends FlatSpec
   }
 }
 
-object Utils
+object ConstraintPieces
 {
   def getSlidingPieceSquaresOfControl(all: SquareSet, loc: BoardSquare, dirs: Iterable[Dir]) = {
     dirs.iterator.flatMap(dir => {
@@ -121,7 +120,7 @@ object ConstraintWhiteKnight extends Moveable
 object ConstraintWhiteBishop extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("b"))
+    ConstraintPieces.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("b"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -136,7 +135,7 @@ object ConstraintWhiteBishop extends Moveable
 object ConstraintWhiteRook extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("r"))
+    ConstraintPieces.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("r"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -151,7 +150,7 @@ object ConstraintWhiteRook extends Moveable
 object ConstraintWhiteQueen extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("q"))
+    ConstraintPieces.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("q"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -217,7 +216,7 @@ object ConstraintBlackKnight extends Moveable
 object ConstraintBlackBishop extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("b"))
+    ConstraintPieces.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("b"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -232,7 +231,7 @@ object ConstraintBlackBishop extends Moveable
 object ConstraintBlackRook extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("r"))
+    ConstraintPieces.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("r"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -247,7 +246,7 @@ object ConstraintBlackRook extends Moveable
 object ConstraintBlackQueen extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("q"))
+    ConstraintPieces.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("q"))
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {

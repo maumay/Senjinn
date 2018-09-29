@@ -1,9 +1,10 @@
-package xawd.senjinn.pieces
+package senjinn.pieces
 
-import xawd.senjinn.{ PieceMovementDirs => pmd }
-import xawd.senjinn.BasicBitboards.{genEmptyBoardBitboards}
-import xawd.senjinn.ImplicitAreaConverters._
-import xawd.senjinn.{BoardSquare, SquareSet, Side, MagicBitboards}
+import senjinn.base.{ PieceMovementDirs => pmd }
+import senjinn.base.BasicBitboards.{genEmptyBoardBitboards}
+import senjinn.base.ImplicitAreaConverters._
+import senjinn.base.{BoardSquare, SquareSet, Side, MagicBitboards}
+
 /**
  * Supertype of all chesspieces.  
  */
