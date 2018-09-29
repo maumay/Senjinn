@@ -41,21 +41,21 @@ class MoveIntegrationTest extends FlatSpec
   }
 
 
-  // ChessPiece.all.filterNot(ChessPiece.pawns contains _).foreach(piece => {
+  // ChessPiece.all.filterNot(ChessPiece.pawns contains _) foreach {piece => 
   //   BoardSquare.all foreach {sq =>
   //     s"$piece" must s"generate the correct moves at $sq" in {
   //       assertGeneratedMovesAreCorrect(sq, piece)
   //     }
   //   }
-  // })
+  // }
 
-  ChessPiece.rooks.foreach(piece => {
-    BoardSquare.all foreach {sq =>
-      s"$piece" must s"generate the correct moves at $sq" in {
-        assertGeneratedMovesAreCorrect(sq, piece)
+  ChessPiece.pawns foreach {pawn =>
+    BoardSquare.all.drop(8).dropRight(8) foreach {sq => 
+      s"$pawn" must s"generate the correct moves at $sq" in {
+        assertGeneratedMovesAreCorrect(sq, pawn)
       }
     }
-  })
+  }
 }
 
 object Utils
@@ -95,7 +95,7 @@ object ConstraintWhitePawn extends Moveable
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     val all = whites | blacks
     val push = loc.nextSquare(Dir.n).filterNot(_.intersects(all))
-    val secondpush = push.filter(sq => 7 < sq.index && sq.index < 16)
+    val secondpush = push.filter(_.rank == 2)
       .flatMap(_.nextSquare(Dir.n))
       .filterNot(_.intersects(all))
     val both = Seq(push, secondpush).filter(_.isDefined).map(_.get.loc).fold(0L)(_|_)
@@ -166,7 +166,7 @@ object ConstraintWhiteQueen extends Moveable
 object ConstraintWhiteKing extends Moveable
 {
   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
-    Utils.getSlidingPieceSquaresOfControl(whites | blacks, loc, pmd("k"))
+    loc.allSquares(pmd("k"), 1).foldLeft(SquareSet())(_|_)
   }
   
   def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
@@ -191,7 +191,7 @@ object ConstraintBlackPawn extends Moveable
   def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
     val all = whites | blacks
     val push = loc.nextSquare(Dir.s).filterNot(_.intersects(all))
-    val secondpush = push.filter(sq => 47 < sq.index && sq.index < 56)
+    val secondpush = push.filter(_.rank == 5)
       .flatMap(_.nextSquare(Dir.s))
       .filterNot(_.intersects(all))
     val both = Seq(push, secondpush).filter(_.isDefined).map(_.get.loc).fold(0L)(_|_)

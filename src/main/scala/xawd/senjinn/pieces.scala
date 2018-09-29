@@ -114,7 +114,7 @@ case object WhitePawn extends ChessPiece
   
   private val emptyBoardMoves: Array[Long] = {
     val arr = genEmptyBoardBitboards(pmd("wpm"), 1).toArray
-    (8 to 15).foreach(i => arr(i) |= BoardSquare(i + 16).loc)
+    (8 to 15).foreach(i => arr(i) |= 1L << (i + 16))
     arr
   }
   
@@ -298,7 +298,7 @@ case object BlackPawn extends ChessPiece
     val li = loc.index
     val empty = ~(whites | blacks)
     val push = (1L << (li - 8)) & empty
-    val fpush = if (li < 16 && push != 0) push | ((1L << (li - 16)) & empty) else push
+    val fpush = if (li > 47 && push != 0) push | ((1L << (li - 16)) & empty) else push
     fpush | getAttackset(loc, whites, blacks)
   }
   
@@ -314,7 +314,7 @@ case object BlackPawn extends ChessPiece
   
   private val emptyBoardMoves: Array[Long] = {
     val arr = genEmptyBoardBitboards(pmd("bpm"), 1).toArray
-    (8 to 15).foreach(i => arr(i) |= BoardSquare(i + 16).loc)
+    (48 to 55).foreach(i => arr(i) |= 1L << (i - 16))
     arr
   }
   

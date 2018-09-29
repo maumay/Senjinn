@@ -18,9 +18,9 @@ package object senjinn
     val q = b ++ r
     
     Map("wpm" -> Vector(n), 
-        "wpa" -> Vector(sw, nw),
+        "wpa" -> Vector(Dir.ne, nw),
         "bpm" -> Vector(s),
-        "bpa" -> Vector(se, Dir.ne),
+        "bpa" -> Vector(se, sw),
         "n"   -> Vector(nne, nee, see, sse, ssw, sww, nww, nnw),
         "b"   -> b,
         "r"   -> r,
