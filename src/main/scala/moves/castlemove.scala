@@ -13,6 +13,8 @@ class CastleMove(val zone: CastleZone) extends ChessMove
     case _ => CastleZone.setOfAllBlackZones
   }
 
+  val castleCommand = Some(zone)
+
   val pieceDeveloped = None
 
   def toCompactString = zone.toString
@@ -25,7 +27,6 @@ class CastleMove(val zone: CastleZone) extends ChessMove
     plocs.addSquare(king, target)
     plocs.removeSquare(rook, zone.rookSrc)
     plocs.addSquare(rook, zone.rookTarg)
-    state.cstatus.setStatus(zone)
     reverser.pieceTaken = None
     reverser.discardedEnpassant = state.enpassant
     state.enpassant = None
@@ -41,6 +42,5 @@ class CastleMove(val zone: CastleZone) extends ChessMove
     plocs.removeSquare(king, target)
     plocs.addSquare(rook, zone.rookSrc)
     plocs.removeSquare(rook, zone.rookTarg)
-    state.cstatus.removeStatus(zone)
   }
 }

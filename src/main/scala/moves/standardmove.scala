@@ -21,6 +21,8 @@ class StandardMove(val source: BoardSquare, val target: BoardSquare) extends Che
     rightsMatcher(source) ++ rightsMatcher(target)
   }
 
+  val castleCommand = None
+
   val pieceDeveloped = DevPiece.startSquareMap.get(source)
 
   val cord: SquareSet = {
