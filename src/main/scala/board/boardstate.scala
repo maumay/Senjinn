@@ -1,7 +1,7 @@
 package senjinn.board
 
 import scala.collection.{mutable => mutable}
-import senjinn.base.{DevelopmentPiece, Side, BoardSquare, CastleZone, SquareSet}
+import senjinn.base.{DevPiece, Side, BoardSquare, CastleZone, SquareSet}
 import senjinn.pieces.ChessPiece
 
 
@@ -15,12 +15,13 @@ class BoardState(
   val plocs: PieceLocations,
   val hcache: HashCache,
   val cstatus: CastlingTracker,
-  val pdev: mutable.Set[DevelopmentPiece],
-  val clock: HalfMoveCounter,
+  val pdev: mutable.Set[DevPiece],
+  var clock: Int,
   var enpassant: Option[BoardSquare],
   private var _active: Side)
 {
   def active = _active
+  def passive = active.otherSide
   def switchActive() {_active = _active.otherSide }
   def computeHash = plocs.hash ^ BoardHasher.hashFeatures(active, enpassant, cstatus)
 }
@@ -28,19 +29,6 @@ class BoardState(
 object BoardState 
 {
 }
-
-
-/**
- * Keeps track of the state of the half move count in a game,
- * it is required to implement the 50 move rule. 
- */
-class HalfMoveCounter(var count: Int)
-{
-  def increment { count += 1 }
-  def reset { count = 0 }
-  def copy = new HalfMoveCounter(count)
-}
-
 
 class HashCache private(private val cache: Array[Long], private var moveCount: Int)
 {
@@ -126,7 +114,7 @@ object CastlingTracker
   }
 
   def apply(): CastlingTracker = {
-    apply(mutable.HashSet(CastleZone.values: _*), None, None)
+    apply(mutable.HashSet(CastleZone.all: _*), None, None)
   }
 }
 
@@ -136,7 +124,7 @@ class MoveReverser
   var discardedCastleRights: Set[CastleZone] = Set()
   var isConsumed = true
   var pieceTaken: Option[ChessPiece] = None
-  var pieceDeveloped: Option[DevelopmentPiece] = None
+  var pieceDeveloped: Option[DevPiece] = None
   var discardedEnpassant: Option[BoardSquare] = None
   var discardedHash: Long = 0L
   var discardedClockValue: Int = -1

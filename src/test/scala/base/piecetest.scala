@@ -8,13 +8,20 @@ import senjinn.base.ImplicitAreaConverters._
 
 class IndexAlignmentTest extends FlatSpec
 {
-  "Piece indices" must "be consistent between the different sides" in {
-    assert(WhitePawn.index == BlackPawn.index - 6)
-    assert(WhiteKnight.index == BlackKnight.index - 6)
-    assert(WhiteBishop.index == BlackBishop.index - 6)
-    assert(WhiteRook.index == BlackRook.index - 6)
-    assert(WhiteQueen.index == BlackQueen.index - 6)
-    assert(WhiteKing.index == BlackKing.index - 6)
+  "Piece indices" must "match the range (0 to 11)" in {
+    assert(ChessPiece.all.map(_.index) == (0 to 11).toVector)
+  }
+
+  "White piece ordering" must "be pnbrqk" in {
+    val expectedWhiteOrder = Vector(WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing)
+    assert(expectedWhiteOrder == ChessPiece.whites)
+    assert(expectedWhiteOrder.map(_.index) == (0 to 5).toVector)
+  }
+
+  "Black piece ordering" must "be pnbrqk" in {
+    val expectedBlackOrder = Vector(BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing)
+    assert(expectedBlackOrder == ChessPiece.blacks)
+    assert(expectedBlackOrder.map(_.index) == (6 to 11).toVector)
   }
 }
 

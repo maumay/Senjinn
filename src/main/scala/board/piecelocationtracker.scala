@@ -1,6 +1,6 @@
 package senjinn.board
 
-import senjinn.base.{BoardSquare, SquareSet}
+import senjinn.base.{BoardSquare, SquareSet, Side}
 import senjinn.base.ImplicitAreaConverters._
 import senjinn.pieces.ChessPiece
 import senjinn.eval.PieceSquareTableSet
@@ -24,25 +24,29 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   private var _midgameEval: Int = {
     val allLocs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.midgame.value(_, _)
-    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_ + _)
+    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_+_)
   }
   
   /** Self-updating evaluation of the piece locations using the endgame tables. */
   private var _endgameEval: Int = {
     val allLocs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.endgame.value(_, _)
-    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_ + _)
+    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_+_)
   }
   
   /** Self-updating set tracking location of all white pieces. */
-  private var _whites: SquareSet = ChessPiece.whites.map(p => _locs(p.index)).reduce(_ | _)
+  private var _whites: SquareSet = ChessPiece.whites.map(p => _locs(p.index)).reduce(_|_)
 
   /** Self-updating set tracking location of all black pieces. */
-  private var _blacks: SquareSet = ChessPiece.blacks.map(p => _locs(p.index)).reduce(_ | _)
+  private var _blacks: SquareSet = ChessPiece.blacks.map(p => _locs(p.index)).reduce(_|_)
   
   
   def contains(piece: ChessPiece, loc: BoardSquare): Boolean = {
     locs(piece).intersects(loc)
+  }
+
+  def pieceAt(square: BoardSquare, side: Side) = {
+    ChessPiece(side).find(contains(_, square))
   }
   
   def pieceCount(piece: ChessPiece): Int = {
@@ -81,8 +85,9 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
 object PieceLocations
 {
   def apply(locs: Map[ChessPiece, Set[BoardSquare]]): PieceLocations = {
-    val xs = ChessPiece.all.map(locs.getOrElse(_, Set()).foldLeft(0L)((n, sq) => n | sq.loc)).toArray
-    val x = Set()
-    null
+    // val xs = ChessPiece.all.map(locs.getOrElse(_, Set()).foldLeft(0L)(_|_)).toArray
+    // val x = Set()
+    // null
+    throw new RuntimeException
   }
 }

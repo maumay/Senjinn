@@ -53,7 +53,6 @@ object Side
   val values = Vector(white, black)
 }
 
-// |----------------------------------------------------------------------------------------|
 
 /**
  * Represents a zone into which it is possible to castle.
@@ -93,22 +92,28 @@ object CastleZone
   val blackKingside  = cons(2, e8, g8)
   val blackQueenside = cons(3, e8, c8)
   
-  val values = Vector(whiteKingside, whiteQueenside, blackKingside, blackQueenside)
+  val all = Vector(whiteKingside, whiteQueenside, blackKingside, blackQueenside)
+  val setOfNoZones = Set[CastleZone]()
+  val setOfWkZone = Set(whiteKingside)
+  val setOfWqZone = Set(whiteQueenside)
+  val setOfAllWhiteZones = setOfWkZone ++ setOfWqZone
+  val setOfBkZone = Set(blackKingside)
+  val setOfBqZone = Set(blackQueenside)
+  val setOfAllBlackZones = setOfBkZone ++ setOfBqZone
 }
 
-// |----------------------------------------------------------------------------------------|
 
 /**
  * Represents a piece which needs to be developed in the opening phase
  * of the game.
  */
-class DevelopmentPiece private(val startSquare: BoardSquare)
+class DevPiece private(val startSquare: BoardSquare)
 {
 }
 
-object DevelopmentPiece
+object DevPiece
 {
-  private def cons = new DevelopmentPiece(_)
+  private def cons = new DevPiece(_)
   
   val whiteKingsideKnight  = cons(BoardSquare.g1)
   val whiteKingsideBishop  = cons(BoardSquare.f1)
@@ -124,7 +129,7 @@ object DevelopmentPiece
   val blackQueensideBishop = cons(BoardSquare.c8)
   val blackQueensideKnight = cons(BoardSquare.b8)
   
-  private val retrievalBySquareMap = Vector(
+  val startSquareMap = Vector(
       whiteKingsideKnight,
       whiteKingsideBishop,
       whiteKingsidePawn,
@@ -138,5 +143,5 @@ object DevelopmentPiece
       blackQueensideBishop,
       blackQueensideKnight).map(p => (p.startSquare, p)).toMap
       
-  def apply(startsquare: BoardSquare): DevelopmentPiece = retrievalBySquareMap(startsquare)
+  def apply(startsquare: BoardSquare): DevPiece = startSquareMap(startsquare)
 }

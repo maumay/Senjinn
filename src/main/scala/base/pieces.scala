@@ -42,6 +42,8 @@ sealed trait ChessPiece extends Moveable
   val shortName: String
 
   def isWhite = side.isWhite
+
+  def isPawn = (index % 6) == 0
   
   /**
    * Get the set of squares this piece can legally move to if it was the only piece on the 

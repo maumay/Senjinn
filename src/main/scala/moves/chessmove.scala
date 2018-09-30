@@ -1,6 +1,6 @@
 package senjinn.moves
 
-import senjinn.base.{BoardSquare, CastleZone, DevelopmentPiece}
+import senjinn.base.{BoardSquare, CastleZone, DevPiece}
 import senjinn.board.{BoardState, MoveReverser}
 
 
@@ -8,14 +8,14 @@ trait ChessMove
 {
   val source: BoardSquare
   val target: BoardSquare
-  val allRightsRemoved: Set[CastleZone]
-  val pieceDeveloped: Option[DevelopmentPiece]
+  val rightsRemoved: Set[CastleZone]
+  val pieceDeveloped: Option[DevPiece]
 
   def toCompactString: String
   def updatePieceLocations(state: BoardState, reverser: MoveReverser): Unit
   def revertPieceLocations(state: BoardState, reverser: MoveReverser): Unit
 
-  def makeMove(state: BoardState, reverser: MoveReverser) {
+  final def makeMove(state: BoardState, reverser: MoveReverser) {
     assert(reverser.isConsumed)
     updateCastlingStatus(state, reverser)
     updatePieceLocations(state, reverser)
@@ -25,11 +25,11 @@ trait ChessMove
     reverser.isConsumed = false
   }
 
-  def undoMove(state: BoardState, reverser: MoveReverser) {
+  final def undoMove(state: BoardState, reverser: MoveReverser) {
     assert(!reverser.isConsumed)
     state.switchActive()
     state.pdev --= reverser.pieceDeveloped
-    state.clock.count = reverser.discardedClockValue
+    state.clock = reverser.discardedClockValue
     state.enpassant = reverser.discardedEnpassant
     state.cstatus.rights ++= reverser.discardedCastleRights
     revertPieceLocations(state, reverser)
@@ -42,7 +42,7 @@ trait ChessMove
   }
 
   private def updateCastlingStatus(state: BoardState, reverser: MoveReverser) {
-    reverser.discardedCastleRights = allRightsRemoved & state.cstatus.rights
+    reverser.discardedCastleRights = rightsRemoved & state.cstatus.rights
     state.cstatus.rights --= reverser.discardedCastleRights
   }
 

@@ -16,7 +16,7 @@ object BoardHasher
     ChessPiece.all.map(i => BoardSquare.all.map(genLong).toArray).toArray
   }
   
-  private val castleFeatures: Arr = CastleZone.values.map(genLong).toArray
+  private val castleFeatures: Arr = CastleZone.all.map(genLong).toArray
   private val enpassantFeatures: Arr = (1 to 8).map(genLong).toArray
   
   // Api
