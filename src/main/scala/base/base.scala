@@ -26,7 +26,7 @@ object Dir
   val (nne, nee, see, sse) = (c("nne", 2, -1), c("nee", 1, -2),  c("see", -1, -2), c("sse", -2, -1))
   val (ssw, sww, nww, nnw) = (c("ssw", -2, 1), c("sww", -1, 2),  c("nww", 1, 2),   c("nnw", 2, 1))
   
-  val values = Vector(n, e, s, w, ne, se, sw, nw, nne, nee, see, sse, ssw, sww, nww, nnw)
+  val all = Vector(n, e, s, w, ne, se, sw, nw, nne, nee, see, sse, ssw, sww, nww, nnw)
 }
 
 // |----------------------------------------------------------------------------------------|
@@ -50,7 +50,7 @@ object Side
 {
   val (white, black) = (new Side(true), new Side(false))
   
-  val values = Vector(white, black)
+  val all = Vector(white, black)
 }
 
 

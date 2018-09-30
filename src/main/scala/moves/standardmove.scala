@@ -2,29 +2,32 @@ package senjinn.moves
 
 import java.lang.Math.abs
 
-import senjinn.base.{BoardSquare, SquareSet, CastleZone}
+import senjinn.base.{BoardSquare, SquareSet, CastleZone, DevPiece, Dir}
 import senjinn.base.BoardSquare._
-import senjinn.base.CastleZone._
-import senjinn.base.DevPiece._
 import senjinn.board.{BoardState, MoveReverser}
 
 class StandardMove(val source: BoardSquare, val target: BoardSquare) extends ChessMove
 {
-  val rightsRemoved = matchRightsRemoved(source) ++ matchRightsRemoved(target)
-
-  private def matchRightsRemoved(sq: BoardSquare) = {
-    sq match {
-      case x if x == a1 => setOfWqZone
-      case x if x == e1 => setOfAllWhiteZones
-      case x if x == h1 => setOfWkZone
-      case x if x == h8 => setOfBkZone
-      case x if x == e8 => setOfAllBlackZones
-      case x if x == a8 => setOfBqZone
-      case _ => setOfNoZones
+  val rightsRemoved = {
+    val rightsMatcher = (sq: BoardSquare) => sq match {
+      case x if x == a1 => CastleZone.setOfWqZone
+      case x if x == e1 => CastleZone.setOfAllWhiteZones
+      case x if x == h1 => CastleZone.setOfWkZone
+      case x if x == h8 => CastleZone.setOfBkZone
+      case x if x == e8 => CastleZone.setOfAllBlackZones
+      case x if x == a8 => CastleZone.setOfBqZone
+      case _ => CastleZone.setOfNoZones
     }
+    rightsMatcher(source) ++ rightsMatcher(target)
   }
 
-  val pieceDeveloped = startSquareMap.get(source)
+  val pieceDeveloped = DevPiece.startSquareMap.get(source)
+
+  val cord: SquareSet = {
+    val dir = Dir.all.find(source.allSquares(_, 8).contains(target)).get
+    SquareSet(source.allSquares(dir, 8).takeWhile(_ != target).foldLeft(0L)(_|_.loc))
+  }
+
 
   def toCompactString = s"S$source$target"
 
