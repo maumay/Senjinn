@@ -90,7 +90,18 @@ class CastlingTracker private(val rights: mutable.Set[CastleZone],
   def black = _black
   def status(side: Side) = if (side.isWhite) _white else _black
 
-  def remove(sideStatus: CastleZone) {
+  def setStatus(sideStatus: CastleZone) {
+    if (sideStatus.isWhiteZone){
+      assert(_white.isEmpty)
+      _white = Some(sideStatus)
+    }
+    else {
+      assert(_black.isEmpty)
+      _black = Some(sideStatus)
+    }
+  }
+
+  def removeStatus(sideStatus: CastleZone) {
     if (sideStatus.isWhiteZone) {
       assert(_white.get == sideStatus)
       _white = None

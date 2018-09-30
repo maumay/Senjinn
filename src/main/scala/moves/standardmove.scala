@@ -28,7 +28,6 @@ class StandardMove(val source: BoardSquare, val target: BoardSquare) extends Che
     SquareSet(source.allSquares(dir, 8).takeWhile(_ != target).foldLeft(0L)(_|_.loc))
   }
 
-
   def toCompactString = s"S$source$target"
 
   def updatePieceLocations(state: BoardState, reverser: MoveReverser) {

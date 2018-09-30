@@ -67,14 +67,14 @@ class CastleZone private (val index: Int, val kingSrc: BoardSquare, val kingTarg
   
   /** The BoardSquareuares which must be free of enemy control before castling is legal. */
   val reqUncontrolledBoardSquares = isKingsideZone match {
-    case true => (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_ | _)
-    case _    => (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_ | _)
+    case true => (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
+    case _    => (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_|_)
   }
   
   /** The BoardSquareuares which must be free of all pieces before castling is legal. */
   val reqClearBoardSquares = isKingsideZone match {
-    case true => (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_ | _)
-    case _    => (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_ | _)
+    case true => (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
+    case _    => (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_|_)
   }
 }
 
