@@ -17,16 +17,12 @@ class BoardState(
   val cstatus: CastlingTracker,
   val pdev: mutable.Set[DevelopmentPiece],
   val clock: HalfMoveCounter,
-  private var _active: Side,
-  private var _enpassant: Option[BoardSquare])
+  var enpassant: Option[BoardSquare],
+  private var _active: Side)
 {
   def active = _active
   def switchActive() {_active = _active.otherSide }
   def computeHash = plocs.hash ^ BoardHasher.hashFeatures(active, enpassant, cstatus)
-  def enpassant = _enpassant
-  def enpassantAvailable = enpassant.isDefined
-  def clearEnpassant() {_enpassant = None}
-  def enpassant_=(square: BoardSquare) {_enpassant = Some(square)}
 }
 
 object BoardState 
@@ -38,13 +34,11 @@ object BoardState
  * Keeps track of the state of the half move count in a game,
  * it is required to implement the 50 move rule. 
  */
-class HalfMoveCounter(private var _count: Int)
+class HalfMoveCounter(var count: Int)
 {
-  def count = _count
-  def count_=(x: Int) {_count = x }
-  def increment { _count += 1 }
-  def reset { _count = 0 }
-  def copy = new HalfMoveCounter(_count)
+  def increment { count += 1 }
+  def reset { count = 0 }
+  def copy = new HalfMoveCounter(count)
 }
 
 
@@ -139,16 +133,21 @@ object CastlingTracker
 
 class MoveReverser
 {
-  var consumed = true
   var discardedCastleRights: Set[CastleZone] = Set()
+  var isConsumed = true
   var pieceTaken: Option[ChessPiece] = None
   var pieceDeveloped: Option[DevelopmentPiece] = None
   var discardedEnpassant: Option[BoardSquare] = None
   var discardedHash: Long = 0L
-  var discardedHalfmoveClock: Int = -1
+  var discardedClockValue: Int = -1
+
+  def clearCastleRights() {
+    discardedCastleRights = MoveReverser.emptyRights
+  }
 }
 
 object MoveReverser
 {
+  val emptyRights = Set[CastleZone]()
   def apply() = new MoveReverser()
 }
