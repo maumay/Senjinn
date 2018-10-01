@@ -1,6 +1,6 @@
 package senjinn.base
 
-// |----------------------------------------------------------------------------------------|
+
 /**
  * Represents one of the 64 squares on a chessboard, constructor is private and all 
  * possible all are enumerated in the companion object. 

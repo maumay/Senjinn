@@ -38,7 +38,7 @@ class StandardMove(val source: BoardSquare, val target: BoardSquare) extends Che
     val removing = plocs.pieceAt(target, state.passive)
     plocs.removeSquare(moving, source)
     plocs.addSquare(moving, target)
-    if (removing.isDefined) {plocs.removeSquare(removing.get, target)}
+    removing foreach {plocs.removeSquare(_, target)}
     reverser.pieceTaken = removing
 
     reverser.discardedEnpassant = state.enpassant
@@ -60,10 +60,11 @@ class StandardMove(val source: BoardSquare, val target: BoardSquare) extends Che
     val previouslyMoved = plocs.pieceAt(target, state.active).get
     plocs.removeSquare(previouslyMoved, target)
     plocs.addSquare(previouslyMoved, source)
-    reverser.pieceTaken.foreach(plocs.addSquare(_, target))
+    reverser.pieceTaken foreach {plocs.addSquare(_, target)}
   }
 }
 
 object StandardMove
 {
+  def apply(source: BoardSquare, target: BoardSquare) = new StandardMove(source, target)
 }
