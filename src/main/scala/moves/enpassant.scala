@@ -16,6 +16,15 @@ class EnpassantMove(val source: BoardSquare, val target: BoardSquare) extends Ch
 
   def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
     val activePawn = ChessPiece(state.active)(0)
-    
+    val passivePawn = ChessPiece(state.passive)(0)
+    val plocs = state.plocs
+    plocs.removeSquare(activePawn, source)
+    plocs.addSquare(activePawn, target)
+    plocs.removeSquare(passivePawn, enpassantSquare)
+    reverser.pieceTaken = Some(passivePawn)
+    reverser.discardedEnpassant = state.enpassant
+    reverser.discardedClockValue = state.clock
+    state.enpassant = None
+    state.clock = 0
   }
 }
