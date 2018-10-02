@@ -17,7 +17,7 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   private var _hash: Long = {
     val allLocs = _locs.map(_.squares)
     val sf = BoardHasher.squareFeature(_, _)
-    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0L)( _ ^ sf(p._1, _))).reduce(_ ^ _)
+    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0L)( _ ^ sf(p._1, _))).reduce(_^_)
   }
   
   /** Self-updating evaluation of the piece locations using the midgame tables. */
@@ -80,6 +80,23 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   def endgameEval = _endgameEval
   def whites = _whites
   def blacks = _blacks
+
+  // Equality methods -- Maybe these should be 'static' in testing code?
+  override def equals(other: Object) = {
+    other.isInstanceOf[PieceLocations] && {
+      val that = other.asInstanceOf[PieceLocations]
+      _locs.toList == that._locs.toList &&
+      hash == that.hash &&
+      midgameEval == that.midgameEval &&
+      endgameEval == that.endgameEval &&
+      whites == that.whites &&
+      blacks == that.blacks
+    }
+  }
+
+  override def hashCode = {
+    (_locs.toList, hash, midgameEval, endgameEval, whites, blacks).##
+  }
 }
 
 object PieceLocations
