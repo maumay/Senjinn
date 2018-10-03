@@ -63,9 +63,18 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
     }
    }
 
+   private def updateIndexer() { indexer = moveCount % HashCache.size }
+
    def copy = new HashCache(cache.clone(), moveCount)
 
-   private def updateIndexer() { indexer = moveCount % HashCache.size }
+  def equals(obj: Object) = {
+    obj.isInstanceOf[HashCache] && {
+      val other = obj.asInstanceOf[HashCache]
+      cache.toList == other.cache.toList
+    }
+  }
+
+  def hashCode = cache.toList.##
 }
 
 object HashCache
@@ -113,6 +122,15 @@ class CastlingTracker private(val rights: mutable.Set[CastleZone],
   }
 
   def copy = CastlingTracker(rights, _white, _black)
+
+  def equals(obj: Object) = {
+    obj.isInstanceOf[CastlingTracker] && {
+      val other = obj.asInstanceOf[CastlingTracker]
+      (rights, white, black) == (other.rights, other.white, other.black)
+    }
+  }
+
+  def hashCode = (rights, white, black).##
 }
 
 object CastlingTracker
