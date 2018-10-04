@@ -6,11 +6,11 @@ import senjinn.pieces.ChessPiece
 
 
 /**
- * A mutable representation of the state of a chessboard, it
- * is designed so that a move can mutate it in the forward 
- * direction and reverse it using an appropriate instance of
- * {@link MoveReverser}.  
- */
+  * A mutable representation of the state of a chessboard, it
+  * is designed so that a move can mutate it in the forward 
+  * direction and reverse it using an appropriate instance of
+  * {@link MoveReverser}.  
+  */
 class BoardState(
   val plocs: PieceLocations,
   val hcache: HashCache,
@@ -24,9 +24,17 @@ class BoardState(
   def passive = active.otherSide
   def switchActive() {_active = _active.otherSide }
   def computeHash = plocs.hash ^ BoardHasher.hashFeatures(active, enpassant, cstatus)
+
+  override def equals(x: Any) = {
+    x.isInstanceOf[BoardState] && {
+      val o = x.asInstanceOf[BoardState]
+        (plocs, hcache, cstatus, pdev, clock, enpassant) ==
+      (o.plocs, o.hcache, o.cstatus, o.pdev, o.clock, o.enpassant)
+    }
+  }
 }
 
-object BoardState 
+object BoardState
 {
 }
 
@@ -61,20 +69,20 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
       }
       samecount == 3
     }
-   }
+  }
 
-   private def updateIndexer() { indexer = moveCount % HashCache.size }
+  private def updateIndexer() { indexer = moveCount % HashCache.size }
 
-   def copy = new HashCache(cache.clone(), moveCount)
+  def copy = new HashCache(cache.clone(), moveCount)
 
-  def equals(obj: Object) = {
-    obj.isInstanceOf[HashCache] && {
-      val other = obj.asInstanceOf[HashCache]
+  override def equals(x: Any) = {
+    x.isInstanceOf[HashCache] && {
+      val other = x.asInstanceOf[HashCache]
       cache.toList == other.cache.toList
     }
   }
 
-  def hashCode = cache.toList.##
+  override def hashCode = cache.toList.##
 }
 
 object HashCache
@@ -92,8 +100,8 @@ object HashCache
 }
 
 
-class CastlingTracker private(val rights: mutable.Set[CastleZone], 
-    private var _white: Option[CastleZone], private var _black: Option[CastleZone])
+class CastlingTracker private(val rights: mutable.Set[CastleZone],
+  private var _white: Option[CastleZone], private var _black: Option[CastleZone])
 {
   def white = _white
   def black = _black
@@ -123,14 +131,14 @@ class CastlingTracker private(val rights: mutable.Set[CastleZone],
 
   def copy = CastlingTracker(rights, _white, _black)
 
-  def equals(obj: Object) = {
-    obj.isInstanceOf[CastlingTracker] && {
-      val other = obj.asInstanceOf[CastlingTracker]
-      (rights, white, black) == (other.rights, other.white, other.black)
+  override def equals(x: Any) = {
+    x.isInstanceOf[CastlingTracker] && {
+      val o = x.asInstanceOf[CastlingTracker]
+        (rights, white, black) == (o.rights, o.white, o.black)
     }
   }
 
-  def hashCode = (rights, white, black).##
+  override def hashCode = (rights, white, black).##
 }
 
 object CastlingTracker
@@ -139,7 +147,7 @@ object CastlingTracker
 
   def apply(cons: TrackerCons) = {
     val (rights, white, black) = cons
-    new CastlingTracker(mutable.HashSet(rights.iterator.toSeq: _*), white, black)
+    new CastlingTracker(mutable.HashSet(rights.toSeq: _*), white, black)
   }
 
   def apply(): CastlingTracker = {

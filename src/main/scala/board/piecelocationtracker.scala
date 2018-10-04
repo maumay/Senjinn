@@ -7,8 +7,8 @@ import senjinn.eval.PieceSquareTableSet
 
 
 /**
- * This is a mutable class designed to track the locations of all pieces.
- */
+  * This is a mutable class designed to track the locations of all pieces.
+  */
 class PieceLocations private(private val _locs: Array[Long]) extends Iterable[SquareSet]
 {
   require(_locs.length == 12)
@@ -53,7 +53,7 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
     java.lang.Long.bitCount(locs(piece))
   }
   
-  def addSquare(piece: ChessPiece, square: BoardSquare) { 
+  def addSquare(piece: ChessPiece, square: BoardSquare) {
     assert(!locs(piece).intersects(square))
     _locs(piece.index) |= square.loc
     if (piece.side.isWhite) _whites |= square.loc else _blacks |= square.loc
@@ -81,21 +81,20 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   def whites = _whites
   def blacks = _blacks
 
-  // Equality methods -- Maybe these should be 'static' in testing code?
-  override def equals(other: Object) = {
-    other.isInstanceOf[PieceLocations] && {
-      val that = other.asInstanceOf[PieceLocations]
-      _locs.toList == that._locs.toList &&
-      hash == that.hash &&
-      midgameEval == that.midgameEval &&
-      endgameEval == that.endgameEval &&
-      whites == that.whites &&
-      blacks == that.blacks
+  // Equality api
+  override def equals(x: Any) = {
+    x.isInstanceOf[PieceLocations] && {
+      val o = x.asInstanceOf[PieceLocations]
+      toFieldTuple == o.toFieldTuple
     }
   }
 
   override def hashCode = {
-    (_locs.toList, hash, midgameEval, endgameEval, whites, blacks).##
+    toFieldTuple.##
+  }
+
+  private def toFieldTuple = {
+    (_locs.toList, hash, midgameEval, endgameEval, whites, blacks)
   }
 }
 
