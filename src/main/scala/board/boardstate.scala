@@ -63,9 +63,9 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
       var last = cache.head
       var index = 1
       while (index < HashCache.size && samecount < 3) {
-        index += 1
         val next = cpy(index)
         if (next == last) samecount += 1 else {samecount = 0; last = next}
+        index += 1
       }
       samecount == 3
     }
