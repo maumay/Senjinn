@@ -1,4 +1,4 @@
-scalaVersion in ThisBuild := "2.12.6"
+scalaVersion in ThisBuild := "2.12.3"
 organization in ThisBuild := "xawd"
 
 lazy val senjinn = (project in file("."))

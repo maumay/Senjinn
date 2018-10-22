@@ -1,8 +1,9 @@
 *.class
 *.log
 
+target/
+
 /bin/
-/target/
 /project/
 /.settings/
 /.ensime_cache/
