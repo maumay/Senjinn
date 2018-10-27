@@ -1,7 +1,7 @@
 package senjinn.board
 
 import scala.collection.{mutable => mutable}
-import senjinn.base.{DevPiece, Side, BoardSquare, CastleZone, SquareSet}
+import senjinn.base.{DevPiece, Side, Square, CastleZone, SquareSet}
 import senjinn.pieces.ChessPiece
 
 
@@ -17,7 +17,7 @@ class BoardState(
   val cstatus: CastlingTracker,
   val pdev: mutable.Set[DevPiece],
   var clock: Int,
-  var enpassant: Option[BoardSquare],
+  var enpassant: Option[Square],
   private var _active: Side)
 {
   def active = _active
@@ -162,7 +162,7 @@ class MoveReverser
   var isConsumed = true
   var pieceTaken: Option[ChessPiece] = None
   var pieceDeveloped: Option[DevPiece] = None
-  var discardedEnpassant: Option[BoardSquare] = None
+  var discardedEnpassant: Option[Square] = None
   var discardedHash: Long = 0L
   var discardedClockValue: Int = -1
 

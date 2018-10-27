@@ -5,20 +5,20 @@ package senjinn.base
  * Represents one of the 64 squares on a chessboard, constructor is private and all 
  * possible all are enumerated in the companion object. 
  */
-class BoardSquare private (val index: Int) 
+class Square private (val index: Int) 
 {
   val (loc, rank, file) = (1L << index, index / 8, index % 8)
   
-  def |(other: BoardSquare): SquareSet = {
+  def |(other: Square): SquareSet = {
     SquareSet(loc | other.loc)
   }
   
-  def <<(shift: Int): BoardSquare = {
-    BoardSquare.all(index + shift)
+  def <<(shift: Int): Square = {
+    Square.all(index + shift)
   }
   
-  def >>(shift: Int): BoardSquare = {
-    BoardSquare.all(index - shift)
+  def >>(shift: Int): Square = {
+    Square.all(index - shift)
   }
   
   def unary_~ = {
@@ -29,8 +29,8 @@ class BoardSquare private (val index: Int)
     squares.intersects(this)
   }
   
-  def nextSquare(dir: Dir): Option[BoardSquare] = {
-    BoardSquare(rank + dir.deltaRank, file + dir.deltaFile)
+  def nextSquare(dir: Dir): Option[Square] = {
+    Square(rank + dir.deltaRank, file + dir.deltaFile)
   }
   
   def squaresLeft(dir: Dir): Int = nextSquare(dir) match {
@@ -38,11 +38,11 @@ class BoardSquare private (val index: Int)
     case Some(sq) => 1 + sq.squaresLeft(dir)
   }
   
-  def allSquares(dirs: Iterable[Dir], proximity: Int = 8): Vector[BoardSquare] = {
+  def allSquares(dirs: Iterable[Dir], proximity: Int = 8): Vector[Square] = {
     dirs.iterator.flatMap(dir => allSquares(dir, proximity)).toVector
   }
   
-  def allSquares(dir: Dir, proximity: Int): Vector[BoardSquare] = proximity match {
+  def allSquares(dir: Dir, proximity: Int): Vector[Square] = proximity match {
     case 0 => Vector()
     case _ => nextSquare(dir) match {
         case None     => Vector()
@@ -55,9 +55,9 @@ class BoardSquare private (val index: Int)
   }
 }
 
-object BoardSquare 
+object Square 
 {
-  val all = (0 to 63).map(new BoardSquare(_)).toVector
+  val all = (0 to 63).map(new Square(_)).toVector
   
   private val v = all
   val (h1, g1, f1, e1, d1, c1, b1, a1) = ( v(0),  v(1),  v(2),  v(3),  v(4),  v(5),  v(6),  v(7))
@@ -70,7 +70,7 @@ object BoardSquare
   val (h8, g8, f8, e8, d8, c8, b8, a8) = (v(56), v(57), v(58), v(59), v(60), v(61), v(62), v(63))
   
   
-  def apply(name: String): BoardSquare = {
+  def apply(name: String): Square = {
     val lower = name.toLowerCase.trim
     if (lower.matches("[a-h][1-8]")) { 
       v(('h' - lower(0)) + 8 * (lower(1) - '1')) 
@@ -80,10 +80,10 @@ object BoardSquare
     }
   }
   
-  def apply(rank: Int, file: Int): Option[BoardSquare] = {
+  def apply(rank: Int, file: Int): Option[Square] = {
     val inRange: Int => Boolean = x => -1 < x && x < 8
     if (inRange(rank) && inRange(file)) { 
-      Some(BoardSquare.all(8 * rank + file)) 
+      Some(Square.all(8 * rank + file)) 
     }
     else { None }
   }
@@ -92,10 +92,8 @@ object BoardSquare
     all(index)
   }
   
-  def unapply(square: BoardSquare) = Some((square.index, square.loc))
+  def unapply(square: Square) = Some((square.index, square.loc))
 }
-
-// |----------------------------------------------------------------------------------------|
 
 /**
  * Wrapper for a primitive 64 bit integer which represents a collection of squares
@@ -115,13 +113,13 @@ class SquareSet private(val src: Long) extends AnyVal
   
   def unary_~ = SquareSet(~src)
   
-  def intersects(square: BoardSquare): Boolean = {
+  def intersects(square: Square): Boolean = {
     (square.loc & src) != 0
   }
   
-  def squares: Iterator[BoardSquare] = (0 to 63).iterator
+  def squares: Iterator[Square] = (0 to 63).iterator
                                        .filter(i => ((1L << i) & src) != 0)
-                                       .map(BoardSquare(_))
+                                       .map(Square(_))
 
   override def toString = src.toString
 }
@@ -132,20 +130,19 @@ object SquareSet
   
   def apply(arg: Long) = new SquareSet(arg)
   
-  def apply(args: BoardSquare*) = new SquareSet(args.foldLeft(0L)(_ | _.loc))
+  def apply(args: Square*) = new SquareSet(args.foldLeft(0L)(_ | _.loc))
   
 }
 
-// |----------------------------------------------------------------------------------------|
 
 object ImplicitAreaConverters
 {
-  implicit def boardsquare2squareset(square: BoardSquare): SquareSet = SquareSet(square.loc)
+  implicit def boardsquare2squareset(square: Square): SquareSet = SquareSet(square.loc)
   
   implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
   
   implicit def squareset2long(s: SquareSet): Long = s.src
 
-  implicit def boardsquare2long(square: BoardSquare): Long = square.loc
+  implicit def boardsquare2long(square: Square): Long = square.loc
 }
 

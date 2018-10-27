@@ -1,11 +1,12 @@
 package senjinn.board
 
-import senjinn.base.{BoardSquare, CastleZone, Side}
+import senjinn.base.{Square, CastleZone, Side}
 import senjinn.pieces.ChessPiece
 
 
 object BoardHasher 
 {
+  /* Implementation details */
   private type Arr       = Array[Long]
   private type SquareArr = Array[Arr]
   
@@ -13,19 +14,22 @@ object BoardHasher
   private val genLong: Any => Long = _ => prng.nextLong()
   
   private val squareFeatures: SquareArr = {
-    ChessPiece.all.map(i => BoardSquare.all.map(genLong).toArray).toArray
+    ChessPiece.all.map(i => Square.all.map(genLong).toArray).toArray
   }
   
   private val castleFeatures: Arr = CastleZone.all.map(genLong).toArray
   private val enpassantFeatures: Arr = (1 to 8).map(genLong).toArray
   
   // Api
-  def squareFeature(piece: ChessPiece, square: BoardSquare) = squareFeatures(piece.index)(square.index)
+  def squareFeature(piece: ChessPiece, square: Square) = squareFeatures(piece.index)(square.index)
+  
   def castleFeature(zone: CastleZone) = castleFeatures(zone.index)
-  def enpassantFeature(enpassantSquare: BoardSquare) = enpassantFeatures(enpassantSquare.file)
+  
+  def enpassantFeature(enpassantSquare: Square) = enpassantFeatures(enpassantSquare.file)
+  
   val blackMoveFeature: Long = genLong(Unit)
 
-  def hashFeatures(active: Side, enpassant: Option[BoardSquare], castling: CastlingTracker) = {
+  def hashFeatures(active: Side, enpassant: Option[Square], castling: CastlingTracker) = {
     val activehash = if (active.isWhite) 0L else blackMoveFeature
     val enpassantHash = enpassant.map(enpassantFeature(_)).getOrElse(0L)
     val castlingHash = castling.rights.map(castleFeature(_)).foldLeft(0L)(_ ^ _)

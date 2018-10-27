@@ -1,6 +1,6 @@
 package senjinn.board
 
-import senjinn.base.{BoardSquare, SquareSet, Side}
+import senjinn.base.{Square, SquareSet, Side}
 import senjinn.base.ImplicitAreaConverters._
 import senjinn.pieces.ChessPiece
 import senjinn.eval.PieceSquareTableSet
@@ -41,11 +41,11 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   private var _blacks: SquareSet = ChessPiece.blacks.map(p => _locs(p.index)).reduce(_|_)
   
   
-  def contains(piece: ChessPiece, loc: BoardSquare): Boolean = {
+  def contains(piece: ChessPiece, loc: Square): Boolean = {
     locs(piece).intersects(loc)
   }
 
-  def pieceAt(square: BoardSquare, side: Side) = {
+  def pieceAt(square: Square, side: Side) = {
     ChessPiece(side).find(contains(_, square))
   }
   
@@ -53,7 +53,7 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
     java.lang.Long.bitCount(locs(piece))
   }
   
-  def addSquare(piece: ChessPiece, square: BoardSquare) {
+  def addSquare(piece: ChessPiece, square: Square) {
     assert(!locs(piece).intersects(square))
     _locs(piece.index) |= square.loc
     if (piece.side.isWhite) _whites |= square.loc else _blacks |= square.loc
@@ -62,7 +62,7 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
     _hash ^= BoardHasher.squareFeature(piece, square)
   }
   
-  def removeSquare(piece: ChessPiece, square: BoardSquare) {
+  def removeSquare(piece: ChessPiece, square: Square) {
     assert(locs(piece).intersects(square))
     _locs(piece.index) ^= square.loc
     if (piece.side.isWhite) _whites ^= square.loc else _blacks ^= square.loc
@@ -100,7 +100,7 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
 
 object PieceLocations
 {
-  def apply(locs: Map[ChessPiece, Set[BoardSquare]]): PieceLocations = {
+  def apply(locs: Map[ChessPiece, Set[Square]]): PieceLocations = {
     // val xs = ChessPiece.all.map(locs.getOrElse(_, Set()).foldLeft(0L)(_|_)).toArray
     // val x = Set()
     // null

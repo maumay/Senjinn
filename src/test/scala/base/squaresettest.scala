@@ -1,7 +1,7 @@
 package senjinn.base
 
 import org.scalatest.FlatSpec
-import senjinn.base.BoardSquare._
+import senjinn.base.Square._
 
 class SquareSetTest extends FlatSpec
 {

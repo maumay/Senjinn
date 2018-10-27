@@ -9,8 +9,8 @@ class CastleMove(val zone: CastleZone) extends ChessMove
   val (source, target) = (zone.kingSrc, zone.kingTarg)
 
   val rightsRemoved = zone match {
-    case x if x.isWhiteZone => CastleZone.setOfAllWhiteZones
-    case _ => CastleZone.setOfAllBlackZones
+    case x if x.isWhiteZone => CastleZone.setOfWhiteZones
+    case _ => CastleZone.setOfBlackZones
   }
 
   val castleCommand = Some(zone)

@@ -1,7 +1,7 @@
 package senjinn.base
 
 import org.scalatest.FlatSpec
-import senjinn.base.BoardSquare._
+import senjinn.base.Square._
 
 
 class BoardSquareTest extends FlatSpec
@@ -110,20 +110,20 @@ class BoardSquareTest extends FlatSpec
     val (sq, sqStr) = pair
     s"The square $sq" must s"be constructable from the string $sqStr" in {
       assert(sq.toString == sqStr)
-      assert(sq == BoardSquare(sqStr))
+      assert(sq == Square(sqStr))
     }
   })
 
   Seq("d0", "g10", "p3", "k8").foreach(str => {
     s"The string $str" must s"not construct any square" in  {
-      assertThrows[RuntimeException] {BoardSquare(str)}
+      assertThrows[RuntimeException] {Square(str)}
     }
   })
 
   Map((2, 7) -> Some(a3), (4, 5) -> Some(c5), (5, 8) -> None).foreach(pair => {
     val ((r, f), sq) = pair
     s"The rank-file pair ($r, $f)" must s"construct the square $sq" in {
-      assert(BoardSquare(r, f) == sq)
+      assert(Square(r, f) == sq)
     }
   })
 }

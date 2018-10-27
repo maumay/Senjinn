@@ -3,7 +3,7 @@ package senjinn.pieces
 import senjinn.base.{ PieceMovementDirs => pmd }
 import senjinn.base.BasicBitboards.{genEmptyBoardBitboards}
 import senjinn.base.ImplicitAreaConverters._
-import senjinn.base.{BoardSquare, SquareSet, Side, MagicBitboards}
+import senjinn.base.{Square, SquareSet, Side, MagicBitboards}
 
 /**
  * Supertype of all chesspieces.  
@@ -14,21 +14,21 @@ trait Moveable
    *  Get the set of squares this piece is controlling given the locations of all pieces
    *  on the board.
    */
-  def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+  def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
   
   /** 
    *  Get the set of squares this piece can 'legally' move to which would result in a capture 
    *  of an enemy given the location of all pieces on the board. Note that this method is
    *  <b>not</b> expected to take into account illegal moves where the king is put into check.
    */
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
   
   /** 
    *  Get the set of squares this piece can 'legally' move to given the location of all pieces.
    *  Note that this method is <b>not</b> expected to take into account illegal moves where 
    *  the king is put into check.
    */
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet): SquareSet
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
 }
 
 
@@ -49,12 +49,12 @@ sealed trait ChessPiece extends Moveable
    * Get the set of squares this piece can legally move to if it was the only piece on the 
    * board.
    */
-  def getEmptyBoardMoveset(loc: BoardSquare): SquareSet
+  def getEmptyBoardMoveset(loc: Square): SquareSet
   
   /**
    * Get the set of squares this piece controls if it was the only piece on the board.
    */
-  def getEmptyBoardControlset(loc: BoardSquare): SquareSet
+  def getEmptyBoardControlset(loc: Square): SquareSet
 }
 
 
@@ -89,15 +89,15 @@ case object WhitePawn extends ChessPiece
   val side = Side.white
   val shortName = "wp"
   
-  def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & blacks
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     val li = loc.index
     val empty = ~(whites | blacks)
     val push = (1L << (li + 8)) & empty
@@ -105,11 +105,11 @@ case object WhitePawn extends ChessPiece
     fpush | getAttackset(loc, whites, blacks)
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     emptyBoardMoves(loc.index)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
@@ -131,23 +131,23 @@ case object WhiteKnight extends ChessPiece
   val side = Side.white
   val shortName = "wn"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index) & blacks
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index) & ~whites
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
@@ -163,23 +163,23 @@ case object WhiteBishop extends ChessPiece
   val side = Side.white
   val shortName = "wb"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.getBishControlset(loc, whites | blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & blacks
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~whites
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
@@ -195,23 +195,23 @@ case object WhiteRook extends ChessPiece
   val side = Side.white
   val shortName = "wr"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.getRookControlset(loc, whites | blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & blacks
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~whites
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
@@ -227,23 +227,23 @@ case object WhiteQueen extends ChessPiece
   val side = Side.white
   val shortName = "wq"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     WhiteBishop.getControlset(loc, whites, blacks) | WhiteRook.getControlset(loc, whites, blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & blacks
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~whites
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     WhiteBishop.getEmptyBoardMoveset(loc) | WhiteRook.getEmptyBoardMoveset(loc)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     getEmptyBoardMoveset(loc)
   }
   
@@ -257,23 +257,23 @@ case object WhiteKing extends ChessPiece
   val side = Side.white
   val shortName = "wk"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index) & blacks
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index) & ~whites
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
@@ -289,15 +289,15 @@ case object BlackPawn extends ChessPiece
   val side = Side.black
   val shortName = "bp"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     emptyBoardControl(loc.index)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & whites
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     val li = loc.index
     val empty = ~(whites | blacks)
     val push = (1L << (li - 8)) & empty
@@ -305,11 +305,11 @@ case object BlackPawn extends ChessPiece
     fpush | getAttackset(loc, whites, blacks)
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     emptyBoardMoves(loc.index)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     emptyBoardControl(loc.index)
   }
   
@@ -331,23 +331,23 @@ case object BlackKnight extends ChessPiece
   val side = Side.black
   val shortName = "bn"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     WhiteKnight.getControlset(loc, whites, blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & whites
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~blacks
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     WhiteKnight.getEmptyBoardMoveset(loc)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     WhiteKnight.getEmptyBoardControlset(loc)
   }
   
@@ -361,23 +361,23 @@ case object BlackBishop extends ChessPiece
   val side = Side.black
   val shortName = "bb"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.getBishControlset(loc, whites | blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & whites
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~blacks
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     WhiteBishop.getEmptyBoardMoveset(loc)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     WhiteBishop.getEmptyBoardControlset(loc)
   }
   
@@ -391,23 +391,23 @@ case object BlackRook extends ChessPiece
   val side = Side.black
   val shortName = "br"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     MagicBitboards.getRookControlset(loc, whites | blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & whites
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~blacks
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     WhiteRook.getEmptyBoardMoveset(loc)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     WhiteRook.getEmptyBoardControlset(loc)
   }
   
@@ -421,23 +421,23 @@ case object BlackQueen extends ChessPiece
   val side = Side.black
   val shortName = "bq"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     BlackBishop.getControlset(loc, whites, blacks) | BlackRook.getControlset(loc, whites, blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & whites
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~blacks
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     BlackBishop.getEmptyBoardMoveset(loc) | BlackRook.getEmptyBoardMoveset(loc)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     getEmptyBoardMoveset(loc)
   }
   
@@ -451,23 +451,23 @@ case object BlackKing extends ChessPiece
   val side = Side.black
   val shortName = "bk"
   
-   def getControlset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     WhiteKing.getControlset(loc, whites, blacks)
   }
   
-  def getAttackset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & whites
   }
   
-  def getMoveset(loc: BoardSquare, whites: SquareSet, blacks: SquareSet) = {
+  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
     getControlset(loc, whites, blacks) & ~blacks
   }
   
-  def getEmptyBoardMoveset(loc: BoardSquare) = {
+  def getEmptyBoardMoveset(loc: Square) = {
     WhiteKing.getEmptyBoardMoveset(loc)
   }
   
-  def getEmptyBoardControlset(loc: BoardSquare) = {
+  def getEmptyBoardControlset(loc: Square) = {
     WhiteKing.getEmptyBoardControlset(loc)
   }
   

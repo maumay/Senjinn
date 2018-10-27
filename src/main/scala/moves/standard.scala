@@ -2,19 +2,19 @@ package senjinn.moves
 
 import java.lang.Math.abs
 
-import senjinn.base.{BoardSquare, SquareSet, CastleZone, DevPiece, Dir}
-import senjinn.base.BoardSquare._
+import senjinn.base.{Square, SquareSet, CastleZone, DevPiece, Dir}
+import senjinn.base.Square._
 import senjinn.board.{BoardState, MoveReverser}
 
-class StandardMove(val source: BoardSquare, val target: BoardSquare) extends ChessMove
+class StandardMove(val source: Square, val target: Square) extends ChessMove
 {
   val rightsRemoved = {
-    val rightsMatcher = (sq: BoardSquare) => sq match {
+    val rightsMatcher = (sq: Square) => sq match {
       case x if x == a1 => CastleZone.setOfWqZone
-      case x if x == e1 => CastleZone.setOfAllWhiteZones
+      case x if x == e1 => CastleZone.setOfWhiteZones
       case x if x == h1 => CastleZone.setOfWkZone
       case x if x == h8 => CastleZone.setOfBkZone
-      case x if x == e8 => CastleZone.setOfAllBlackZones
+      case x if x == e8 => CastleZone.setOfBlackZones
       case x if x == a8 => CastleZone.setOfBqZone
       case _ => CastleZone.setOfNoZones
     }
@@ -44,7 +44,7 @@ class StandardMove(val source: BoardSquare, val target: BoardSquare) extends Che
     reverser.discardedEnpassant = state.enpassant
     if (moving.isPawn && abs(target.index - source.index) == 16) {
       val epindex = source.index + (target.index - source.index) / 2
-      state.enpassant = Some(BoardSquare(epindex))
+      state.enpassant = Some(Square(epindex))
     }
     else {
       state.enpassant = None
@@ -66,5 +66,5 @@ class StandardMove(val source: BoardSquare, val target: BoardSquare) extends Che
 
 object StandardMove
 {
-  def apply(source: BoardSquare, target: BoardSquare) = new StandardMove(source, target)
+  def apply(source: Square, target: Square) = new StandardMove(source, target)
 }

@@ -1,0 +1,19 @@
+package parsers
+import scala.util.matching.Regex
+
+/**
+ */
+object ChessRegex extends App
+{
+  private val arrow: String = "\\-\\>"
+  
+  val singleSquare: Regex = "([a-hA-H][1-8])".r
+  val doubleSquare: Regex = s"($singleSquare +$singleSquare)".r
+  val cord: Regex = s"($singleSquare$arrow$singleSquare)".r
+  val multiTarget: Regex = s"$singleSquare$arrow\\{( *$singleSquare *)\\}".r
+  
+  "e4->h6" match {
+    case cord(_*) => println("matched")
+    case _ => println("failed")
+  }
+}

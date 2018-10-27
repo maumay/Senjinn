@@ -1,10 +1,10 @@
 package senjinn.moves
 
-import senjinn.base.{BoardSquare, CastleZone}
+import senjinn.base.{Square, CastleZone}
 import senjinn.board.{BoardState, MoveReverser}
 import senjinn.pieces.{ChessPiece}
 
-class EnpassantMove(val source: BoardSquare, val target: BoardSquare) extends ChessMove
+class EnpassantMove(val source: Square, val target: Square) extends ChessMove
 {
   val rightsRemoved = CastleZone.setOfNoZones
   val castleCommand = None

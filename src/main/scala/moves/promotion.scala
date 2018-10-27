@@ -1,10 +1,10 @@
 package senjinn.moves
 
-import senjinn.base.{BoardSquare, CastleZone}
+import senjinn.base.{Square, CastleZone}
 import senjinn.board.{BoardState, MoveReverser}
 import senjinn.pieces.{ChessPiece}
 
-class PromotionMove(val source: BoardSquare, val target: BoardSquare, val piecetype: Char)
+class PromotionMove(val source: Square, val target: Square, val piecetype: Char)
     extends ChessMove
 {
   val rightsRemoved = CastleZone.setOfNoZones
@@ -41,7 +41,7 @@ class PromotionMove(val source: BoardSquare, val target: BoardSquare, val piecet
 
 object PromotionMove
 {
-  def apply(source: BoardSquare, target: BoardSquare, piecetype: Char) = {
+  def apply(source: Square, target: Square, piecetype: Char) = {
     require(piecetype2indexshift contains piecetype)
     new PromotionMove(source, target, piecetype)
   }

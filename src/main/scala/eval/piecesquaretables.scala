@@ -1,6 +1,6 @@
 package senjinn.eval
 
-import senjinn.base.BoardSquare
+import senjinn.base.Square
 import senjinn.pieces.ChessPiece
 import senjinn.board.PieceLocations
 
@@ -29,7 +29,7 @@ private class PieceSquareTable private (private val values: Array[Int])
 {
    require(values.length == 64)
 
-   def valueAt(square: BoardSquare): Int = values(square.index)
+   def valueAt(square: Square): Int = values(square.index)
 
    def invert: PieceSquareTable = {
      val indexReverser: Int => Int = i => 63 - 8 * (i / 8) - (7 - (i % 8))
@@ -56,7 +56,7 @@ class PieceSquareTableSet private(private val tables: Vector[PieceSquareTable])
 {
    require(tables.length == 12)
 
-   def value(piece: ChessPiece, location: BoardSquare): Int = {
+   def value(piece: ChessPiece, location: Square): Int = {
      tables(piece.index).valueAt(location)
    }
 }

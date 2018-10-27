@@ -1,13 +1,13 @@
 package senjinn.moves
 
-import senjinn.base.{BoardSquare, CastleZone, DevPiece}
+import senjinn.base.{Square, CastleZone, DevPiece}
 import senjinn.board.{BoardState, MoveReverser}
 
 
 trait ChessMove
 {
-  val source: BoardSquare
-  val target: BoardSquare
+  val source: Square
+  val target: Square
   val rightsRemoved: Set[CastleZone]
   val castleCommand: Option[CastleZone]
   val pieceDeveloped: Option[DevPiece]

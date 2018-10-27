@@ -29,8 +29,6 @@ object Dir
   val all = Vector(n, e, s, w, ne, se, sw, nw, nne, nee, see, sse, ssw, sww, nww, nnw)
 }
 
-// |----------------------------------------------------------------------------------------|
-
 /**
  * Represents one of the sides in a chess game. The constructor is 
  * private, access instances through the companion object.
@@ -57,7 +55,7 @@ object Side
 /**
  * Represents a zone into which it is possible to castle.
  */
-class CastleZone private (val index: Int, val kingSrc: BoardSquare, val kingTarg: BoardSquare) 
+class CastleZone private (val index: Int, val kingSrc: Square, val kingTarg: Square) 
 {
   require(0 <= index && index < 4)
   val (isWhiteZone, isKingsideZone) = (kingSrc.rank == 0, kingTarg.file - kingSrc.file < 0)
@@ -84,7 +82,7 @@ class CastleZone private (val index: Int, val kingSrc: BoardSquare, val kingTarg
  */
 object CastleZone
 {
-  import BoardSquare._
+  import Square._
   private val cons = new CastleZone(_, _, _)
   
   val whiteKingside  = cons(0, e1, g1)
@@ -96,10 +94,10 @@ object CastleZone
   val setOfNoZones = Set[CastleZone]()
   val setOfWkZone = Set(whiteKingside)
   val setOfWqZone = Set(whiteQueenside)
-  val setOfAllWhiteZones = setOfWkZone ++ setOfWqZone
+  val setOfWhiteZones = setOfWkZone ++ setOfWqZone
   val setOfBkZone = Set(blackKingside)
   val setOfBqZone = Set(blackQueenside)
-  val setOfAllBlackZones = setOfBkZone ++ setOfBqZone
+  val setOfBlackZones = setOfBkZone ++ setOfBqZone
 }
 
 
@@ -107,7 +105,7 @@ object CastleZone
  * Represents a piece which needs to be developed in the opening phase
  * of the game.
  */
-class DevPiece private(val startSquare: BoardSquare)
+class DevPiece private(val startSquare: Square)
 {
 }
 
@@ -115,19 +113,19 @@ object DevPiece
 {
   private def cons = new DevPiece(_)
   
-  val whiteKingsideKnight  = cons(BoardSquare.g1)
-  val whiteKingsideBishop  = cons(BoardSquare.f1)
-  val whiteKingsidePawn    = cons(BoardSquare.e2)
-  val whiteQueensidePawn   = cons(BoardSquare.d2)
-  val whiteQueensideBishop = cons(BoardSquare.c1)
-  val whiteQueensideKnight = cons(BoardSquare.b1)
+  val whiteKingsideKnight  = cons(Square.g1)
+  val whiteKingsideBishop  = cons(Square.f1)
+  val whiteKingsidePawn    = cons(Square.e2)
+  val whiteQueensidePawn   = cons(Square.d2)
+  val whiteQueensideBishop = cons(Square.c1)
+  val whiteQueensideKnight = cons(Square.b1)
   
-  val blackKingsideKnight  = cons(BoardSquare.g8)
-  val blackKingsideBishop  = cons(BoardSquare.f8)
-  val blackKingsidePawn    = cons(BoardSquare.e7)
-  val blackQueensidePawn   = cons(BoardSquare.d7)
-  val blackQueensideBishop = cons(BoardSquare.c8)
-  val blackQueensideKnight = cons(BoardSquare.b8)
+  val blackKingsideKnight  = cons(Square.g8)
+  val blackKingsideBishop  = cons(Square.f8)
+  val blackKingsidePawn    = cons(Square.e7)
+  val blackQueensidePawn   = cons(Square.d7)
+  val blackQueensideBishop = cons(Square.c8)
+  val blackQueensideKnight = cons(Square.b8)
   
   val startSquareMap = Vector(
       whiteKingsideKnight,
@@ -143,5 +141,5 @@ object DevPiece
       blackQueensideBishop,
       blackQueensideKnight).map(p => (p.startSquare, p)).toMap
       
-  def apply(startsquare: BoardSquare): DevPiece = startSquareMap(startsquare)
+  def apply(startsquare: Square): DevPiece = startSquareMap(startsquare)
 }
