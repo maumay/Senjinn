@@ -27,6 +27,21 @@ object Dir
   val (ssw, sww, nww, nnw) = (c("ssw", -2, 1), c("sww", -1, 2),  c("nww", 1, 2),   c("nnw", 2, 1))
   
   val all = Vector(n, e, s, w, ne, se, sw, nw, nne, nee, see, sse, ssw, sww, nww, nnw)
+  
+  def ofLineConnecting(start: Square, end: Square): Option[Dir] = {
+    import Math.{min, max, abs}
+    val (deltarank, deltafile) = (start.rank - end.rank, start.file - end.file)
+    val maxAbsDelta = max(abs(deltarank), abs(deltafile))
+    val minAbsDelta = min(abs(deltarank), abs(deltafile))
+    val normaliser = if (minAbsDelta == 0) maxAbsDelta else minAbsDelta
+    
+    if (start == end || maxAbsDelta % normaliser != 0 || minAbsDelta % normaliser != 0) {
+      None
+    }
+    else {
+      throw new RuntimeException
+    }
+  }
 }
 
 /**

@@ -1,9 +1,9 @@
-package parsers
+package senjinn.parsers
 import scala.util.matching.Regex
 
 /**
  */
-object ChessRegex //extends App
+object ChessRegex
 {
   private val arrow: String = "\\-\\>"
   
@@ -13,10 +13,4 @@ object ChessRegex //extends App
   val multiTarget: Regex = s"$singleSquare$arrow\\{( *$singleSquare *)\\}".r
   val shorthandMove: Regex = raw"([sScCeEpP]\[[a-hA-H1-8kKqQwW \-\>\{\}]+( [NBRG])?\])".r
   val castleZone = "(([wW][kK])|([wW][qQ])|([bB][kK])|([bB][qQ]))".r
-  
-  
-//  "e4->h6" match {
-//    case cord(_*) => println("matched")
-//    case _ => println("failed")
-//  }
 }
