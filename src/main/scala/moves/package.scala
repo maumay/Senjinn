@@ -9,6 +9,9 @@ package object moves
     * Returns the standard move connecting the source and the
     * target squares. Throws an error if a move which is 
     * impossible is requested.
+    * 
+    * TODO - In some tests I use impossible moves so need
+    * to think about how to handle this...
     */
   def standardMove(src: Square, target: Square) = {
     standardCache(src)(target)

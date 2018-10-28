@@ -28,6 +28,10 @@ object Dir
   
   val all = Vector(n, e, s, w, ne, se, sw, nw, nne, nee, see, sse, ssw, sww, nww, nnw)
   
+  /**
+   * Finds the direction of the line connecting the start square to the end square
+   * if it exists.
+   */
   def ofLineConnecting(start: Square, end: Square): Option[Dir] = {
     import Math.{min, max, abs}
     val (deltarank, deltafile) = (start.rank - end.rank, start.file - end.file)
@@ -39,7 +43,8 @@ object Dir
       None
     }
     else {
-      throw new RuntimeException
+      val (ndeltarank, ndeltafile) = (deltarank / normaliser, deltafile / normaliser)
+      all.find(dir => dir.deltaRank == ndeltarank && dir.deltaFile == ndeltafile)
     }
   }
 }
@@ -78,16 +83,20 @@ class CastleZone private (val index: Int, val kingSrc: Square, val kingTarg: Squ
   val rookSrc  = if (isKingsideZone) kingSrc  >> 3 else kingSrc  << 4
   val rookTarg = if (isKingsideZone) kingTarg << 1 else kingTarg >> 1
   
-  /** The BoardSquareuares which must be free of enemy control before castling is legal. */
-  val reqUncontrolledBoardSquares = isKingsideZone match {
-    case true => (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
-    case _    => (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_|_)
+  /** The Squares which must be free of enemy control before castling is legal. */
+  val requiredUncontrolledSquares = if (isKingsideZone) {
+    (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
+  }
+  else {
+    (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_|_)
   }
   
-  /** The BoardSquareuares which must be free of all pieces before castling is legal. */
-  val reqClearBoardSquares = isKingsideZone match {
-    case true => (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
-    case _    => (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_|_)
+  /** The Squares which must be free of all pieces before castling is legal. */
+  val requiredClearSquares = if (isKingsideZone) {
+    (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
+  }
+  else {
+    (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_|_)
   }
 }
 

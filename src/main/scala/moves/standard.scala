@@ -6,7 +6,7 @@ import senjinn.base.{Square, SquareSet, CastleZone, DevPiece, Dir}
 import senjinn.base.Square._
 import senjinn.board.{BoardState, MoveReverser}
 
-class StandardMove(val source: Square, val target: Square) extends ChessMove
+class StandardMove private[moves](val source: Square, val target: Square) extends ChessMove
 {
   val rightsRemoved = {
     val rightsMatcher = (sq: Square) => sq match {
@@ -16,7 +16,7 @@ class StandardMove(val source: Square, val target: Square) extends ChessMove
       case x if x == h8 => CastleZone.setOfBkZone
       case x if x == e8 => CastleZone.setOfBlackZones
       case x if x == a8 => CastleZone.setOfBqZone
-      case _ => CastleZone.setOfNoZones
+      case _            => CastleZone.setOfNoZones
     }
     rightsMatcher(source) ++ rightsMatcher(target)
   }
@@ -66,5 +66,5 @@ class StandardMove(val source: Square, val target: Square) extends ChessMove
 
 object StandardMove
 {
-  def apply(source: Square, target: Square) = new StandardMove(source, target)
+  def apply(source: Square, target: Square) = standardMove(source, target)
 }
