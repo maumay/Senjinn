@@ -8,7 +8,11 @@ import senjinn.moves.{ChessMove, StandardMove}
  */
 trait MoveParsing
 {
-  def parseStandardMoves(encodedMove: String): Vector[ChessMove] = {
+  private[parsers] def parsePromotionMoves(encodedMove: String): Vector[ChessMove] = {
+    throw new RuntimeException
+  }
+  
+  private[parsers] def parseStandardMoves(encodedMove: String): Vector[ChessMove] = {
     if (encodedMove.matches(s"S\\[$ChessRegex.doubleSquare\\]")) {
       val squares = ChessRegex.singleSquare.findAllMatchIn(encodedMove)
       .map(m => Square(m.matched)).toVector
@@ -18,10 +22,9 @@ trait MoveParsing
       val mmove = parseMultiMove(encodedMove)
       mmove._2.map(target => StandardMove(mmove._1, target))
     }
-    throw new RuntimeException
   }
   
-  def parseMultiMove(encodedMoves: String): (Square, Vector[Square]) = {
+  private[parsers] def parseMultiMove(encodedMoves: String): (Square, Vector[Square]) = {
     val em = encodedMoves.trim
     val (cordrx, multitargetrx) = (ChessRegex.cord, ChessRegex.multiTarget)
     em match {

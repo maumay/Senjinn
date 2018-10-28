@@ -8,31 +8,28 @@ import senjinn.board.{BoardState, MoveReverser}
 
 class StandardMove private[moves](val source: Square, val target: Square) extends ChessMove
 {
-  val rightsRemoved = {
-    val rightsMatcher = (sq: Square) => sq match {
-      case x if x == a1 => CastleZone.setOfWqZone
-      case x if x == e1 => CastleZone.setOfWhiteZones
-      case x if x == h1 => CastleZone.setOfWkZone
-      case x if x == h8 => CastleZone.setOfBkZone
-      case x if x == e8 => CastleZone.setOfBlackZones
-      case x if x == a8 => CastleZone.setOfBqZone
-      case _            => CastleZone.setOfNoZones
-    }
-    rightsMatcher(source) ++ rightsMatcher(target)
-  }
-
-  val castleCommand = None
-
-  val pieceDeveloped = DevPiece.startSquareMap.get(source)
-
+  // StandardMove specifics
   val cord: SquareSet = {
-    val dir = Dir.all.find(source.allSquares(_, 8).contains(target)).get
+    val dir = Dir.ofLineConnecting(source, target).get
     SquareSet(source.allSquares(dir, 8).takeWhile(_ != target).foldLeft(0L)(_|_.loc))
   }
+  
+  // ChessMove API
+  override val castleCommand = None
+  override val pieceDeveloped = DevPiece.startSquareMap.get(source)
+  override val rightsRemoved = getRightsRemoved(source) ++ getRightsRemoved(target)
 
-  def toCompactString = s"S$source$target"
-
-  def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
+  private def getRightsRemoved(sq: Square) = sq match {
+    case x if x == a1 => CastleZone.setOfWqZone
+    case x if x == e1 => CastleZone.setOfWhiteZones
+    case x if x == h1 => CastleZone.setOfWkZone
+    case x if x == h8 => CastleZone.setOfBkZone
+    case x if x == e8 => CastleZone.setOfBlackZones
+    case x if x == a8 => CastleZone.setOfBqZone
+    case _            => CastleZone.setOfNoZones
+  }
+  
+  override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
     val plocs = state.plocs
     val moving = plocs.pieceAt(source, state.active).get
     val removing = plocs.pieceAt(target, state.passive)
@@ -55,13 +52,15 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
     else {state.clock += 1}
   }
 
-  def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
     val plocs = state.plocs
     val previouslyMoved = plocs.pieceAt(target, state.active).get
     plocs.removeSquare(previouslyMoved, target)
     plocs.addSquare(previouslyMoved, source)
     reverser.pieceTaken foreach {plocs.addSquare(_, target)}
   }
+  
+  override def toCompactString = s"S$source$target"
 }
 
 object StandardMove
