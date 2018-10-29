@@ -122,6 +122,18 @@ object CastleZone
   val setOfBkZone = Set(blackKingside)
   val setOfBqZone = Set(blackQueenside)
   val setOfBlackZones = setOfBkZone ++ setOfBqZone
+  
+  private val simpleIdentifierMap = Map(
+      "wk" -> whiteKingside,
+      "wq" -> whiteQueenside,
+      "bk" -> blackKingside,
+      "bq" -> blackQueenside
+      )
+      
+   def apply(identifier: String) = {
+    require(simpleIdentifierMap contains identifier)
+    simpleIdentifierMap(identifier)
+  }
 }
 
 

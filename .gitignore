@@ -8,6 +8,7 @@ target/
 /.settings/
 /.ensime_cache/
 /.cache-main
+/.cache-tests
 /.classpath
 /.project
 /.ensime

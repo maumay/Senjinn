@@ -3,23 +3,19 @@ package senjinn.moves
 import senjinn.base.{CastleZone}
 import senjinn.pieces._
 import senjinn.board.{BoardState, MoveReverser}
+import senjinn.base.CastleZone.{setOfWhiteZones, setOfBlackZones}
 
-class CastleMove(val zone: CastleZone) extends ChessMove
+class CastleMove private[moves](val zone: CastleZone) extends ChessMove
 {
   val (source, target) = (zone.kingSrc, zone.kingTarg)
 
-  val rightsRemoved = zone match {
-    case x if x.isWhiteZone => CastleZone.setOfWhiteZones
-    case _ => CastleZone.setOfBlackZones
-  }
+  override val rightsRemoved = if (zone.isWhiteZone) setOfWhiteZones else setOfBlackZones
+  override val castleCommand = Some(zone)
+  override val pieceDeveloped = None
 
-  val castleCommand = Some(zone)
+  override def toCompactString = zone.toString
 
-  val pieceDeveloped = None
-
-  def toCompactString = zone.toString
-
-  def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
     val king = ChessPiece(state.active)(5)
     val rook = ChessPiece(state.active)(3)
     val plocs = state.plocs
@@ -34,7 +30,7 @@ class CastleMove(val zone: CastleZone) extends ChessMove
     state.clock += 1
   }
 
-  def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
     val king = ChessPiece(state.active)(5)
     val rook = ChessPiece(state.active)(3)
     val plocs = state.plocs
@@ -42,5 +38,12 @@ class CastleMove(val zone: CastleZone) extends ChessMove
     plocs.removeSquare(king, target)
     plocs.addSquare(rook, zone.rookSrc)
     plocs.removeSquare(rook, zone.rookTarg)
+  }
+}
+
+object CastleMove
+{
+  def apply(identifier: String) = {
+    castleMove(CastleZone(identifier))
   }
 }

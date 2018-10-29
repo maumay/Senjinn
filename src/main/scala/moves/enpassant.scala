@@ -4,7 +4,7 @@ import senjinn.base.{Square, CastleZone}
 import senjinn.board.{BoardState, MoveReverser}
 import senjinn.pieces.{ChessPiece}
 
-class EnpassantMove(val source: Square, val target: Square) extends ChessMove
+class EnpassantMove private[moves](val source: Square, val target: Square) extends ChessMove
 {
   val rightsRemoved = CastleZone.setOfNoZones
   val castleCommand = None
@@ -35,5 +35,12 @@ class EnpassantMove(val source: Square, val target: Square) extends ChessMove
     plocs.removeSquare(activePawn, target)
     plocs.addSquare(activePawn, source)
     plocs.addSquare(passivePawn, enpassantSquare)
+  }
+}
+
+object EnpassantMove
+{
+  def apply(source: Square, target: Square) = {
+    new EnpassantMove(source, target)
   }
 }
