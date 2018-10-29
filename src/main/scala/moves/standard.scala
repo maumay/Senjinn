@@ -6,6 +6,10 @@ import senjinn.base.{Square, SquareSet, CastleZone, DevPiece, Dir}
 import senjinn.base.Square._
 import senjinn.board.{BoardState, MoveReverser}
 
+/**
+ * Represents the act of a 'standard' move in a chess game.
+ * I.e. one which is not castling, enpassant or pawn promotion.
+ */
 class StandardMove private[moves](val source: Square, val target: Square) extends ChessMove
 {
   // StandardMove specifics

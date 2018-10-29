@@ -5,7 +5,10 @@ import senjinn.pieces._
 import senjinn.board.{BoardState, MoveReverser}
 import senjinn.base.CastleZone.{setOfWhiteZones, setOfBlackZones}
 
-class CastleMove private[moves](val zone: CastleZone) extends ChessMove
+/**
+ * Represents the act of castling in a chess game.
+ */
+final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
 {
   override val (source, target) = (zone.kingSrc, zone.kingTarg)
   override val rightsRemoved = if (zone.isWhiteZone) setOfWhiteZones else setOfBlackZones

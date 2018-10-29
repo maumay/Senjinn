@@ -3,7 +3,11 @@ package senjinn.moves
 import senjinn.base.{Square, CastleZone, DevPiece}
 import senjinn.board.{BoardState, MoveReverser}
 
-
+/**
+ * Trait representing the general concept of a move
+ * made by a player which evolves the state of some
+ * state of play.
+ */
 trait ChessMove
 {
   val source: Square
@@ -38,7 +42,7 @@ trait ChessMove
     reverser.isConsumed = true
   }
 
-  def makeMove(state: BoardState) {
+  final def makeMove(state: BoardState) {
     makeMove(state, new MoveReverser())
   }
 
