@@ -7,8 +7,7 @@ import senjinn.base.CastleZone.{setOfWhiteZones, setOfBlackZones}
 
 class CastleMove private[moves](val zone: CastleZone) extends ChessMove
 {
-  val (source, target) = (zone.kingSrc, zone.kingTarg)
-
+  override val (source, target) = (zone.kingSrc, zone.kingTarg)
   override val rightsRemoved = if (zone.isWhiteZone) setOfWhiteZones else setOfBlackZones
   override val castleCommand = Some(zone)
   override val pieceDeveloped = None
