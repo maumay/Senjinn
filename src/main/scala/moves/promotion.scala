@@ -10,6 +10,7 @@ import senjinn.pieces.{ChessPiece}
 final class PromotionMove private[moves](val source: Square, val target: Square, val piecetype: Char)
     extends ChessMove
 {
+  // ChessMove API
   override val rightsRemoved = CastleZone.setOfNoZones
   override val castleCommand = None
   override val pieceDeveloped = None
@@ -40,6 +41,16 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
     plocs.addSquare(activePawn, source)
     reverser.pieceTaken foreach {plocs.addSquare(_, target)}
   }
+  
+  // Object API
+  override def equals(obj: Any): Boolean = {
+    obj.isInstanceOf[PromotionMove] && {
+      val other = obj.asInstanceOf[PromotionMove]
+      (source, target, piecetype) == (other.source, other.target, other.piecetype)
+    }
+  }
+  
+  override def hashCode(): Int = (source, target, piecetype).##
 }
 
 object PromotionMove

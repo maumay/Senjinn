@@ -65,9 +65,23 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
   }
   
   override def toCompactString = s"S$source$target"
+  
+  // Object API
+  override def equals(obj: Any): Boolean = {
+    obj.isInstanceOf[StandardMove] && {
+      val other = obj.asInstanceOf[StandardMove]
+      (source, target) == (other.source, other.target)
+    }
+  }
+  
+  // Cache the hash :)
+  private val cachedHash = (source, target).##
+  override def hashCode(): Int = cachedHash
 }
 
 object StandardMove
 {
-  def apply(source: Square, target: Square) = standardMove(source, target)
+  def apply(source: Square, target: Square): StandardMove = standardMove(source, target)
+  
+  def apply(source: String, target: String): StandardMove = apply(Square(source), Square(target))
 }

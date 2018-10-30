@@ -10,7 +10,8 @@ import senjinn.pieces.{ChessPiece}
 final class EnpassantMove private[moves](val source: Square, val target: Square) extends ChessMove
 {
   val enpassantSquare = if (source.rank < target.rank) target >> 8 else target << 8
-      
+  
+  // ChessMove API
   override val rightsRemoved = CastleZone.setOfNoZones
   override val castleCommand = None
   override val pieceDeveloped = None
@@ -39,6 +40,16 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
     plocs.addSquare(activePawn, source)
     plocs.addSquare(passivePawn, enpassantSquare)
   }
+  
+  // Object API
+  override def equals(obj: Any): Boolean = {
+    obj.isInstanceOf[EnpassantMove] && {
+      val other = obj.asInstanceOf[EnpassantMove]
+      source == other.source && target == other.target
+    }
+  }
+  
+  override def hashCode(): Int = (source, target).##
 }
 
 object EnpassantMove

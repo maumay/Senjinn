@@ -10,6 +10,7 @@ import senjinn.base.CastleZone.{setOfWhiteZones, setOfBlackZones}
  */
 final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
 {
+  // ChessMove API
   override val (source, target) = (zone.kingSrc, zone.kingTarg)
   override val rightsRemoved = if (zone.isWhiteZone) setOfWhiteZones else setOfBlackZones
   override val castleCommand = Some(zone)
@@ -41,6 +42,13 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
     plocs.addSquare(rook, zone.rookSrc)
     plocs.removeSquare(rook, zone.rookTarg)
   }
+  
+  // Object API
+  override def equals(obj: Any): Boolean = {
+    obj.isInstanceOf[CastleMove] && zone == obj.asInstanceOf[CastleMove].zone
+  }
+  
+  override def hashCode(): Int = zone.##
 }
 
 object CastleMove

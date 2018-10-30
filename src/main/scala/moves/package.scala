@@ -33,13 +33,13 @@ package object moves
   def promotionMove(src: Square, target: Square) = {
     Iterator('q', 'r', 'b', 'n').map(new PromotionMove(src, target, _))
   }
-
-  // Standard move cache implementation
+  
+   // Standard move cache implementation
   private type Sq2Standard = Map[Square, StandardMove]
   private val standardCache: Map[Square, Sq2Standard] = {
     import senjinn.pieces.{WhiteKnight => wk, WhiteQueen => wq}
     val f = (src: Square, sqs: SquareSet) => {
-      sqs.squares.map(t => (t, StandardMove(src, t))).toMap
+      sqs.squares.map(t => (t, new StandardMove(src, t))).toMap
     }
     val allsq = Square.all
     val knightMoves = allsq.map(src => (src, f(src, wk.getEmptyBoardMoveset(src)))).toMap
