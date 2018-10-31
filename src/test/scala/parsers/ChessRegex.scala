@@ -5,12 +5,28 @@ import scala.util.matching.Regex
  */
 object ChessRegex
 {
-  private val arrow: String = "\\-\\>"
+  val square: Regex = "([a-hA-H][1-8])".r
+  private def sq = square.regex
   
-  val singleSquare: Regex = "([a-hA-H][1-8])".r
-  val doubleSquare: Regex = s"($singleSquare +$singleSquare)".r
-  val cord: Regex = s"($singleSquare$arrow$singleSquare)".r
-  val multiTarget: Regex = s"($singleSquare$arrow\\{( *$singleSquare *)+\\})".r
+  // Parsing moves
+  private val arrow: String = "\\-\\>"
+  val doubleSquare: Regex = s"($square +$square)".r
+  val cord: Regex = s"($sq$arrow$sq)".r
+  val multiTarget: Regex = s"($sq$arrow\\{( *$square *)+\\})".r
   val shorthandMove: Regex = raw"([sScCeEpP]\[[a-hA-H1-8kKqQwW \-\>\{\}]+( [NBRG])?\])".r
   val castleZone = "(([wW][kK])|([wW][qQ])|([bB][kK])|([bB][qQ]))".r
+  
+  // Board state parsing regex
+  val enpassantAttribute = s"^enpassant_square: *(none|$sq)$$".r
+  val activeSideAttribute = "^active_side: *(white|black)$".r
+  val developedPiecesAttribute = s"^developed_pieces:( *none| *$sq( +$sq)*)$$".r
+  val castlingRightsAttribute = "^castling_rights:(* wk)?( +wq)?( +bk)?( +bq)?$".r
+  val whiteCastleStatusAttribute = "^white_castle_status: *(none|wk|wq)$".r
+  val blackCastleStatusAttribute = "^black_castle_status: *(none|bk|bq)$".r
+  val halfMoveClockAttribute = "^half_move_clock: *[0-9]+$".r
+  
+  private val groupedSquares = s"\\( *($sq *)?( +$sq)* *\\)"
+  private val sixGroups = (1 to 6).map(_ => groupedSquares).foldLeft(" *")(_ + " +" + _)
+  val whiteLocationsAttribute = s"^white_pieces:$sixGroups$$"
+  val blackLocationsAttribute = s"^black_pieces:$sixGroups$$"
 }

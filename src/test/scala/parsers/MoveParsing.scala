@@ -31,7 +31,7 @@ trait MoveParsing
   }
   
   private def parseEnpassantMove(encodedMove: String): Vector[ChessMove] = {
-    val squares = ChessRegex.singleSquare.findAllIn(encodedMove).map(Square(_)).toVector
+    val squares = ChessRegex.square.findAllIn(encodedMove).map(Square(_)).toVector
     Vector(EnpassantMove(squares.head, squares.last))
   }
   
@@ -44,14 +44,14 @@ trait MoveParsing
       targets.map(target => PromotionMove(src, target, promotionresult))
     }
     else {
-      val squares = ChessRegex.singleSquare.findAllIn(em).map(Square(_)).toVector
+      val squares = ChessRegex.square.findAllIn(em).map(Square(_)).toVector
       Vector(PromotionMove(squares.head, squares.last, promotionresult))
     }
   }
   
   private def parseStandardMoves(encodedMove: String): Vector[ChessMove] = {
     if (encodedMove.matches(s"S\\[$ChessRegex.doubleSquare\\]")) {
-      val squares = ChessRegex.singleSquare.findAllMatchIn(encodedMove)
+      val squares = ChessRegex.square.findAllMatchIn(encodedMove)
       .map(m => Square(m.matched)).toVector
       Vector(StandardMove(squares.head, squares.last))
     }
@@ -73,7 +73,7 @@ trait MoveParsing
   }
   
   private def parseCord(x: String): (Square, Vector[Square]) = {
-    val matchedSquares = ChessRegex.singleSquare
+    val matchedSquares = ChessRegex.square
     .findAllMatchIn(x)
     .map {m => Square(m.matched)}
     .toVector
@@ -84,7 +84,7 @@ trait MoveParsing
   }
   
   private def parseMultiTarget(x: String): (Square, Vector[Square]) = {
-    val matchedSquares = ChessRegex.singleSquare
+    val matchedSquares = ChessRegex.square
     .findAllMatchIn(x)
     .map {m => Square(m.matched)}
     .toVector
