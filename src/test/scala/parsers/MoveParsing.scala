@@ -26,16 +26,16 @@ trait MoveParsing
     }
   }
   
-  private[parsers] def parseCastlingMoves(encodedMoves: String): Vector[ChessMove] = {
+  private def parseCastlingMoves(encodedMoves: String): Vector[ChessMove] = {
     ChessRegex.castleZone.findAllIn(encodedMoves).map(CastleMove(_)).toVector
   }
   
-  private[parsers] def parseEnpassantMove(encodedMove: String): Vector[ChessMove] = {
+  private def parseEnpassantMove(encodedMove: String): Vector[ChessMove] = {
     val squares = ChessRegex.singleSquare.findAllIn(encodedMove).map(Square(_)).toVector
     Vector(EnpassantMove(squares.head, squares.last))
   }
   
-  private[parsers] def parsePromotionMoves(encodedMoves: String): Vector[ChessMove] = {
+  private def parsePromotionMoves(encodedMoves: String): Vector[ChessMove] = {
     val em = encodedMoves.trim.toUpperCase
     val promotionresult = "[NBRQ]".r.findAllIn(em).toVector.last
     val (mult, cord) = (ChessRegex.multiTarget.regex, ChessRegex.cord.regex)
@@ -49,7 +49,7 @@ trait MoveParsing
     }
   }
   
-  private[parsers] def parseStandardMoves(encodedMove: String): Vector[ChessMove] = {
+  private def parseStandardMoves(encodedMove: String): Vector[ChessMove] = {
     if (encodedMove.matches(s"S\\[$ChessRegex.doubleSquare\\]")) {
       val squares = ChessRegex.singleSquare.findAllMatchIn(encodedMove)
       .map(m => Square(m.matched)).toVector
@@ -61,7 +61,7 @@ trait MoveParsing
     }
   }
   
-  private[parsers] def parseMultiMove(encodedMoves: String): (Square, Vector[Square]) = {
+  private def parseMultiMove(encodedMoves: String): (Square, Vector[Square]) = {
     val em = encodedMoves.trim
     val cord = ChessRegex.cord.findFirstIn(em).map(parseCord(_))
     val mult = ChessRegex.multiTarget.findFirstIn(em).map(parseMultiTarget(_))

@@ -57,4 +57,8 @@ object EnpassantMove
   def apply(source: Square, target: Square) = {
     new EnpassantMove(source, target)
   }
+  
+  def apply(source: String, target: String) = {
+    new EnpassantMove(Square(source), Square(target))
+  }
 }

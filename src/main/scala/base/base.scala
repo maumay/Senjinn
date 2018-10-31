@@ -131,8 +131,9 @@ object CastleZone
       )
       
    def apply(identifier: String) = {
-    require(simpleIdentifierMap contains identifier)
-    simpleIdentifierMap(identifier)
+    val id = identifier.toLowerCase
+    require(simpleIdentifierMap contains id)
+    simpleIdentifierMap(id)
   }
 }
 
