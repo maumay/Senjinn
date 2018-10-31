@@ -55,15 +55,19 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
 
 object PromotionMove
 {
-  def apply(source: Square, target: Square, piecetype: Char) = {
+  def apply(source: Square, target: Square, piecetype: Char): PromotionMove = {
     require(piecetype2indexshift contains piecetype)
     new PromotionMove(source, target, piecetype)
   }
   
-  def apply(source: Square, target: Square, piecetype: String) = {
+  def apply(source: Square, target: Square, piecetype: String): PromotionMove = {
     val piecechar = piecetype.toLowerCase.charAt(0)
     require(piecetype2indexshift contains piecechar)
     new PromotionMove(source, target, piecechar)
+  }
+  
+  def apply(source: String, target: String, piecetype: String): PromotionMove = {
+    apply(Square(source), Square(target), piecetype)
   }
 
   val piecetype2indexshift = Map[Char, Int](

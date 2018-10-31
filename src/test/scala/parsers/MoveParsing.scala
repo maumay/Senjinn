@@ -36,10 +36,10 @@ trait MoveParsing
   }
   
   private[parsers] def parsePromotionMoves(encodedMoves: String): Vector[ChessMove] = {
-    val em = encodedMoves
+    val em = encodedMoves.trim.toUpperCase
     val promotionresult = "[NBRQ]".r.findAllIn(em).toVector.last
-    
-    if (em.matches(s"P\\[($ChessRegex.multiTarget|$ChessRegex.cord)$promotionresult\\]")) {
+    val (mult, cord) = (ChessRegex.multiTarget.regex, ChessRegex.cord.regex)
+    if (em.matches(s"P\\[($mult|$cord) $promotionresult\\]")) {
       val (src, targets) = parseMultiMove(em.substring(2, em.length - 3))
       targets.map(target => PromotionMove(src, target, promotionresult))
     }
