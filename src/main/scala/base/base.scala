@@ -34,7 +34,7 @@ object Dir
    */
   def ofLineConnecting(start: Square, end: Square): Option[Dir] = {
     import Math.{min, max, abs}
-    val (deltarank, deltafile) = (start.rank - end.rank, start.file - end.file)
+    val (deltarank, deltafile) = (end.rank - start.rank, end.file - start.file)
     val maxAbsDelta = max(abs(deltarank), abs(deltafile))
     val minAbsDelta = min(abs(deltarank), abs(deltafile))
     val normaliser = if (minAbsDelta == 0) maxAbsDelta else minAbsDelta

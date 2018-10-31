@@ -1,6 +1,6 @@
 package senjinn.parsers
 
-import senjinn.base.{Square}
+import senjinn.base.{Square, Dir}
 import senjinn.moves.{ChessMove, StandardMove, PromotionMove, EnpassantMove, CastleMove}
 
 /**
@@ -63,11 +63,12 @@ trait MoveParsing
   
   private[parsers] def parseMultiMove(encodedMoves: String): (Square, Vector[Square]) = {
     val em = encodedMoves.trim
-    val (cordrx, multitargetrx) = (ChessRegex.cord, ChessRegex.multiTarget)
-    em match {
-      case cordrx(_*)        => parseCord(em)
-      case multitargetrx(_*) => parseMultiMove(em)
-      case _                 => throw new RuntimeException
+    val cord = ChessRegex.cord.findFirstIn(em).map(parseCord(_))
+    val mult = ChessRegex.multiTarget.findFirstIn(em).map(parseMultiTarget(_))
+    (cord, mult) match {
+      case (Some(x), None) => x
+      case (None, Some(x)) => x
+      case _               => throw new RuntimeException
     }
   }
   
@@ -77,7 +78,9 @@ trait MoveParsing
     .map {m => Square(m.matched)}
     .toVector
     val (start, end) = (matchedSquares.head, matchedSquares.last)
-    throw new RuntimeException
+    val dir = Dir.ofLineConnecting(start, end)
+    val span = start.allSquares(dir, 8).span(_ != end)
+    (start, span._1 ++ span._2.take(1))
   }
   
   private def parseMultiTarget(x: String): (Square, Vector[Square]) = {
