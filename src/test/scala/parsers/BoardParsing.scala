@@ -3,7 +3,7 @@ package senjinn.parsers
 import scala.collection.{ mutable => mutable }
 import senjinn.base.{ Square, CastleZone, Side }
 import senjinn.base.ImplicitAreaConverters.{ boardsquare2long }
-import senjinn.board.{ BoardState, PieceLocations, CastlingTracker }
+import senjinn.board.{ BoardState, PieceLocations, CastlingTracker, HashCache }
 import senjinn.base.CastleZone
 
 /**
@@ -27,8 +27,7 @@ trait BoardParsing
     
     PieceLocations(ChessRegex.groupedSquares.findAllIn(whiteLocs + blackLocs)
       .map(ChessRegex.square.findAllIn(_).map(Square(_)))
-      .map(_.foldLeft(0L)(_|_))
-      .toArray)
+      .map(_.foldLeft(0L)(_|_)).toArray)
   }
 
   private def parseHalfMoveClock(clock: String): Int = {
@@ -66,5 +65,14 @@ trait BoardParsing
     if (whiteMatch.isDefined) Side.white else Side.black
   }
   
+  private def parseEnpassantSquare(encoded: String): Option[Square] = {
+    require(encoded.matches(ChessRegex.enpassantAttribute.regex))
+    ChessRegex.square.findFirstIn(encoded).map(Square(_))
+  }
   
+  private def constructDummyHashCache(boardHash: Long, moveCount: Int): HashCache = {
+    val cache = (1 to HashCache.size + 1).map(_.toLong).toArray
+    cache(moveCount % HashCache.size) = boardHash
+    HashCache(cache, moveCount)
+  }
 }
