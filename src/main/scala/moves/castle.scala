@@ -21,7 +21,7 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
   override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
     val king = ChessPiece(state.active)(5)
     val rook = ChessPiece(state.active)(3)
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     plocs.removeSquare(king, source)
     plocs.addSquare(king, target)
     plocs.removeSquare(rook, zone.rookSrc)
@@ -36,7 +36,7 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
   override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
     val king = ChessPiece(state.active)(5)
     val rook = ChessPiece(state.active)(3)
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     plocs.addSquare(king, source)
     plocs.removeSquare(king, target)
     plocs.addSquare(rook, zone.rookSrc)

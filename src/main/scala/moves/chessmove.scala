@@ -26,7 +26,7 @@ trait ChessMove
     updatePieceLocations(state, reverser)
     updateDevelopedPieces(state, reverser)
     state.switchActive()
-    reverser.discardedHash = state.hcache.increment(state.computeHash)
+    reverser.discardedHash = state.hashCache.increment(state.computeHash)
     reverser.isConsumed = false
   }
 
@@ -38,7 +38,7 @@ trait ChessMove
     revertDevelopedPieces(state, reverser)
     state.clock = reverser.discardedClockValue
     state.enpassant = reverser.discardedEnpassant
-    state.hcache.decrement(reverser.discardedHash)
+    state.hashCache.decrement(reverser.discardedHash)
     reverser.isConsumed = true
   }
 
@@ -47,22 +47,22 @@ trait ChessMove
   }
 
   private def updateCastlingStatus(state: BoardState, reverser: MoveReverser) {
-    castleCommand foreach {state.cstatus.setStatus(_)}
-    reverser.discardedCastleRights = rightsRemoved & state.cstatus.rights
-    state.cstatus.rights --= reverser.discardedCastleRights
+    castleCommand foreach {state.castleStatus.setStatus(_)}
+    reverser.discardedCastleRights = rightsRemoved & state.castleStatus.rights
+    state.castleStatus.rights --= reverser.discardedCastleRights
   }
 
   private def revertCastlingStatus(state: BoardState, reverser: MoveReverser) {
-    castleCommand foreach {state.cstatus.removeStatus(_)}
-    state.cstatus.rights ++= reverser.discardedCastleRights
+    castleCommand foreach {state.castleStatus.removeStatus(_)}
+    state.castleStatus.rights ++= reverser.discardedCastleRights
   }
 
   private def updateDevelopedPieces(state: BoardState, reverser: MoveReverser) {
-    reverser.pieceDeveloped = pieceDeveloped.filterNot(state.pdev contains _)
-    state.pdev ++= reverser.pieceDeveloped
+    reverser.pieceDeveloped = pieceDeveloped.filterNot(state.piecesDeveloped contains _)
+    state.piecesDeveloped ++= reverser.pieceDeveloped
   }
 
   private def revertDevelopedPieces(state: BoardState, reverser: MoveReverser) {
-    state.pdev --= reverser.pieceDeveloped
+    state.piecesDeveloped --= reverser.pieceDeveloped
   }
 }

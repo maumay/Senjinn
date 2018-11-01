@@ -21,7 +21,7 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
     val pt2is = PromotionMove.piecetype2indexshift
     val activePawn = ChessPiece(state.active)(0)
     val promotedPiece = ChessPiece.all(activePawn.index + pt2is(piecetype))
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     plocs.removeSquare(activePawn, source)
     plocs.addSquare(promotedPiece, target)
     reverser.pieceTaken = plocs.pieceAt(target, state.passive)
@@ -36,7 +36,7 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
     val pt2is = PromotionMove.piecetype2indexshift
     val activePawn = ChessPiece(state.active)(0)
     val promotedPiece = ChessPiece.all(activePawn.index + pt2is(piecetype))
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     plocs.removeSquare(promotedPiece, target)
     plocs.addSquare(activePawn, source)
     reverser.pieceTaken foreach {plocs.addSquare(_, target)}

@@ -21,7 +21,7 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
   override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
     val activePawn = ChessPiece(state.active)(0)
     val passivePawn = ChessPiece(state.passive)(0)
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     plocs.removeSquare(activePawn, source)
     plocs.addSquare(activePawn, target)
     plocs.removeSquare(passivePawn, enpassantSquare)
@@ -35,7 +35,7 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
   override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
     val activePawn = ChessPiece(state.active)(0)
     val passivePawn = ChessPiece(state.passive)(0)
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     plocs.removeSquare(activePawn, target)
     plocs.addSquare(activePawn, source)
     plocs.addSquare(passivePawn, enpassantSquare)

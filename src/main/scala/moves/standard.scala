@@ -34,7 +34,7 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
   }
   
   override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     val moving = plocs.pieceAt(source, state.active).get
     val removing = plocs.pieceAt(target, state.passive)
     plocs.removeSquare(moving, source)
@@ -57,7 +57,7 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
   }
 
   override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
-    val plocs = state.plocs
+    val plocs = state.pieceLocations
     val previouslyMoved = plocs.pieceAt(target, state.active).get
     plocs.removeSquare(previouslyMoved, target)
     plocs.addSquare(previouslyMoved, source)

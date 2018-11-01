@@ -12,30 +12,51 @@ import senjinn.pieces.ChessPiece
   * {@link MoveReverser}.  
   */
 class BoardState(
-  val plocs: PieceLocations,
-  val hcache: HashCache,
-  val cstatus: CastlingTracker,
-  val pdev: mutable.Set[DevPiece],
+  val pieceLocations: PieceLocations,
+  val hashCache: HashCache,
+  val castleStatus: CastlingTracker,
+  val piecesDeveloped: mutable.Set[DevPiece],
   var clock: Int,
   var enpassant: Option[Square],
   private var _active: Side)
 {
   def active = _active
+  
   def passive = active.otherSide
+  
   def switchActive() {_active = _active.otherSide }
-  def computeHash = plocs.hash ^ BoardHasher.hashFeatures(active, enpassant, cstatus)
+  
+  def computeHash = {
+    pieceLocations.hash ^ BoardHasher.hashFeatures(active, enpassant, castleStatus)
+  }
 
   override def equals(x: Any) = {
     x.isInstanceOf[BoardState] && {
       val o = x.asInstanceOf[BoardState]
-        (plocs, hcache, cstatus, pdev, clock, enpassant) ==
-      (o.plocs, o.hcache, o.cstatus, o.pdev, o.clock, o.enpassant)
+      fieldTuple == o.fieldTuple
     }
   }
+  
+  override def hashCode(): Int = fieldTuple.##
+  
+  private def fieldTuple = (pieceLocations, hashCache, 
+      castleStatus, piecesDeveloped, clock, enpassant, active)
 }
 
 object BoardState
 {
+    def apply(properties: Map[String, Any]): BoardState = {
+      val p = properties
+      new BoardState(
+          p("pieceLocations").asInstanceOf[PieceLocations],
+          p("hashCache").asInstanceOf[HashCache],
+          p("castleStatus").asInstanceOf[CastlingTracker],
+          p("piecesDeveloped").asInstanceOf[mutable.Set[DevPiece]],
+          p("clock").asInstanceOf[Int],
+          p("enpassant").asInstanceOf[Option[Square]],
+          p("active").asInstanceOf[Side]
+      )
+    }
 }
 
 class HashCache private(private val cache: Array[Long], private var moveCount: Int)
