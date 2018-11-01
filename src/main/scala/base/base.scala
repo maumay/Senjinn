@@ -123,7 +123,7 @@ object CastleZone
   val setOfBqZone = Set(blackQueenside)
   val setOfBlackZones = setOfBkZone ++ setOfBqZone
   
-  private val simpleIdentifierMap = Map(
+  val simpleIdentifierMap = Map(
       "wk" -> whiteKingside,
       "wq" -> whiteQueenside,
       "bk" -> blackKingside,

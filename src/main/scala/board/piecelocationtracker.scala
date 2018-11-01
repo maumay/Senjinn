@@ -11,8 +11,7 @@ import senjinn.eval.PieceSquareTableSet
   */
 class PieceLocations private(private val _locs: Array[Long]) extends Iterable[SquareSet]
 {
-  require(_locs.length == 12)
-  
+  // Instance variables
   /** Self-updating hash value of all the piece-square features. */
   private var _hash: Long = {
     val allLocs = _locs.map(_.squares)
@@ -41,6 +40,7 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   private var _blacks: SquareSet = ChessPiece.blacks.map(p => _locs(p.index)).reduce(_|_)
   
   
+  // Instance methods
   def contains(piece: ChessPiece, loc: Square): Boolean = {
     locs(piece).intersects(loc)
   }
@@ -81,7 +81,7 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   def whites = _whites
   def blacks = _blacks
 
-  // Equality api
+  // Object API
   override def equals(x: Any) = {
     x.isInstanceOf[PieceLocations] && {
       val o = x.asInstanceOf[PieceLocations]
@@ -100,6 +100,11 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
 
 object PieceLocations
 {
+  def apply(locs: Array[Long]): PieceLocations = {
+    require(locs.length == 12)
+    new PieceLocations(locs)
+  }
+  
   def apply(locs: Map[ChessPiece, Set[Square]]): PieceLocations = {
     // val xs = ChessPiece.all.map(locs.getOrElse(_, Set()).foldLeft(0L)(_|_)).toArray
     // val x = Set()

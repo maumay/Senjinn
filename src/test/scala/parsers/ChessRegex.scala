@@ -25,8 +25,8 @@ object ChessRegex
   val blackCastleStatusAttribute = "^black_castle_status: *(none|bk|bq)$".r
   val halfMoveClockAttribute = "^half_move_clock: *[0-9]+$".r
   
-  private val groupedSquares = s"\\( *($sq *)?( +$sq)* *\\)"
-  private val sixGroups = (1 to 6).map(_ => groupedSquares).foldLeft(" *")(_ + " +" + _)
-  val whiteLocationsAttribute = s"^white_pieces:$sixGroups$$"
-  val blackLocationsAttribute = s"^black_pieces:$sixGroups$$"
+  val groupedSquares = s"\\( *($sq *)?( +$sq)* *\\)".r
+  val sixGroups = (1 to 6).map(_ => groupedSquares.regex).foldLeft(" *")(_ + " +" + _).r
+  val whiteLocationsAttribute = s"^white_pieces:$sixGroups.regex$$".r
+  val blackLocationsAttribute = s"^black_pieces:$sixGroups.regex$$".r
 }
