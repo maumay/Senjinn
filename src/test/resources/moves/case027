@@ -1,6 +1,5 @@
 // Testing white kingside bishop development
-//StandardMove[source=f1|target=h3]
-s[f1 h3]
+StandardMove[source=f1|target=h3]
 
 white_pieces: (d2 e2) (b1 g1) (c1 f1) () () ()
 black_pieces: (d7 e7) (b8 g8) (c8 f8) () () ()

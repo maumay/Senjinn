@@ -1,6 +1,5 @@
 // Testing white bishop move + black bishop removal
-//StandardMove[source=c4|target=d6]
-s[c4 d6]
+StandardMove[source=c4|target=d6]
 
 white_pieces: (f2 g2)    (b3) (c4) (a1 h1) (c2) (e1)
 black_pieces: (c5 e7 f7) (b6) (d6) (a8 h8) (d7) (e8)

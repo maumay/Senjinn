@@ -1,6 +1,5 @@
 // Testing white queenside knight development
-//StandardMove[source=b1|target=c3]
-s[b1 c3]
+StandardMove[source=b1|target=c3]
 
 white_pieces: (d2 e2) (b1 g1) (c1 f1) () () ()
 black_pieces: (d7 e7) (b8 g8) (c8 f8) () () ()

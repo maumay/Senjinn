@@ -1,6 +1,5 @@
 // Testing black king move results in lost rights
-//StandardMove[source=e8|target=f8]
-s[e8 f8]
+StandardMove[source=e8|target=f8]
 
 white_pieces: (f2 g2)    (b3) (c4) (a1 h1) (c2) (e1)
 black_pieces: (c5 e7 f7) (b6) (d6) (a8 h8) (d7) (e8)

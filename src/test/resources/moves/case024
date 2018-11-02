@@ -1,6 +1,5 @@
 // Testing white e pawn development
-//StandardMove[source=e2|target=e4]
-s[e2 e4]
+StandardMove[source=e2|target=e4]
 
 white_pieces: (d2 e2) (b1 g1) (c1 f1) () () ()
 black_pieces: (d7 e7) (b8 g8) (c8 f8) () () ()

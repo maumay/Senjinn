@@ -1,6 +1,5 @@
 // Testing white king attack and black king removal
-//StandardMove[source=e1|target=e8]
-s[e1 e8]
+StandardMove[source=e1|target=e8]
 
 white_pieces: (f2 g2)    (b3) (c4) (a1 h1) (c2) (e1)
 black_pieces: (c5 e7 f7) (b6) (d6) (a8 h8) (d7) (e8)

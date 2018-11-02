@@ -1,6 +1,5 @@
 // Testing black queen attack and white queen removal
-//StandardMove[source=d7|target=c2]
-s[d7 c2]
+StandardMove[source=d7|target=c2]
 
 white_pieces: (f2 g2)    (b3) (c4) (a1 h1) (c2) (e1)
 black_pieces: (c5 e7 f7) (b6) (d6) (a8 h8) (d7) (e8)
