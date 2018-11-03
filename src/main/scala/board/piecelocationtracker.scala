@@ -80,6 +80,8 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   def endgameEval = _endgameEval
   def whites = _whites
   def blacks = _blacks
+  
+  def copy = new PieceLocations(_locs.clone())
 
   // Object API
   override def equals(x: Any) = {

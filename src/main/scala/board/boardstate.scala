@@ -29,6 +29,11 @@ class BoardState(
   def computeHash = {
     pieceLocations.hash ^ BoardHasher.hashFeatures(active, enpassant, castleStatus)
   }
+  
+  def copy: BoardState = new BoardState(pieceLocations.copy,
+		  hashCache.copy, castleStatus.copy, piecesDeveloped.to[mutable.Set],
+		  clock, enpassant, _active)
+  
 
   override def equals(x: Any) = {
     x.isInstanceOf[BoardState] && {
@@ -61,18 +66,18 @@ object BoardState
 
 class HashCache private(private val cache: Array[Long], private var moveCount: Int)
 {
-  private var indexer: Int = moveCount % HashCache.size
+  private var cacheIndex: Int = moveCount % HashCache.size
 
   def increment(newPosition: Long): Long = {
     moveCount += 1
     updateIndexer()
-    val discard = cache(indexer)
-    cache(indexer) = newPosition
+    val discard = cache(cacheIndex)
+    cache(cacheIndex) = newPosition
     discard
   }
 
   def decrement(oldPosition: Long) {
-    cache(indexer) = oldPosition
+    cache(cacheIndex) = oldPosition
     moveCount -= 1
     updateIndexer()
   }
@@ -92,9 +97,11 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
     }
   }
 
-  private def updateIndexer() { indexer = moveCount % HashCache.size }
+  private def updateIndexer() { cacheIndex = moveCount % HashCache.size }
 
+  def currIndex = cacheIndex
   def copy = new HashCache(cache.clone(), moveCount)
+  def copyCache = cache.clone()
 
   override def equals(x: Any) = {
     x.isInstanceOf[HashCache] && {
