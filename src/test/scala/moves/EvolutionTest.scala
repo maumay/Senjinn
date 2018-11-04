@@ -1,11 +1,10 @@
-package moves
+package senjinn.moves
 
 import org.scalatest.FlatSpec
 import senjinn.parsers.MoveParsing
 import senjinn.parsers.BoardParsing
 import senjinn.base.{loadResource}
-import senjinn.board.{ BoardState, HashCache }
-import senjinn.moves.{ ChessMove, StandardMove, CastleMove, EnpassantMove, PromotionMove }
+import senjinn.board.{ BoardState, HashCache, MoveReverser }
 
 /**
  */
@@ -17,12 +16,16 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
   testCaseIterator foreach { testcase => 
     val (move, start, end) = testcase
     val startcpy = start.copy
+    val reverser = new MoveReverser()
+    move.makeMove(start, reverser)
+    assert(end == start)
+    move.undoMove(start, reverser)
+    assert(startcpy == start)
   }
   
-
   def testCaseIterator: Iterator[TestCaseArgs] = {
     (0 until 40).iterator
-      .map(n => ('0' * n.toString.length - 1) + n.toString)
+      .map(n => "case" + ("0" * (3 - n.toString.length)) + n.toString)
       .map(name => loadResource(testpkg, name))
       .map(parseTestFile(_))
   }

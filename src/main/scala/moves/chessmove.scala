@@ -10,15 +10,15 @@ import senjinn.board.{BoardState, MoveReverser}
  */
 trait ChessMove
 {
-  val source: Square
-  val target: Square
-  val rightsRemoved: Set[CastleZone]
-  val castleCommand: Option[CastleZone]
-  val pieceDeveloped: Option[DevPiece]
+  private[moves] val source: Square
+  private[moves] val target: Square
+  private[moves] val rightsRemoved: Set[CastleZone]
+  private[moves] val castleCommand: Option[CastleZone]
+  private[moves] val pieceDeveloped: Option[DevPiece]
 
   def toCompactString: String
-  def updatePieceLocations(state: BoardState, reverser: MoveReverser): Unit
-  def revertPieceLocations(state: BoardState, reverser: MoveReverser): Unit
+  private[moves] def updatePieceLocations(state: BoardState, reverser: MoveReverser): Unit
+  private[moves] def revertPieceLocations(state: BoardState, reverser: MoveReverser): Unit
 
   final def makeMove(state: BoardState, reverser: MoveReverser) {
     assert(reverser.isConsumed)

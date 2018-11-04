@@ -20,7 +20,7 @@ object ChessRegex
   val enpassantAttribute = s"^enpassant_square: *(none|$sq)$$".r
   val activeSideAttribute = "^active_side: *(white|black)$".r
   val developedPiecesAttribute = s"^developed_pieces:( *none| *$sq( +$sq)*)$$".r
-  val castlingRightsAttribute = "^castling_rights:(* wk)?( +wq)?( +bk)?( +bq)?$".r
+  val castlingRightsAttribute = "^castling_rights:( *wk)?( +wq)?( +bk)?( +bq)?$".r
   val whiteCastleStatusAttribute = "^white_castle_status: *(none|wk|wq)$".r
   val blackCastleStatusAttribute = "^black_castle_status: *(none|bk|bq)$".r
   val halfMoveClockAttribute = "^half_move_clock: *[0-9]+$".r

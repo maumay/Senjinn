@@ -33,8 +33,8 @@ trait BoardParsing
   
   private def parsePieceLocations(whiteLocs: String, 
       blackLocs: String): PieceLocations = {
-    require(whiteLocs.matches(ChessRegex.whiteLocationsAttribute.regex))
-    require(blackLocs.matches(ChessRegex.blackLocationsAttribute.regex))
+    require(whiteLocs.matches(ChessRegex.whiteLocationsAttribute.regex), whiteLocs)
+    require(blackLocs.matches(ChessRegex.blackLocationsAttribute.regex), blackLocs)
     
     PieceLocations(ChessRegex.groupedSquares.findAllIn(whiteLocs + blackLocs)
       .map(ChessRegex.square.findAllIn(_).map(Square(_)))
