@@ -2,7 +2,7 @@ package senjinn.moves
 
 import senjinn.base.{Square, CastleZone}
 import senjinn.board.{BoardState, MoveReverser}
-import senjinn.pieces.{ChessPiece}
+import senjinn.base.pieces.{ChessPiece}
 
 /**
  * Represents the act of enpassant in a chess game.

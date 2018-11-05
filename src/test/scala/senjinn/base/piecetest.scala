@@ -1,8 +1,10 @@
-package senjinn.pieces
+package senjinn.base.pieces
 
 import org.scalatest.FlatSpec
-import senjinn.base.{Square, SquareSet, Dir}
-import senjinn.base.{processResource, PieceMovementDirs => pmd}
+
+import senjinn.base.{processResource, Square, SquareSet, Dir}
+import senjinn.base.{PieceMovementDirs => pmd}
+
 import senjinn.base.ImplicitAreaConverters._
 
 

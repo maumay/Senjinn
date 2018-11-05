@@ -1,6 +1,7 @@
 package senjinn.base
 
 import org.scalatest.FlatSpec
+
 import senjinn.base.Square._
 
 

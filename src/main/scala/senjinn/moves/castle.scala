@@ -1,7 +1,7 @@
 package senjinn.moves
 
 import senjinn.base.{CastleZone}
-import senjinn.pieces._
+import senjinn.base.pieces._
 import senjinn.board.{BoardState, MoveReverser}
 import senjinn.base.CastleZone.{setOfWhiteZones, setOfBlackZones}
 

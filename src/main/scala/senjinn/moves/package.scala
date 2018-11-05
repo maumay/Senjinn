@@ -37,7 +37,7 @@ package object moves
    // Standard move cache implementation
   private type Sq2Standard = Map[Square, StandardMove]
   private val standardCache: Map[Square, Sq2Standard] = {
-    import senjinn.pieces.{WhiteKnight => wk, WhiteQueen => wq}
+    import senjinn.base.pieces.{WhiteKnight => wk, WhiteQueen => wq}
     val f = (src: Square, sqs: SquareSet) => {
       sqs.squares.map(t => (t, new StandardMove(src, t))).toMap
     }

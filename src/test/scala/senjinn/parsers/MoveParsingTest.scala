@@ -1,4 +1,4 @@
-package parsers
+package senjinn.parsers
 
 import org.scalatest.FlatSpec
 import senjinn.parsers.MoveParsing

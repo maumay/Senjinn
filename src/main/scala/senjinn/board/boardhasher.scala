@@ -1,7 +1,7 @@
 package senjinn.board
 
 import senjinn.base.{Square, CastleZone, Side}
-import senjinn.pieces.ChessPiece
+import senjinn.base.pieces.ChessPiece
 
 
 object BoardHasher 

@@ -49,7 +49,7 @@ package object base
     import java.util.stream._, scala.collection.JavaConversions._
     processResource(locator, { buf => 
       val xs = buf.lines().collect(Collectors.toList()).toVector
-      xs.map(_.trim).filter(line => !line.startsWith("//") || !line.isEmpty())
+      xs.map(_.trim).filter(line => !line.startsWith("//") && !line.isEmpty())
     })
   }
   

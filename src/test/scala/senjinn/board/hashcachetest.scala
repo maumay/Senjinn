@@ -1,3 +1,4 @@
+package senjinn.board;
 import org.scalatest.FlatSpec
 
 import senjinn.board.{HashCache}

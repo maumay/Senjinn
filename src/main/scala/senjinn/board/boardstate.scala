@@ -2,7 +2,7 @@ package senjinn.board
 
 import scala.collection.{mutable => mutable}
 import senjinn.base.{DevPiece, Side, Square, CastleZone, SquareSet}
-import senjinn.pieces.ChessPiece
+import senjinn.base.pieces.ChessPiece
 
 
 /**

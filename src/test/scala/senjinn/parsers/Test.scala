@@ -1,4 +1,4 @@
-package parsers
+package senjinn.parsers
 
 object Test extends App 
 {
