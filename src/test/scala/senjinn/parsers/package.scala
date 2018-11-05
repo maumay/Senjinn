@@ -1,6 +1,0 @@
-
-/**
- */
-package senjinn.parsers 
-{
-}

@@ -1,7 +1,6 @@
 package senjinn.board;
-import org.scalatest.FlatSpec
 
-import senjinn.board.{HashCache}
+import org.scalatest.FlatSpec
 
 class HashCacheTest extends FlatSpec
 {

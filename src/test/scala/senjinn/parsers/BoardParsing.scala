@@ -84,7 +84,7 @@ trait BoardParsing
   
   private def constructDummyHashCache(boardHash: Long, 
       moveCount: Int): HashCache = {
-    val cache = (1 to HashCache.size + 1).map(_.toLong).toArray
+    val cache = (1 to HashCache.size).map(_.toLong).toArray
     cache(moveCount % HashCache.size) = boardHash
     HashCache(cache, moveCount)
   }

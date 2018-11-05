@@ -15,13 +15,15 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
   
   testCaseIterator foreach { testcase => 
     val (move, start, end) = testcase
-    val startcpy = start.copy
-    val reverser = new MoveReverser()
-    move.makeMove(start, reverser)
-    assert(end == start)
-    move.undoMove(start, reverser)
-    assert(startcpy == start)
-  }
+    s"The move ${move.toCompactString}" must "evolve and devolve correctly" in {
+      val startcpy = start.copy
+    	val reverser = new MoveReverser()
+    	move.makeMove(start, reverser)
+    	assert(end == start)
+    	move.undoMove(start, reverser)
+    	assert(startcpy == start)
+    }
+}
   
   def testCaseIterator: Iterator[TestCaseArgs] = {
     (0 until 40).iterator

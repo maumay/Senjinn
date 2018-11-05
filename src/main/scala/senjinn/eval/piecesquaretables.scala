@@ -19,7 +19,7 @@ object PieceValues
 
    private def apply(xs: Int*): PieceValues = {
      require(xs.length == 6)
-     require(xs.forall(_ > 0))
+     require(xs.forall(_ >= 0))
      new PieceValues(xs.toArray.map(x => (x * 3.5).toInt))
    }
 }

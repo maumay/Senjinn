@@ -1,9 +1,7 @@
 package senjinn.parsers
 
 import org.scalatest.FlatSpec
-import senjinn.parsers.MoveParsing
 import senjinn.moves.{ChessMove, StandardMove, CastleMove, EnpassantMove, PromotionMove}
-import senjinn.parsers.ChessRegex
 
 /**
  */

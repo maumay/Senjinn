@@ -14,7 +14,7 @@ package object moves
     * to think about how to handle this...
     */
   def standardMove(src: Square, target: Square) = {
-    standardCache(src)(target)
+    standardCache2(src.index)(target.index)
   }
 
   def castleMove(zone: CastleZone) = {
@@ -34,17 +34,15 @@ package object moves
     Iterator('q', 'r', 'b', 'n').map(new PromotionMove(src, target, _))
   }
   
-   // Standard move cache implementation
-  private type Sq2Standard = Map[Square, StandardMove]
-  private val standardCache: Map[Square, Sq2Standard] = {
-    import senjinn.base.pieces.{WhiteKnight => wk, WhiteQueen => wq}
-    val f = (src: Square, sqs: SquareSet) => {
-      sqs.squares.map(t => (t, new StandardMove(src, t))).toMap
-    }
-    val allsq = Square.all
-    val knightMoves = allsq.map(src => (src, f(src, wk.getEmptyBoardMoveset(src)))).toMap
-    val queenMoves  = allsq.map(src => (src, f(src, wq.getEmptyBoardMoveset(src)))).toMap
-    knightMoves ++ queenMoves
+  private val standardCache2: Array[Array[StandardMove]] = {
+    import senjinn.base.pieces.{WhiteKnight => n, WhiteQueen => q}
+    val sm = new StandardMove(_, _)
+    Square.all.map(sq => {
+      val array = new Array[StandardMove](64)
+      q.getEmptyBoardMoveset(sq).squares.foreach(targ => array(targ.index) = sm(sq, targ))
+      n.getEmptyBoardMoveset(sq).squares.foreach(targ => array(targ.index) = sm(sq, targ))
+      array
+    }).toArray
   }
 
   private val castleCache: Map[CastleZone, CastleMove] = {

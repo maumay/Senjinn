@@ -4,6 +4,8 @@ import senjinn.parsers.ChessRegex._
 
 object Main extends App 
 {
-  println(groupedSquares.regex)
-  println("(f2 g2)".matches(groupedSquares.regex))
+  //requirement failed: white_pieces: (f2 g2) (b3) (c4) (a1 h1) (c2) (e1)
+  
+  println(sixGroups.regex)
+  println("white_pieces: (f2 g2) (b3) (c4) (a1 h1) (c2) (e1)".matches(whiteLocationsAttribute.regex))
 }
