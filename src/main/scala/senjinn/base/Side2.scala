@@ -15,7 +15,7 @@ object Side2 extends Enum[Side2]
     case Black => White
   }
   
-  val values = findValues
+  val all = findValues.toVector
   
   case object White extends Side2(true)
   case object Black extends Side2(false)

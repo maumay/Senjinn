@@ -45,9 +45,9 @@ object CastleZone2 extends Enum[CastleZone2]
   val blackKingSet  = Set(BlackKing)
   val blackQueenSet = Set(BlackQueen)
   val blackSet      = Set(BlackKing, BlackQueen)
-  val completeSet   = values.to[Set]
+  val completeSet   = all.to[Set]
   
-  val values = findValues
+  val all = findValues.toVector
   
   import Square2.{e1, g1, c1, g8, e8, c8}
   case object WhiteKing  extends CastleZone2(e1, g1)

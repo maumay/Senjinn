@@ -1,7 +1,7 @@
 package senjinn.base
 
 
-import senjinn.base.Square._
+import senjinn.base.Square2._
 import senjinn.base.ImplicitAreaConverters._
 
 
@@ -31,8 +31,8 @@ object BasicBitboards
   val diagonals: Array[Long] = {
     (0 to 14)
     .map(i => if (i < 8) i else 8 *(i - 7) + 7)
-    .map(Square(_))
-    .map(sq => (sq +: sq.allSquares(Seq(Dir.ne))).foldLeft(0L)(_ | _.loc))
+    .map(Square2(_))
+    .map(sq => (sq +: sq.allSquares(Seq(Dir2.ne))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
@@ -41,13 +41,13 @@ object BasicBitboards
   val antidiagonals: Array[Long] = {
     (0 to 14)
     .map(i => if (i < 8) 7 - i else 8 *(i - 7))
-    .map(Square(_))
-    .map(sq => (sq +: sq.allSquares(Seq(Dir.nw))).foldLeft(0L)(_ | _.loc))
+    .map(Square2(_))
+    .map(sq => (sq +: sq.allSquares(Seq(Dir2.nw))).foldLeft(0L)(_ | _.loc))
     .toArray
   }
   
-  def genEmptyBoardBitboards(dirs: Iterable[Dir], proximity: Int = 8): Array[Long] = {
-    Square.all.map(sq => sq.allSquares(dirs, proximity).foldLeft(0L)(_ | _.loc)).toArray
+  def genEmptyBoardBitboards(dirs: Iterable[Dir2], proximity: Int = 8): Array[Long] = {
+    Square2.all.map(sq => sq.allSquares(dirs, proximity).foldLeft(0L)(_ | _.loc)).toArray
   }
 }
 
@@ -58,7 +58,7 @@ object MagicBitboards
    * Given the location of a rook and the locations of all pieces on the board this
    * function efficiently calculates the control set of the rook.
    */
-  def getRookControlset(loc: Square, pieces: SquareSet): SquareSet = {
+  def getRookControlset(loc: Square2, pieces: SquareSet): SquareSet = {
     val occupancyvariation = pieces & rookOccMasks(loc.index)
     val magicnumber = rookMagicNumbers(loc.index)
     val magicshift = rookMagicShifts(loc.index)
@@ -69,7 +69,7 @@ object MagicBitboards
    * Given the location of a bishop and the locations of all pieces on the board this
    * function efficiently calculates the control set of the bishop.
    */
-  def getBishControlset(loc: Square, pieces: SquareSet): SquareSet = {
+  def getBishControlset(loc: Square2, pieces: SquareSet): SquareSet = {
     val occupancyvariation = pieces & bishOccMasks(loc.index)
     val magicnumber = bishMagicNumbers(loc.index)
     val magicshift = bishMagicShifts(loc.index)
@@ -82,13 +82,13 @@ object MagicBitboards
   private type SquareArr = Array[Arr]
   
   // Occupancy variations
-  private def bishOccVars: SquareArr = Square.all
+  private def bishOccVars: SquareArr = Square2.all
     .map(sq => genOccupancyVariations(sq, pmd("b"))).toArray
 
-  private def rookOccVars: SquareArr = Square.all
+  private def rookOccVars: SquareArr = Square2.all
     .map(sq => genOccupancyVariations(sq, pmd("r"))).toArray
     
-  private def genOccupancyVariations(square: Square, dirs: Iterable[Dir]): Arr = {
+  private def genOccupancyVariations(square: Square2, dirs: Iterable[Dir2]): Arr = {
     val relevantSquares = dirs.iterator
     .map(d => (d, square.squaresLeft(d) - 1))
     .flatMap(p => square.allSquares(p._1, Math.max(0, p._2)))
@@ -150,19 +150,19 @@ object MagicBitboards
 	private val rookMagicMoves = genMagicMoves(rookOccVars, rookMagicNumbers, rookMagicShifts, pmd("r"))
 	private val bishMagicMoves = genMagicMoves(bishOccVars, bishMagicNumbers, bishMagicShifts, pmd("b"))
 			
-	private type MagicMoveCons = (SquareArr, Arr, Array[Int], Iterable[Dir])
+	private type MagicMoveCons = (SquareArr, Arr, Array[Int], Iterable[Dir2])
 	
 	private def genMagicMoves(c: MagicMoveCons): SquareArr = {
     val (allOccVars, magicNums, magicShifts, dirs) = c
     (for (i <- 0 to 63) yield {
-      val (sq, occVars, mn, ms) = (Square(i), allOccVars(i), magicNums(i), magicShifts(i))
+      val (sq, occVars, mn, ms) = (Square2(i), allOccVars(i), magicNums(i), magicShifts(i))
       val result = new Array[Long](occVars.length)
       occVars.map(ov => (ov, ((ov * mn) >>> ms).toInt)).foreach(p => result(p._2) = calcControlSet(sq, p._1, dirs))
       result
     }).toArray
   }
   
-  private def calcControlSet(sq: Square, occupancyVariation: SquareSet, dirs: Iterable[Dir]): SquareSet = {
+  private def calcControlSet(sq: Square2, occupancyVariation: SquareSet, dirs: Iterable[Dir2]): SquareSet = {
     val ov = occupancyVariation
     dirs.iterator
     .map(dir => sq.allSquares(dir, 8))

@@ -8,13 +8,13 @@ sealed abstract class DevPiece2(val startSquare: Square2) extends EnumEntry
 
 object DevPiece2 extends Enum[DevPiece2]
 {
-  private val startSquareMap = values.map(p => (p.startSquare, p)).toMap
+  val all = findValues.toVector
+  
+  private val startSquareMap = all.map(p => (p.startSquare, p)).toMap
   
   def apply(startSquare: Square2): DevPiece2 = {
     startSquareMap(startSquare)
   }
-  
-  val values = findValues.toVector
   
   import Square2._
   case object WhiteKingKnight  extends DevPiece2(g1)

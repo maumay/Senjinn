@@ -24,11 +24,11 @@ object Dir2 extends Enum[Dir2]
     }
     else {
       val (ndeltarank, ndeltafile) = (deltarank / normaliser, deltafile / normaliser)
-      values.find(dir => dir.deltaRank == ndeltarank && dir.deltaFile == ndeltafile)
+      all.find(dir => dir.deltaRank == ndeltarank && dir.deltaFile == ndeltafile)
     }
   }
   
-  val values = findValues
+  val all = findValues.toVector
   
   case object n extends Dir2(1, 0)
   case object e extends Dir2(0, -1)

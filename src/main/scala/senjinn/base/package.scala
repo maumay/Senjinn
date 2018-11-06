@@ -1,7 +1,7 @@
 package senjinn
 
 import senjinn.base.ImplicitAreaConverters._
-import senjinn.base.Dir._
+import senjinn.base.Dir2._
 
 
 package object base
@@ -13,12 +13,12 @@ package object base
    * A map describing the directions each piece can legally move/attack.
    */
   val PieceMovementDirs = {
-    val b = Vector(Dir.ne, se, sw, nw)
+    val b = Vector(Dir2.ne, se, sw, nw)
     val r = Vector(n, e, s, w)
     val q = b ++ r
     
     Map("wpm" -> Vector(n), 
-        "wpa" -> Vector(Dir.ne, nw),
+        "wpa" -> Vector(Dir2.ne, nw),
         "bpm" -> Vector(s),
         "bpa" -> Vector(se, sw),
         "n"   -> Vector(nne, nee, see, sse, ssw, sww, nww, nnw),
