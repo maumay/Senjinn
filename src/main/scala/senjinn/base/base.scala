@@ -94,45 +94,45 @@ import scala.math.{abs}
 //}
 
 
-/**
- * Represents a piece which needs to be developed in the opening phase
- * of the game.
- */
-class DevPiece private(val startSquare: Square)
-{
-}
-
-object DevPiece
-{
-  private def cons = new DevPiece(_)
-  
-  val whiteKingsideKnight  = cons(Square.g1)
-  val whiteKingsideBishop  = cons(Square.f1)
-  val whiteKingsidePawn    = cons(Square.e2)
-  val whiteQueensidePawn   = cons(Square.d2)
-  val whiteQueensideBishop = cons(Square.c1)
-  val whiteQueensideKnight = cons(Square.b1)
-  
-  val blackKingsideKnight  = cons(Square.g8)
-  val blackKingsideBishop  = cons(Square.f8)
-  val blackKingsidePawn    = cons(Square.e7)
-  val blackQueensidePawn   = cons(Square.d7)
-  val blackQueensideBishop = cons(Square.c8)
-  val blackQueensideKnight = cons(Square.b8)
-  
-  val startSquareMap = Vector(
-      whiteKingsideKnight,
-      whiteKingsideBishop,
-      whiteKingsidePawn,
-      whiteQueensidePawn,
-      whiteQueensideBishop,
-      whiteQueensideKnight,
-      blackKingsideKnight,
-      blackKingsideBishop,
-      blackKingsidePawn,
-      blackQueensidePawn,
-      blackQueensideBishop,
-      blackQueensideKnight).map(p => (p.startSquare, p)).toMap
-      
-  def apply(startsquare: Square): DevPiece = startSquareMap(startsquare)
-}
+///**
+// * Represents a piece which needs to be developed in the opening phase
+// * of the game.
+// */
+//class DevPiece private(val startSquare: Square)
+//{
+//}
+//
+//object DevPiece
+//{
+//  private def cons = new DevPiece(_)
+//  
+//  val whiteKingsideKnight  = cons(Square.g1)
+//  val whiteKingsideBishop  = cons(Square.f1)
+//  val whiteKingsidePawn    = cons(Square.e2)
+//  val whiteQueensidePawn   = cons(Square.d2)
+//  val whiteQueensideBishop = cons(Square.c1)
+//  val whiteQueensideKnight = cons(Square.b1)
+//  
+//  val blackKingsideKnight  = cons(Square.g8)
+//  val blackKingsideBishop  = cons(Square.f8)
+//  val blackKingsidePawn    = cons(Square.e7)
+//  val blackQueensidePawn   = cons(Square.d7)
+//  val blackQueensideBishop = cons(Square.c8)
+//  val blackQueensideKnight = cons(Square.b8)
+//  
+//  val startSquareMap = Vector(
+//      whiteKingsideKnight,
+//      whiteKingsideBishop,
+//      whiteKingsidePawn,
+//      whiteQueensidePawn,
+//      whiteQueensideBishop,
+//      whiteQueensideKnight,
+//      blackKingsideKnight,
+//      blackKingsideBishop,
+//      blackKingsidePawn,
+//      blackQueensidePawn,
+//      blackQueensideBishop,
+//      blackQueensideKnight).map(p => (p.startSquare, p)).toMap
+//      
+//  def apply(startsquare: Square): DevPiece = startSquareMap(startsquare)
+//}
