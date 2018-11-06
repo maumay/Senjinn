@@ -102,6 +102,12 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
   def currIndex = cacheIndex
   def copy = new HashCache(cache.clone(), moveCount)
   def copyCache = cache.clone()
+  
+  // Object API
+  override def toString(): String = {
+    import java.util.Arrays
+    s"HashCache[cache=${Arrays.toString(cache)}, index=$cacheIndex]"
+  }
 
   override def equals(x: Any) = {
     x.isInstanceOf[HashCache] && {

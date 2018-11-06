@@ -8,4 +8,6 @@ object Main extends App
   
   println(sixGroups.regex)
   println("white_pieces: (f2 g2) (b3) (c4) (a1 h1) (c2) (e1)".matches(whiteLocationsAttribute.regex))
+  
+  println("(?<=(result[=]))[nbrq]".r.findFirstIn("PromotionMove[source=c2|target=b1|result=n]"))
 }

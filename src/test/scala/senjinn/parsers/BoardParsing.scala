@@ -10,10 +10,6 @@ import senjinn.base.CastleZone
  */
 trait BoardParsing 
 {
-  final def parseBoard(attributes: Seq[String]): BoardState = {
-    parseBoard(attributes, 20)
-  }
-  
   final def parseBoard(attributes: Seq[String], moveCount: Int): BoardState = {
     require(moveCount >= 0)
     require(attributes.size == 9)

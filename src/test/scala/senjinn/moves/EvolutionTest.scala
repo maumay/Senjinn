@@ -17,13 +17,26 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
     val (move, start, end) = testcase
     s"The move ${move.toCompactString}" must "evolve and devolve correctly" in {
       val startcpy = start.copy
+      assertBoardstatesEqual(start, startcpy)
     	val reverser = new MoveReverser()
     	move.makeMove(start, reverser)
-    	assert(end == start)
+    	assertBoardstatesEqual(end, start)
     	move.undoMove(start, reverser)
-    	assert(startcpy == start)
+    	assertBoardstatesEqual(startcpy, start)
     }
-}
+  } 
+  
+  def assertBoardstatesEqual(expected: BoardState, actual: BoardState) {
+    val (e, a) = (expected, actual)
+    assert(e.pieceLocations == a.pieceLocations)
+    assert(e.hashCache == a.hashCache)
+    assert(e.castleStatus == a.castleStatus)
+    assert(e.piecesDeveloped == a.piecesDeveloped)
+    assert(e.clock == a.clock)
+    assert(e.enpassant == a.enpassant)
+    assert(e.active == a.active)
+  }
+  
   
   def testCaseIterator: Iterator[TestCaseArgs] = {
     (0 until 40).iterator
@@ -34,8 +47,9 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
 
   private def parseTestFile(lines: Seq[String]): TestCaseArgs = {
     import HashCache.{ size => hcachesze }
-    val start = parseBoard(lines.slice(1, 10))
-    val end = parseBoard(lines.slice(10, 19))
+    val initialMoveCount = 20
+    val start = parseBoard(lines.slice(1, 10), initialMoveCount)
+    val end = parseBoard(lines.slice(10, 19), initialMoveCount + 1)
     val nhcache = end.hashCache.copyCache
     nhcache((end.hashCache.currIndex - 1) % hcachesze) = start.computeHash
     val end2 = new BoardState(end.pieceLocations, HashCache(nhcache, end.hashCache.currIndex),
@@ -46,12 +60,13 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
 
   private def parseMove(encoded: String): ChessMove = {
     import senjinn.parsers.ChessRegex.{ castleZone => czregex }
-    val (src, target) = "[a-h][1-8]".r.findAllIn(encoded).toVector.splitAt(1)
-    encoded.toLowerCase.head match {
+    val lower = encoded.toLowerCase
+    val (src, target) = "[a-h][1-8]".r.findAllIn(lower).toVector.splitAt(1)
+    lower.head match {
       case 's' => StandardMove(src(0), target(0))
       case 'e' => EnpassantMove(src(0), target(0))
       case 'c' => CastleMove(czregex.findFirstIn(encoded).get)
-      case 'p' => PromotionMove(src(0), target(0), "[nbrq] ".r.findFirstIn(encoded).get)
+      case 'p' => PromotionMove(src(0), target(0), "(?<=(result[=]))[nbrq]".r.findFirstIn(lower).get)
       case _   => throw new RuntimeException
     }
   }

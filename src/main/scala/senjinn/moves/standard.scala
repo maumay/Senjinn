@@ -2,6 +2,7 @@ package senjinn.moves
 
 import java.lang.Math.abs
 
+import senjinn.base.ImplicitAreaConverters.{ boardsquare2long }
 import senjinn.base.{Square, SquareSet, CastleZone, DevPiece, Dir}
 import senjinn.base.Square._
 import senjinn.board.{BoardState, MoveReverser}
@@ -13,9 +14,9 @@ import senjinn.board.{BoardState, MoveReverser}
 class StandardMove private[moves](val source: Square, val target: Square) extends ChessMove
 {
   // StandardMove specifics
-  val cord: SquareSet = {
-    val dir = Dir.ofLineConnecting(source, target).get
-    SquareSet(source.allSquares(dir, 8).takeWhile(_ != target).foldLeft(0L)(_|_.loc))
+  val cord: SquareSet = Dir.ofLineConnecting(source, target) match {
+    case Some(d) => SquareSet(source.allSquares(d, 8).takeWhile(_ != target).foldLeft(0L)(_ | _))
+    case None    => SquareSet()
   }
   
   // ChessMove API
@@ -74,9 +75,7 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
     }
   }
   
-  // Cache the hash :)
-  private val cachedHash = (source, target).##
-  override def hashCode(): Int = cachedHash
+  override def hashCode(): Int = (source, target).##
 }
 
 object StandardMove

@@ -14,7 +14,7 @@ package object moves
     * to think about how to handle this...
     */
   def standardMove(src: Square, target: Square) = {
-    standardCache2(src.index)(target.index)
+    standardCache(src.index)(target.index)
   }
 
   def castleMove(zone: CastleZone) = {
@@ -34,13 +34,13 @@ package object moves
     Iterator('q', 'r', 'b', 'n').map(new PromotionMove(src, target, _))
   }
   
-  private val standardCache2: Array[Array[StandardMove]] = {
+  /* I capitulated and just cached illegal moves too... */
+  private val standardCache: Array[Array[StandardMove]] = {
     import senjinn.base.pieces.{WhiteKnight => n, WhiteQueen => q}
     val sm = new StandardMove(_, _)
-    Square.all.map(sq => {
+    Square.all.map(src => {
       val array = new Array[StandardMove](64)
-      q.getEmptyBoardMoveset(sq).squares.foreach(targ => array(targ.index) = sm(sq, targ))
-      n.getEmptyBoardMoveset(sq).squares.foreach(targ => array(targ.index) = sm(sq, targ))
+      Square.all.foreach(targ => array(targ.index) = sm(src, targ))
       array
     }).toArray
   }
