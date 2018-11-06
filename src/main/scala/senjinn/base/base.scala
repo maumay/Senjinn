@@ -4,138 +4,94 @@ import senjinn.base.ImplicitAreaConverters._
 import scala.math.{abs}
 
 
-/**
- * Represents a movement direction on a board in terms of the change 
- * in rank index and change in file index. The constructor is private, 
- * access instances through the companion object.
- */
-class Dir private (val name: String, val deltaRank: Int, val deltaFile: Int) 
-{
-  override def toString = name
-}
 
-/**
- * Instantiates all possible instances of the Dir class, named values
- * are provided as well as a Vector of all possibilities.
- */
-object Dir 
-{
-  private val c = new Dir(_, _, _)
-  val (  n,   e,   s,   w) = (c("n", 1,  0), c("e", 0, -1), c("s", -1, 0),  c("w", 0, 1))
-  val ( ne,  se,  sw,  nw) = (c("ne", 1, -1), c("se", -1, -1), c("sw", -1, 1),  c("nw", 1, 1))
-  val (nne, nee, see, sse) = (c("nne", 2, -1), c("nee", 1, -2),  c("see", -1, -2), c("sse", -2, -1))
-  val (ssw, sww, nww, nnw) = (c("ssw", -2, 1), c("sww", -1, 2),  c("nww", 1, 2),   c("nnw", 2, 1))
-  
-  val all = Vector(n, e, s, w, ne, se, sw, nw, nne, nee, see, sse, ssw, sww, nww, nnw)
-  
-  /**
-   * Finds the direction of the line connecting the start square to the end square
-   * if it exists.
-   */
-  def ofLineConnecting(start: Square, end: Square): Option[Dir] = {
-    import Math.{min, max, abs}
-    val (deltarank, deltafile) = (end.rank - start.rank, end.file - start.file)
-    val maxAbsDelta = max(abs(deltarank), abs(deltafile))
-    val minAbsDelta = min(abs(deltarank), abs(deltafile))
-    val normaliser = if (minAbsDelta == 0) maxAbsDelta else minAbsDelta
-    
-    if (start == end || maxAbsDelta % normaliser != 0 || minAbsDelta % normaliser != 0) {
-      None
-    }
-    else {
-      val (ndeltarank, ndeltafile) = (deltarank / normaliser, deltafile / normaliser)
-      all.find(dir => dir.deltaRank == ndeltarank && dir.deltaFile == ndeltafile)
-    }
-  }
-}
+///**
+// * Represents one of the sides in a chess game. The constructor is 
+// * private, access instances through the companion object.
+// */
+//class Side private (val isWhite: Boolean) 
+//{
+//  val penultimatePawnRank = if (isWhite) 6 else 1
+//  
+//  def otherSide = if (isWhite) Side.black else Side.white
+//}
+//
+///**
+// * Instantiates all possible instances of the Side class, named values
+// * are provided as well as a Vector of all possibilities.
+// */
+//object Side
+//{
+//  val (white, black) = (new Side(true), new Side(false))
+//  
+//  val all = Vector(white, black)
+//}
 
-/**
- * Represents one of the sides in a chess game. The constructor is 
- * private, access instances through the companion object.
- */
-class Side private (val isWhite: Boolean) 
-{
-  val penultimatePawnRank = if (isWhite) 6 else 1
-  
-  def otherSide = if (isWhite) Side.black else Side.white
-}
-
-/**
- * Instantiates all possible instances of the Side class, named values
- * are provided as well as a Vector of all possibilities.
- */
-object Side
-{
-  val (white, black) = (new Side(true), new Side(false))
-  
-  val all = Vector(white, black)
-}
-
-
-/**
- * Represents a zone into which it is possible to castle.
- */
-class CastleZone private (val index: Int, val kingSrc: Square, val kingTarg: Square) 
-{
-  require(0 <= index && index < 4)
-  val (isWhiteZone, isKingsideZone) = (kingSrc.rank == 0, kingTarg.file - kingSrc.file < 0)
-  
-  val rookSrc  = if (isKingsideZone) kingSrc  >> 3 else kingSrc  << 4
-  val rookTarg = if (isKingsideZone) kingTarg << 1 else kingTarg >> 1
-  
-  /** The Squares which must be free of enemy control before castling is legal. */
-  val requiredUncontrolledSquares = if (isKingsideZone) {
-    (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
-  }
-  else {
-    (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_|_)
-  }
-  
-  /** The Squares which must be free of all pieces before castling is legal. */
-  val requiredClearSquares = if (isKingsideZone) {
-    (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
-  }
-  else {
-    (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_|_)
-  }
-}
-
-/**
- * Instantiates all possible instances of the CastleZone class, named values
- * are provided as well as a Vector of all possibilities.
- */
-object CastleZone
-{
-  import Square._
-  private val cons = new CastleZone(_, _, _)
-  
-  val whiteKingside  = cons(0, e1, g1)
-  val whiteQueenside = cons(1, e1, c1)
-  val blackKingside  = cons(2, e8, g8)
-  val blackQueenside = cons(3, e8, c8)
-  
-  val all = Vector(whiteKingside, whiteQueenside, blackKingside, blackQueenside)
-  val setOfNoZones = Set[CastleZone]()
-  val setOfWkZone = Set(whiteKingside)
-  val setOfWqZone = Set(whiteQueenside)
-  val setOfWhiteZones = setOfWkZone ++ setOfWqZone
-  val setOfBkZone = Set(blackKingside)
-  val setOfBqZone = Set(blackQueenside)
-  val setOfBlackZones = setOfBkZone ++ setOfBqZone
-  
-  val simpleIdentifierMap = Map(
-      "wk" -> whiteKingside,
-      "wq" -> whiteQueenside,
-      "bk" -> blackKingside,
-      "bq" -> blackQueenside
-      )
-      
-   def apply(identifier: String) = {
-    val id = identifier.toLowerCase
-    require(simpleIdentifierMap contains id)
-    simpleIdentifierMap(id)
-  }
-}
+//
+///**
+// * Represents a zone into which it is possible to castle.
+// */
+//class CastleZone private (val index: Int, val kingSrc: Square, val kingTarg: Square) 
+//{
+//  require(0 <= index && index < 4)
+//  val (isWhiteZone, isKingsideZone) = (kingSrc.rank == 0, kingTarg.file - kingSrc.file < 0)
+//  
+//  val rookSrc  = if (isKingsideZone) kingSrc  >> 3 else kingSrc  << 4
+//  val rookTarg = if (isKingsideZone) kingTarg << 1 else kingTarg >> 1
+//  
+//  /** The Squares which must be free of enemy control before castling is legal. */
+//  val requiredUncontrolledSquares = if (isKingsideZone) {
+//    (0 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
+//  }
+//  else {
+//    (0 to 2).map(i => (kingSrc << i): SquareSet).reduce(_|_)
+//  }
+//  
+//  /** The Squares which must be free of all pieces before castling is legal. */
+//  val requiredClearSquares = if (isKingsideZone) {
+//    (1 to 2).map(i => (kingSrc >> i): SquareSet).reduce(_|_)
+//  }
+//  else {
+//    (1 to 3).map(i => (kingSrc << i): SquareSet).reduce(_|_)
+//  }
+//}
+//
+///**
+// * Instantiates all possible instances of the CastleZone class, named values
+// * are provided as well as a Vector of all possibilities.
+// */
+//object CastleZone
+//{
+//  import Square._
+//  private val cons = new CastleZone(_, _, _)
+//  
+//  val whiteKingside  = cons(0, e1, g1)
+//  val whiteQueenside = cons(1, e1, c1)
+//  val blackKingside  = cons(2, e8, g8)
+//  val blackQueenside = cons(3, e8, c8)
+//  
+//  val all = Vector(whiteKingside, whiteQueenside, blackKingside, blackQueenside)
+//  val setOfNoZones = Set[CastleZone]()
+//  val setOfWkZone = Set(whiteKingside)
+//  val setOfWqZone = Set(whiteQueenside)
+//  val setOfWhiteZones = setOfWkZone ++ setOfWqZone
+//  val setOfBkZone = Set(blackKingside)
+//  val setOfBqZone = Set(blackQueenside)
+//  val setOfBlackZones = setOfBkZone ++ setOfBqZone
+//  
+//  val simpleIdentifierMap = Map(
+//      "wk" -> whiteKingside,
+//      "wq" -> whiteQueenside,
+//      "bk" -> blackKingside,
+//      "bq" -> blackQueenside
+//      )
+//      
+//   def apply(identifier: String) = {
+//    val id = identifier.toLowerCase
+//    require(simpleIdentifierMap contains id)
+//    simpleIdentifierMap(id)
+//  }
+//}
 
 
 /**

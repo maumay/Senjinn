@@ -7,11 +7,76 @@ sealed abstract class Square2(val index: Int) extends EnumEntry
 {
   val (loc, rank, file) = (1L << index, index / 8, index % 8)
   
+  def |(other: Square2): SquareSet = {
+    SquareSet(loc | other.loc)
+  }
   
+  def <<(shift: Int): Square2 = {
+    Square2(index + shift)
+  }
+  
+  def >>(shift: Int): Square2 = {
+    Square2(index - shift)
+  }
+  
+  def unary_~ = {
+    SquareSet(~loc)
+  }
+
+  def intersects(squares: SquareSet): Boolean = {
+    squares.intersects(this)
+  }
+  
+  def nextSquare(dir: Dir2): Option[Square2] = {
+    Square2(rank + dir.deltaRank, file + dir.deltaFile)
+  }
+  
+  def squaresLeft(dir: Dir2): Int = nextSquare(dir) match {
+    case None     => 0
+    case Some(sq) => 1 + sq.squaresLeft(dir)
+  }
+  
+  def allSquares(dirs: Iterable[Dir2], proximity: Int = 8): Vector[Square2] = {
+    dirs.iterator.flatMap(dir => allSquares(dir, proximity)).toVector
+  }
+  
+  def allSquares(dir: Dir2, proximity: Int): Vector[Square2] = proximity match {
+    case 0 => Vector()
+    case _ => nextSquare(dir) match {
+        case None     => Vector()
+        case Some(sq) => sq +: sq.allSquares(dir, proximity - 1)
+      }
+  }
 }
 
 object Square2 extends Enum[Square2]
 {
+  def apply(name: String): Square2 = {
+    val lower = name.toLowerCase.trim
+    if (lower.matches("[a-h][1-8]")) { 
+      values(('h' - lower(0)) + 8 * (lower(1) - '1')) 
+    }
+    else {
+      throw new RuntimeException()
+    }
+  }
+  
+  def apply(rank: Int, file: Int): Option[Square2] = {
+    val inRange: Int => Boolean = x => -1 < x && x < 8
+    if (inRange(rank) && inRange(file)) { 
+      Some(values(8 * rank + file)) 
+    }
+    else { None }
+  }
+  
+  def apply(index: Int): Square2 = {
+    values(index)
+  }
+  
+  def unapply(square: Square2) = {
+    Some((square.index, square.loc))
+  }
+  
   val values = findValues
   
   // First rank
@@ -93,9 +158,4 @@ object Square2 extends Enum[Square2]
   case object c8 extends Square2(61)
   case object b8 extends Square2(62)
   case object a8 extends Square2(63)
-}
-
-object Main extends App
-{
-  println(Square2.h1)
 }
