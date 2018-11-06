@@ -3,7 +3,6 @@ package senjinn.moves
 import senjinn.base.{CastleZone}
 import senjinn.base.pieces._
 import senjinn.board.{BoardState, MoveReverser}
-import senjinn.base.CastleZone.{setOfWhiteZones, setOfBlackZones}
 
 /**
  * Represents the act of castling in a chess game.
@@ -11,8 +10,8 @@ import senjinn.base.CastleZone.{setOfWhiteZones, setOfBlackZones}
 final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
 {
   // ChessMove API
-  override val (source, target) = (zone.kingSrc, zone.kingTarg)
-  override val rightsRemoved = if (zone.isWhiteZone) setOfWhiteZones else setOfBlackZones
+  override val (source, target) = (zone.kingSource, zone.kingTarget)
+  override val rightsRemoved = if (zone.isWhiteZone) CastleZone.whiteSet else CastleZone.blackSet
   override val castleCommand = Some(zone)
   override val pieceDeveloped = None
 
@@ -24,8 +23,8 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
     val plocs = state.pieceLocations
     plocs.removeSquare(king, source)
     plocs.addSquare(king, target)
-    plocs.removeSquare(rook, zone.rookSrc)
-    plocs.addSquare(rook, zone.rookTarg)
+    plocs.removeSquare(rook, zone.rookSource)
+    plocs.addSquare(rook, zone.rookTarget)
     reverser.pieceTaken = None
     reverser.discardedEnpassant = state.enpassant
     state.enpassant = None
@@ -39,8 +38,8 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
     val plocs = state.pieceLocations
     plocs.addSquare(king, source)
     plocs.removeSquare(king, target)
-    plocs.addSquare(rook, zone.rookSrc)
-    plocs.removeSquare(rook, zone.rookTarg)
+    plocs.addSquare(rook, zone.rookSource)
+    plocs.removeSquare(rook, zone.rookTarget)
   }
   
   // Object API

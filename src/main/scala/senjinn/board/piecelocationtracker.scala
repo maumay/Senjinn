@@ -16,21 +16,21 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   private var _hash: Long = {
     val allLocs = _locs.map(_.squares)
     val sf = BoardHasher.squareFeature(_, _)
-    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0L)( _ ^ sf(p._1, _))).reduce(_^_)
+    ChessPiece.values.zip(allLocs).map(p => p._2.foldLeft(0L)( _ ^ sf(p._1, _))).reduce(_^_)
   }
   
   /** Self-updating evaluation of the piece locations using the midgame tables. */
   private var _midgameEval: Int = {
     val allLocs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.midgame.value(_, _)
-    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_+_)
+    ChessPiece.values.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_+_)
   }
   
   /** Self-updating evaluation of the piece locations using the endgame tables. */
   private var _endgameEval: Int = {
     val allLocs = _locs.map(_.squares)
     val tv = PieceSquareTableSet.endgame.value(_, _)
-    ChessPiece.all.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_+_)
+    ChessPiece.values.zip(allLocs).map(p => p._2.foldLeft(0)(_ + tv(p._1, _))).reduce(_+_)
   }
   
   /** Self-updating set tracking location of all white pieces. */

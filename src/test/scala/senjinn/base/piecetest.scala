@@ -4,14 +4,14 @@ import org.scalatest.FlatSpec
 
 import senjinn.base.{processResource, Square, SquareSet, Dir}
 import senjinn.base.{PieceMovementDirs => pmd}
-
+import senjinn.base.pieces.ChessPiece._
 import senjinn.base.ImplicitAreaConverters._
 
 
 class IndexAlignmentTest extends FlatSpec
 {
   "Piece indices" must "match the range (0 to 11)" in {
-    assert(ChessPiece.all.map(_.index) == (0 to 11).toVector)
+    assert(ChessPiece.values.map(_.index) == (0 to 11).toVector)
   }
 
   "White piece ordering" must "be pnbrqk" in {
@@ -49,8 +49,8 @@ class MoveIntegrationTest extends FlatSpec
     })
   }
 
-  ChessPiece.all.filterNot(ChessPiece.pawns contains _) foreach {piece =>
-    Square.all foreach {sq =>
+  ChessPiece.values.filterNot(ChessPiece.pawns contains _) foreach {piece =>
+    Square.values foreach {sq =>
       s"$piece" must s"generate the correct moves at $sq" in {
         assertGeneratedMovesAreCorrect(sq, piece)
       }
@@ -58,7 +58,7 @@ class MoveIntegrationTest extends FlatSpec
   }
 
   ChessPiece.pawns foreach {pawn =>
-    Square.all.drop(8).dropRight(8) foreach {sq =>
+    Square.values.drop(8).dropRight(8) foreach {sq =>
       s"$pawn" must s"generate the correct moves at $sq" in {
         assertGeneratedMovesAreCorrect(sq, pawn)
       }

@@ -22,9 +22,9 @@ class BoardState(
 {
   def active = _active
   
-  def passive = active.otherSide
+  def passive = Side.other(active)
   
-  def switchActive() {_active = _active.otherSide }
+  def switchActive() {_active = Side.other(_active) }
   
   def computeHash = {
     pieceLocations.hash ^ BoardHasher.hashFeatures(active, enpassant, castleStatus)
@@ -185,7 +185,7 @@ object CastlingTracker
   }
 
   def apply(): CastlingTracker = {
-    apply(mutable.HashSet(CastleZone.all: _*), None, None)
+    apply(mutable.HashSet(CastleZone.values: _*), None, None)
   }
 }
 

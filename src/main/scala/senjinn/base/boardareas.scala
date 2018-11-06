@@ -18,13 +18,13 @@ class SquareSet private(val src: Long) extends AnyVal
   
   def unary_~ = SquareSet(~src)
   
-  def intersects(square: Square2): Boolean = {
+  def intersects(square: Square): Boolean = {
     (square.loc & src) != 0
   }
   
-  def squares: Iterator[Square2] = (0 to 63).iterator
+  def squares: Iterator[Square] = (0 to 63).iterator
                                        .filter(i => ((1L << i) & src) != 0)
-                                       .map(Square2(_))
+                                       .map(Square(_))
 
   override def toString = src.toString
 }
@@ -35,19 +35,19 @@ object SquareSet
   
   def apply(arg: Long) = new SquareSet(arg)
   
-  def apply(args: Square2*) = new SquareSet(args.foldLeft(0L)(_ | _.loc))
+  def apply(args: Square*) = new SquareSet(args.foldLeft(0L)(_ | _.loc))
   
 }
 
 
 object ImplicitAreaConverters
 {
-  implicit def boardsquare2squareset(square: Square2): SquareSet = SquareSet(square.loc)
+  implicit def boardsquare2squareset(square: Square): SquareSet = SquareSet(square.loc)
   
   implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
   
   implicit def squareset2long(s: SquareSet): Long = s.src
 
-  implicit def boardsquare2long(square: Square2): Long = square.loc
+  implicit def boardsquare2long(square: Square): Long = square.loc
 }
 

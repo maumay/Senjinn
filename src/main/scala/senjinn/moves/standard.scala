@@ -4,7 +4,6 @@ import java.lang.Math.abs
 
 import senjinn.base.ImplicitAreaConverters.{ boardsquare2long }
 import senjinn.base.{Square, SquareSet, CastleZone, DevPiece, Dir}
-import senjinn.base.Square._
 import senjinn.board.{BoardState, MoveReverser}
 
 /**
@@ -21,17 +20,25 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
   
   // ChessMove API
   override val castleCommand = None
-  override val pieceDeveloped = DevPiece.startSquareMap.get(source)
-  override val rightsRemoved = getRightsRemoved(source) ++ getRightsRemoved(target)
+  override val pieceDeveloped = DevPiece(source)
+  override val rightsRemoved = {
+    val rmBySource = getRightsRemoved(source)
+    val rmByTarget = getRightsRemoved(target)
+    (rmBySource.size, rmByTarget.size) match {
+      case (0, _) => rmByTarget
+      case (_, 0) => rmBySource
+      case _      => rmBySource ++ rmByTarget
+    }
+  }
 
   private def getRightsRemoved(sq: Square) = sq match {
-    case x if x == a1 => CastleZone.setOfWqZone
-    case x if x == e1 => CastleZone.setOfWhiteZones
-    case x if x == h1 => CastleZone.setOfWkZone
-    case x if x == h8 => CastleZone.setOfBkZone
-    case x if x == e8 => CastleZone.setOfBlackZones
-    case x if x == a8 => CastleZone.setOfBqZone
-    case _            => CastleZone.setOfNoZones
+    case Square.a1 => CastleZone.whiteQueenSet
+    case Square.e1 => CastleZone.whiteSet
+    case Square.h1 => CastleZone.whiteKingSet
+    case Square.h8 => CastleZone.blackKingSet
+    case Square.e8 => CastleZone.blackSet
+    case Square.a8 => CastleZone.blackQueenSet
+    case _          => CastleZone.emptySet
   }
   
   override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {

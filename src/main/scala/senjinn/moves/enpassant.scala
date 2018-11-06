@@ -12,7 +12,7 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
   val enpassantSquare = if (source.rank < target.rank) target >> 8 else target << 8
   
   // ChessMove API
-  override val rightsRemoved = CastleZone.setOfNoZones
+  override val rightsRemoved = CastleZone.emptySet
   override val castleCommand = None
   override val pieceDeveloped = None
 

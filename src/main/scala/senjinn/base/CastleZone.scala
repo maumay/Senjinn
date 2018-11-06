@@ -4,7 +4,7 @@ import enumeratum._
 import senjinn.base.ImplicitAreaConverters.{boardsquare2squareset}
 
 
-sealed abstract class CastleZone2(val kingSource: Square2, val kingTarget: Square2) extends EnumEntry
+sealed abstract class CastleZone(val kingSource: Square, val kingTarget: Square) extends EnumEntry
 {
   val (isWhiteZone, isKingsideZone) = (kingSource.rank == 0, kingTarget.file - kingSource.file < 0)
   
@@ -26,9 +26,9 @@ sealed abstract class CastleZone2(val kingSource: Square2, val kingTarget: Squar
   }
 }
 
-object CastleZone2 extends Enum[CastleZone2]
+object CastleZone extends Enum[CastleZone]
 {
-  def apply(identifier: String): CastleZone2 = {
+  def apply(identifier: String): CastleZone = {
     identifier.toLowerCase match {
       case x if x == "wk" => WhiteKing
       case x if x == "wq" => WhiteQueen
@@ -38,20 +38,20 @@ object CastleZone2 extends Enum[CastleZone2]
     }
   }
   
-  val emptySet      = Set[CastleZone2]()
-  val whiteKingSet  = Set(WhiteKing)
-  val whiteQueenSet = Set(WhiteQueen)
-  val whiteSet      = Set(WhiteKing, WhiteQueen)
-  val blackKingSet  = Set(BlackKing)
-  val blackQueenSet = Set(BlackQueen)
-  val blackSet      = Set(BlackKing, BlackQueen)
-  val completeSet   = all.to[Set]
+  val values = findValues.toVector
   
-  val all = findValues.toVector
+  val emptySet: Set[CastleZone]      = Set[CastleZone]()
+  val whiteKingSet: Set[CastleZone]  = Set(WhiteKing)
+  val whiteQueenSet: Set[CastleZone] = Set(WhiteQueen)
+  val whiteSet: Set[CastleZone]      = Set(WhiteKing, WhiteQueen)
+  val blackKingSet: Set[CastleZone]  = Set(BlackKing)
+  val blackQueenSet: Set[CastleZone] = Set(BlackQueen)
+  val blackSet: Set[CastleZone]      = Set(BlackKing, BlackQueen)
+  val completeSet: Set[CastleZone]   = values.to[Set]
   
-  import Square2.{e1, g1, c1, g8, e8, c8}
-  case object WhiteKing  extends CastleZone2(e1, g1)
-  case object WhiteQueen extends CastleZone2(e1, c1)
-  case object BlackKing  extends CastleZone2(e8, g8)
-  case object BlackQueen extends CastleZone2(e8, c8)
+  import Square.{e1, g1, c1, g8, e8, c8}
+  case object WhiteKing  extends CastleZone(e1, g1)
+  case object WhiteQueen extends CastleZone(e1, c1)
+  case object BlackKing  extends CastleZone(e8, g8)
+  case object BlackQueen extends CastleZone(e8, c8)
 }

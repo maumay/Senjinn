@@ -36,16 +36,15 @@ package object moves
   
   /* I capitulated and just cached illegal moves too... */
   private val standardCache: Array[Array[StandardMove]] = {
-    import senjinn.base.pieces.{WhiteKnight => n, WhiteQueen => q}
     val sm = new StandardMove(_, _)
-    Square.all.map(src => {
+    Square.values.map(src => {
       val array = new Array[StandardMove](64)
-      Square.all.foreach(targ => array(targ.index) = sm(src, targ))
+      Square.values.foreach(targ => array(targ.index) = sm(src, targ))
       array
     }).toArray
   }
 
   private val castleCache: Map[CastleZone, CastleMove] = {
-    CastleZone.all.map(z => (z, new CastleMove(z))).toMap
+    CastleZone.values.map(z => (z, new CastleMove(z))).toMap
   }
 }

@@ -11,7 +11,7 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
     extends ChessMove
 {
   // ChessMove API
-  override val rightsRemoved = CastleZone.setOfNoZones
+  override val rightsRemoved = CastleZone.emptySet
   override val castleCommand = None
   override val pieceDeveloped = None
 
@@ -20,7 +20,7 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
   override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
     val pt2is = PromotionMove.piecetype2indexshift
     val activePawn = ChessPiece(state.active)(0)
-    val promotedPiece = ChessPiece.all(activePawn.index + pt2is(piecetype))
+    val promotedPiece = ChessPiece.values(activePawn.index + pt2is(piecetype))
     val plocs = state.pieceLocations
     plocs.removeSquare(activePawn, source)
     plocs.addSquare(promotedPiece, target)
@@ -35,7 +35,7 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
   override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
     val pt2is = PromotionMove.piecetype2indexshift
     val activePawn = ChessPiece(state.active)(0)
-    val promotedPiece = ChessPiece.all(activePawn.index + pt2is(piecetype))
+    val promotedPiece = ChessPiece.values(activePawn.index + pt2is(piecetype))
     val plocs = state.pieceLocations
     plocs.removeSquare(promotedPiece, target)
     plocs.addSquare(activePawn, source)

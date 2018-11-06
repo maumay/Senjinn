@@ -50,13 +50,14 @@ trait BoardParsing
     require(rights.matches(ChessRegex.castlingRightsAttribute.regex))
     require(whiteStatus.matches(ChessRegex.whiteCastleStatusAttribute.regex))
     require(blackStatus.matches(ChessRegex.blackCastleStatusAttribute.regex))
-    val rightsMatchers = CastleZone.simpleIdentifierMap
+    val rightsMatchers: String => CastleZone = CastleZone(_)
+    val possibleRights = Seq("wk", "wq", "bk", "bq")
     
-    val rightsMatched = rightsMatchers.keys
+    val rightsMatched = possibleRights.iterator
     .filter(_.r.findFirstIn(rights).isDefined).map(rightsMatchers(_)).toSet
-    val whiteMatched = rightsMatchers.keys
+    val whiteMatched = possibleRights.iterator
     .find(_.r.findFirstIn(whiteStatus).isDefined).map(rightsMatchers(_))
-    val blackMatched = rightsMatchers.keys
+    val blackMatched = possibleRights.iterator
     .find(_.r.findFirstIn(blackStatus).isDefined).map(rightsMatchers(_))
     
     CastlingTracker(rightsMatched, whiteMatched, blackMatched)
@@ -64,13 +65,14 @@ trait BoardParsing
   
   private def parseDevelopedPieces(encoded: String): mutable.Set[DevPiece] = {
     require(encoded.matches(ChessRegex.developedPiecesAttribute.regex))
-    ChessRegex.square.findAllIn(encoded).map(Square(_)).map(DevPiece(_)).to[mutable.Set]
+    ChessRegex.square.findAllIn(encoded)
+    .map(Square(_)).map(DevPiece(_).get).to[mutable.Set]
   }
   
   private def parseActiveSide(encoded: String): Side = {
     require(encoded.matches(ChessRegex.activeSideAttribute.regex))
     val whiteMatch = "white".r.findFirstIn(encoded)
-    if (whiteMatch.isDefined) Side.white else Side.black
+    if (whiteMatch.isDefined) Side.White else Side.Black
   }
   
   private def parseEnpassantSquare(encoded: String): Option[Square] = {
