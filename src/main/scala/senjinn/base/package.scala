@@ -1,6 +1,5 @@
 package senjinn
 
-import senjinn.base.ImplicitAreaConverters._
 import senjinn.base.Dir._
 
 
@@ -39,6 +38,17 @@ package object base
     }
     case x => Vector(0L)
   }
+  
+  /*
+   * Implicit board area converters
+   */
+  implicit def boardsquare2squareset(square: Square): SquareSet = SquareSet(square.loc)
+  
+  implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
+  
+  implicit def squareset2long(s: SquareSet): Long = s.src
+
+  implicit def boardsquare2long(square: Square): Long = square.loc
   
   /*
    * Resource loading functionality

@@ -38,16 +38,3 @@ object SquareSet
   def apply(args: Square*) = new SquareSet(args.foldLeft(0L)(_ | _.loc))
   
 }
-
-
-object ImplicitAreaConverters
-{
-  implicit def boardsquare2squareset(square: Square): SquareSet = SquareSet(square.loc)
-  
-  implicit def long2squareset(x: Long): SquareSet = SquareSet(x)
-  
-  implicit def squareset2long(s: SquareSet): Long = s.src
-
-  implicit def boardsquare2long(square: Square): Long = square.loc
-}
-

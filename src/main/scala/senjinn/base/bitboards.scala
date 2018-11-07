@@ -2,7 +2,6 @@ package senjinn.base
 
 
 import senjinn.base.Square._
-import senjinn.base.ImplicitAreaConverters._
 
 
 /**

@@ -1,7 +1,6 @@
 package senjinn.eval
 
-import senjinn.base.Square
-import senjinn.base.pieces.ChessPiece
+import senjinn.base.{Square, ChessPiece}
 import senjinn.board.PieceLocations
 
 

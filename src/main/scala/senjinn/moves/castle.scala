@@ -1,7 +1,6 @@
 package senjinn.moves
 
-import senjinn.base.{CastleZone}
-import senjinn.base.pieces._
+import senjinn.base.{CastleZone, ChessPiece}
 import senjinn.board.{BoardState, MoveReverser}
 
 /**

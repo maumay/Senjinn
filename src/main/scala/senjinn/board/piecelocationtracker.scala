@@ -1,8 +1,6 @@
 package senjinn.board
 
-import senjinn.base.{Square, SquareSet, Side}
-import senjinn.base.ImplicitAreaConverters._
-import senjinn.base.pieces.ChessPiece
+import senjinn.base.{Square, SquareSet, Side, ChessPiece, long2squareset}
 import senjinn.eval.PieceSquareTableSet
 
 

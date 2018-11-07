@@ -1,11 +1,9 @@
-package senjinn.base.pieces
+package senjinn.base
 
 import org.scalatest.FlatSpec
 
-import senjinn.base.{processResource, Square, SquareSet, Dir}
 import senjinn.base.{PieceMovementDirs => pmd}
-import senjinn.base.pieces.ChessPiece._
-import senjinn.base.ImplicitAreaConverters._
+import senjinn.base.ChessPiece._
 
 
 class IndexAlignmentTest extends FlatSpec

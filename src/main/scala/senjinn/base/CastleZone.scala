@@ -1,7 +1,6 @@
 package senjinn.base
 
 import enumeratum._
-import senjinn.base.ImplicitAreaConverters.{boardsquare2squareset}
 
 
 sealed abstract class CastleZone(val kingSource: Square, val kingTarget: Square) extends EnumEntry

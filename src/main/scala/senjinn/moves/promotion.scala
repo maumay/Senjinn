@@ -1,8 +1,7 @@
 package senjinn.moves
 
-import senjinn.base.{Square, CastleZone}
+import senjinn.base.{Square, CastleZone, ChessPiece}
 import senjinn.board.{BoardState, MoveReverser}
-import senjinn.base.pieces.{ChessPiece}
 
 /**
  * Represents the act of pawn promotion in a chess game.

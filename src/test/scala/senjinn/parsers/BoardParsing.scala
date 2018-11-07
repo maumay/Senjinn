@@ -2,7 +2,7 @@ package senjinn.parsers
 
 import scala.collection.{ mutable => mutable }
 import senjinn.base.{ Square, CastleZone, Side, DevPiece }
-import senjinn.base.ImplicitAreaConverters.{ boardsquare2long }
+import senjinn.base.{ boardsquare2long }
 import senjinn.board.{ BoardState, PieceLocations, CastlingTracker, HashCache, BoardHasher }
 import senjinn.base.CastleZone
 

@@ -2,7 +2,7 @@ package senjinn.moves
 
 import java.lang.Math.abs
 
-import senjinn.base.ImplicitAreaConverters.{ boardsquare2long }
+import senjinn.base.{boardsquare2long}
 import senjinn.base.{Square, SquareSet, CastleZone, DevPiece, Dir}
 import senjinn.board.{BoardState, MoveReverser}
 
