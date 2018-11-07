@@ -1,6 +1,6 @@
 package senjinn.board
 
-import senjinn.base.{CastleZone, ChessPiece, DevPiece, Square}
+import senjinn.base.{CastleZone, Piece, DevPiece, Square}
 
 /**
  * Essentially a struct which is used to keep track of information
@@ -11,7 +11,7 @@ class MoveReverser
 {
   var isConsumed = true
   var discardedCastleRights: Set[CastleZone] = Set()
-  var pieceTaken: Option[ChessPiece] = None
+  var pieceTaken: Option[Piece] = None
   var pieceDeveloped: Option[DevPiece] = None
   var discardedEnpassant: Option[Square] = None
   var discardedHash: Long = 0L

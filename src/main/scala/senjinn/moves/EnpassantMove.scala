@@ -1,6 +1,6 @@
 package senjinn.moves
 
-import senjinn.base.{Square, CastleZone, ChessPiece}
+import senjinn.base.{Square, CastleZone, Piece}
 import senjinn.board.{BoardState, MoveReverser}
 
 /**
@@ -18,8 +18,8 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
   override def toCompactString = s"E$source$target"
 
   override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
-    val activePawn = ChessPiece(state.active)(0)
-    val passivePawn = ChessPiece(state.passive)(0)
+    val activePawn = Piece(state.active)(0)
+    val passivePawn = Piece(state.passive)(0)
     val plocs = state.pieceLocations
     plocs.removeSquare(activePawn, source)
     plocs.addSquare(activePawn, target)
@@ -32,8 +32,8 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
   }
 
   override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
-    val activePawn = ChessPiece(state.active)(0)
-    val passivePawn = ChessPiece(state.passive)(0)
+    val activePawn = Piece(state.active)(0)
+    val passivePawn = Piece(state.passive)(0)
     val plocs = state.pieceLocations
     plocs.removeSquare(activePawn, target)
     plocs.addSquare(activePawn, source)

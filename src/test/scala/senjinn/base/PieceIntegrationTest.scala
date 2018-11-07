@@ -3,7 +3,7 @@ package senjinn.base
 import org.scalatest.FlatSpec
 
 import senjinn.base.{PieceMovementDirs => pmd}
-import senjinn.base.ChessPiece._
+import senjinn.base.Piece._
 
 
 /**
@@ -26,7 +26,7 @@ class PieceIntegrationTest extends FlatSpec
     hexMatched.map(vec => (parseUnsignedLong(vec(0), 16), parseUnsignedLong(vec(1), 16)))
   })
 
-  def assertGeneratedMovesAreCorrect(loc: Square, piece: ChessPiece) {
+  def assertGeneratedMovesAreCorrect(loc: Square, piece: Piece) {
     val consp = ConstraintPieces.pieceMap(piece)
     positions.foreach(pos => {
       val (w, b) = pos
@@ -36,7 +36,7 @@ class PieceIntegrationTest extends FlatSpec
     })
   }
 
-  ChessPiece.values.filterNot(ChessPiece.pawns contains _) foreach {piece =>
+  Piece.values.filterNot(Piece.pawns contains _) foreach {piece =>
     Square.values foreach {sq =>
       s"$piece" must s"generate the correct moves at $sq" in {
         assertGeneratedMovesAreCorrect(sq, piece)
@@ -44,7 +44,7 @@ class PieceIntegrationTest extends FlatSpec
     }
   }
 
-  ChessPiece.pawns foreach {pawn =>
+  Piece.pawns foreach {pawn =>
     Square.values.drop(8).dropRight(8) foreach {sq =>
       s"$pawn" must s"generate the correct moves at $sq" in {
         assertGeneratedMovesAreCorrect(sq, pawn)
@@ -62,7 +62,7 @@ object ConstraintPieces
     }).foldLeft(SquareSet())(_|_)
   }
 
-  val pieceMap = Map[ChessPiece, Moveable](
+  val pieceMap = Map[Piece, Moveable](
     WhitePawn -> ConstraintWhitePawn,
     WhiteKnight -> ConstraintWhiteKnight,
     WhiteBishop -> ConstraintWhiteBishop,

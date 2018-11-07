@@ -5,34 +5,7 @@ import senjinn.base.BasicBitboards.{genEmptyBoardBitboards}
 import enumeratum._
 
 
-/**
- * Supertype of all chesspieces.  
- */
-trait Moveable {
-  
-  /** 
-   *  Get the set of squares this piece is controlling given the locations of all pieces
-   *  on the board.
-   */
-  def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
-  
-  /** 
-   *  Get the set of squares this piece can 'legally' move to which would result in a capture 
-   *  of an enemy given the location of all pieces on the board. Note that this method is
-   *  <b>not</b> expected to take into account illegal moves where the king is put into check.
-   */
-  def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
-  
-  /** 
-   *  Get the set of squares this piece can 'legally' move to given the location of all pieces.
-   *  Note that this method is <b>not</b> expected to take into account illegal moves where 
-   *  the king is put into check.
-   */
-  def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
-}
-
-
-sealed trait ChessPiece extends Moveable with EnumEntry {
+sealed trait Piece extends Moveable with EnumEntry {
   
   /** The set of 12 indices from each chesspiece must be equal to the range (0 until 12) */
   val index: Int
@@ -57,7 +30,7 @@ sealed trait ChessPiece extends Moveable with EnumEntry {
 }
 
 
-object ChessPiece extends Enum[ChessPiece] {
+object Piece extends Enum[Piece] {
   
   val pawns   = Vector(WhitePawn, BlackPawn)
   val knights = Vector(WhiteKnight, BlackKnight)
@@ -71,17 +44,17 @@ object ChessPiece extends Enum[ChessPiece] {
   val nameMap          = values.map(p => (p.shortName, p)).toMap
   
   /** Retrieve a piece from it's index */
-  def apply(index: Int): ChessPiece = values(index)
+  def apply(index: Int): Piece = values(index)
   
   /** Retrieve a piece from its shorthand identifier */
-  def apply(shortName: String): ChessPiece = nameMap(shortName)
+  def apply(shortName: String): Piece = nameMap(shortName)
   
   /** Retrieve all pieces on a given side ordered by their index. */
-  def apply(side: Side): Vector[ChessPiece] = if (side.isWhite) whites else blacks
+  def apply(side: Side): Vector[Piece] = if (side.isWhite) whites else blacks
 
   
   // Piece implementation
-  case object WhitePawn extends ChessPiece {
+  case object WhitePawn extends Piece {
     val index = 0
     val side = Side.White
     val shortName = "wp"
@@ -119,7 +92,7 @@ object ChessPiece extends Enum[ChessPiece] {
     private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("wpa"), 1)
   }
 
-  case object WhiteKnight extends ChessPiece {
+  case object WhiteKnight extends Piece {
     val index = 1
     val side = Side.White
     val shortName = "wn"
@@ -147,7 +120,7 @@ object ChessPiece extends Enum[ChessPiece] {
     private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("n"), 1)
   }
 
-  case object WhiteBishop extends ChessPiece {
+  case object WhiteBishop extends Piece {
     val index = 2
     val side = Side.White
     val shortName = "wb"
@@ -175,7 +148,7 @@ object ChessPiece extends Enum[ChessPiece] {
     private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("b"))
   }
 
-  case object WhiteRook extends ChessPiece {
+  case object WhiteRook extends Piece {
     val index = 3
     val side = Side.White
     val shortName = "wr"
@@ -203,7 +176,7 @@ object ChessPiece extends Enum[ChessPiece] {
     private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("r"))
   }
 
-  case object WhiteQueen extends ChessPiece {
+  case object WhiteQueen extends Piece {
     val index = 4
     val side = Side.White
     val shortName = "wq"
@@ -229,7 +202,7 @@ object ChessPiece extends Enum[ChessPiece] {
     }
   }
 
-  case object WhiteKing extends ChessPiece {
+  case object WhiteKing extends Piece {
     val index = 5
     val side = Side.White
     val shortName = "wk"
@@ -257,7 +230,7 @@ object ChessPiece extends Enum[ChessPiece] {
     private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("k"), 1)
   }
 
-  case object BlackPawn extends ChessPiece {
+  case object BlackPawn extends Piece {
     val index = 6
     val side = Side.Black
     val shortName = "bp"
@@ -295,7 +268,7 @@ object ChessPiece extends Enum[ChessPiece] {
     private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("bpa"), 1)
   }
 
-  case object BlackKnight extends ChessPiece {
+  case object BlackKnight extends Piece {
     val index = 7
     val side = Side.Black
     val shortName = "bn"
@@ -321,7 +294,7 @@ object ChessPiece extends Enum[ChessPiece] {
     }
   }
 
-  case object BlackBishop extends ChessPiece {
+  case object BlackBishop extends Piece {
     val index = 8
     val side = Side.Black
     val shortName = "bb"
@@ -347,7 +320,7 @@ object ChessPiece extends Enum[ChessPiece] {
     }
   }
 
-  case object BlackRook extends ChessPiece {
+  case object BlackRook extends Piece {
     val index = 9
     val side = Side.Black
     val shortName = "br"
@@ -373,7 +346,7 @@ object ChessPiece extends Enum[ChessPiece] {
     }
   }
 
-  case object BlackQueen extends ChessPiece {
+  case object BlackQueen extends Piece {
     val index = 10
     val side = Side.Black
     val shortName = "bq"
@@ -399,7 +372,7 @@ object ChessPiece extends Enum[ChessPiece] {
     }
   }
 
-  case object BlackKing extends ChessPiece {
+  case object BlackKing extends Piece {
     val index = 11
     val side = Side.Black
     val shortName = "bk"

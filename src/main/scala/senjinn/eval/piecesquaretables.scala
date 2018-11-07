@@ -1,12 +1,12 @@
 package senjinn.eval
 
-import senjinn.base.{Square, ChessPiece}
+import senjinn.base.{Square, Piece}
 import senjinn.board.PieceLocations
 
 
 class PieceValues private (private val values: Array[Int]) extends Iterable[Int]
 {
-   def valueOf(piece: ChessPiece): Int = values(piece.index % 6)
+   def valueOf(piece: Piece): Int = values(piece.index % 6)
 
    def iterator = values.iterator
 }
@@ -28,7 +28,7 @@ class PieceSquareTableSet private(private val tables: Vector[PieceSquareTable])
 {
    require(tables.length == 12)
 
-   def value(piece: ChessPiece, location: Square): Int = {
+   def value(piece: Piece, location: Square): Int = {
      tables(piece.index).valueAt(location)
    }
 }
@@ -39,8 +39,8 @@ object PieceSquareTableSet
    import senjinn.base.{loadResource, Side}
 
    private def pkg = getClass.getPackage
-   private def midgameLocators = ChessPiece.whites.map(p => (pkg, p.shortName + "-midgame"))
-   private def endgameLocators = ChessPiece.whites.map(p => (pkg, p.shortName + "-endgame"))
+   private def midgameLocators = Piece.whites.map(p => (pkg, p.shortName + "-midgame"))
+   private def endgameLocators = Piece.whites.map(p => (pkg, p.shortName + "-endgame"))
 
    val midgame: PieceSquareTableSet = {
      val white = PieceValues.midgame

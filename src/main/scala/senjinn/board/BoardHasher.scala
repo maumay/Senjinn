@@ -1,6 +1,6 @@
 package senjinn.board
 
-import senjinn.base.{Square, CastleZone, Side, ChessPiece}
+import senjinn.base.{Square, CastleZone, Side, Piece}
 
 
 object BoardHasher 
@@ -13,14 +13,14 @@ object BoardHasher
   private val genLong: Any => Long = _ => prng.nextLong()
   
   private val squareFeatures: SquareArr = {
-    ChessPiece.values.map(i => Square.values.map(genLong).toArray).toArray
+    Piece.values.map(i => Square.values.map(genLong).toArray).toArray
   }
   
   private val castleFeatures: Arr = CastleZone.values.map(genLong).toArray
   private val enpassantFeatures: Arr = (1 to 8).map(genLong).toArray
   
   // Api
-  def squareFeature(piece: ChessPiece, square: Square) = squareFeatures(piece.index)(square.index)
+  def squareFeature(piece: Piece, square: Square) = squareFeatures(piece.index)(square.index)
   
   def castleFeature(zone: CastleZone) = castleFeatures(CastleZone.indexOf(zone))
   

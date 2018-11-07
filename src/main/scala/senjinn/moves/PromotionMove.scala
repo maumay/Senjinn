@@ -1,6 +1,6 @@
 package senjinn.moves
 
-import senjinn.base.{Square, CastleZone, ChessPiece}
+import senjinn.base.{Square, CastleZone, Piece}
 import senjinn.board.{BoardState, MoveReverser}
 
 /**
@@ -18,8 +18,8 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
 
   override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
     val pt2is = PromotionMove.piecetype2indexshift
-    val activePawn = ChessPiece(state.active)(0)
-    val promotedPiece = ChessPiece.values(activePawn.index + pt2is(piecetype))
+    val activePawn = Piece(state.active)(0)
+    val promotedPiece = Piece.values(activePawn.index + pt2is(piecetype))
     val plocs = state.pieceLocations
     plocs.removeSquare(activePawn, source)
     plocs.addSquare(promotedPiece, target)
@@ -33,8 +33,8 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
 
   override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
     val pt2is = PromotionMove.piecetype2indexshift
-    val activePawn = ChessPiece(state.active)(0)
-    val promotedPiece = ChessPiece.values(activePawn.index + pt2is(piecetype))
+    val activePawn = Piece(state.active)(0)
+    val promotedPiece = Piece.values(activePawn.index + pt2is(piecetype))
     val plocs = state.pieceLocations
     plocs.removeSquare(promotedPiece, target)
     plocs.addSquare(activePawn, source)
