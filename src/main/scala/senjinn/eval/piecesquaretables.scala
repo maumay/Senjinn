@@ -83,4 +83,3 @@ object PieceSquareTableSet
      new PieceSquareTableSet((white ++ white.map(_.invert)).toVector)
    }
 }
-
