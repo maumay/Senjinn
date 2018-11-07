@@ -3,14 +3,14 @@ package senjinn.parsers
 import scala.collection.{ mutable => mutable }
 import senjinn.base.{ Square, CastleZone, Side, DevPiece }
 import senjinn.base.{ boardsquare2long }
-import senjinn.board.{ BoardState, PieceLocations, CastlingTracker, HashCache, BoardHasher }
+import senjinn.board.{ Board, PieceLocations, CastlingTracker, HashCache, BoardHasher }
 import senjinn.base.CastleZone
 
 /**
  */
 trait BoardParsing 
 {
-  final def parseBoard(attributes: Seq[String], moveCount: Int): BoardState = {
+  final def parseBoard(attributes: Seq[String], moveCount: Int): Board = {
     require(moveCount >= 0)
     require(attributes.size == 9)
     val att = attributes
@@ -23,7 +23,7 @@ trait BoardParsing
     val hash = pieceLocs.hash ^ BoardHasher.hashFeatures(active, enpassant, castling)
     val hashCache = constructDummyHashCache(hash, moveCount)
     
-    new BoardState(pieceLocs, hashCache, castling,
+    new Board(pieceLocs, hashCache, castling,
         developed, halfClock, enpassant, active)
   }
   

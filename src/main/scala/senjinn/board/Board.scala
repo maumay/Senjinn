@@ -10,7 +10,7 @@ import senjinn.base.{DevPiece, Side, Square, CastleZone, SquareSet, Piece}
   * direction and reverse it using an appropriate instance of
   * {@link MoveReverser}.  
   */
-class BoardState(
+class Board(
   val pieceLocations: PieceLocations,
   val hashCache: HashCache,
   val castleStatus: CastlingTracker,
@@ -29,14 +29,14 @@ class BoardState(
     pieceLocations.hash ^ BoardHasher.hashFeatures(active, enpassant, castleStatus)
   }
   
-  def copy: BoardState = new BoardState(pieceLocations.copy,
+  def copy: Board = new Board(pieceLocations.copy,
 		  hashCache.copy, castleStatus.copy, piecesDeveloped.to[mutable.Set],
 		  clock, enpassant, _active)
   
 
   override def equals(x: Any) = {
-    x.isInstanceOf[BoardState] && {
-      val o = x.asInstanceOf[BoardState]
+    x.isInstanceOf[Board] && {
+      val o = x.asInstanceOf[Board]
       fieldTuple == o.fieldTuple
     }
   }
@@ -47,11 +47,11 @@ class BoardState(
       castleStatus, piecesDeveloped, clock, enpassant, active)
 }
 
-object BoardState
+object Board
 {
-    def apply(properties: Map[String, Any]): BoardState = {
+    def apply(properties: Map[String, Any]): Board = {
       val p = properties
-      new BoardState(
+      new Board(
           p("pieceLocations").asInstanceOf[PieceLocations],
           p("hashCache").asInstanceOf[HashCache],
           p("castleStatus").asInstanceOf[CastlingTracker],

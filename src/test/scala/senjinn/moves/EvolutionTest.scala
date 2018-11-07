@@ -4,14 +4,14 @@ import org.scalatest.FlatSpec
 import senjinn.parsers.MoveParsing
 import senjinn.parsers.BoardParsing
 import senjinn.base.{loadResource}
-import senjinn.board.{ BoardState, HashCache, MoveReverser }
+import senjinn.board.{ Board, HashCache, MoveReverser }
 
 /**
  */
 class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
   
   val testpkg: Package = getClass.getPackage
-  type TestCaseArgs = (ChessMove, BoardState, BoardState)
+  type TestCaseArgs = (ChessMove, Board, Board)
   
   testCaseIterator foreach { testcase => 
     val (move, start, end) = testcase
@@ -26,7 +26,7 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
     }
   } 
   
-  def assertBoardstatesEqual(expected: BoardState, actual: BoardState) {
+  def assertBoardstatesEqual(expected: Board, actual: Board) {
     val (e, a) = (expected, actual)
     assert(e.pieceLocations == a.pieceLocations)
     assert(e.hashCache == a.hashCache)
@@ -52,7 +52,7 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
     val end = parseBoard(lines.slice(10, 19), initialMoveCount + 1)
     val nhcache = end.hashCache.copyCache
     nhcache((end.hashCache.currIndex - 1) % hcachesze) = start.computeHash
-    val end2 = new BoardState(end.pieceLocations, HashCache(nhcache, end.hashCache.currIndex),
+    val end2 = new Board(end.pieceLocations, HashCache(nhcache, end.hashCache.currIndex),
       end.castleStatus, end.piecesDeveloped, end.clock, end.enpassant, end.active)
 
     (parseMove(lines.head), start, end2)

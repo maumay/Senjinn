@@ -1,12 +1,10 @@
 package senjinn.base
 
 import senjinn.base.{ PieceMovementDirs => pmd }
-import senjinn.base.BasicBitboards.{genEmptyBoardBitboards}
+import senjinn.base.BasicBitboards.{ genEmptyBoardBitboards }
 import enumeratum._
 
-
 sealed trait Piece extends Moveable with EnumEntry {
-  
   /** The set of 12 indices from each chesspiece must be equal to the range (0 until 12) */
   val index: Int
   /** The side this chesspiece belongs to */
@@ -15,44 +13,41 @@ sealed trait Piece extends Moveable with EnumEntry {
   val shortName: String
 
   def isWhite = side.isWhite
-  def isPawn  = (index % 6) == 0
-  
+  def isPawn = (index % 6) == 0
+
   /**
-   * Get the set of squares this piece can legally move to if it was the only piece on the 
+   * Get the set of squares this piece can legally move to if it was the only piece on the
    * board.
    */
-  def getEmptyBoardMoveset(loc: Square): SquareSet
-  
+  def emptyBoardMoveset(loc: Square): SquareSet
+
   /**
    * Get the set of squares this piece controls if it was the only piece on the board.
    */
-  def getEmptyBoardControlset(loc: Square): SquareSet
+  def emptyBoardControlset(loc: Square): SquareSet
 }
 
-
 object Piece extends Enum[Piece] {
-  
-  val pawns   = Vector(WhitePawn, BlackPawn)
+  val pawns = Vector(WhitePawn, BlackPawn)
   val knights = Vector(WhiteKnight, BlackKnight)
   val bishops = Vector(WhiteBishop, BlackBishop)
-  val rooks   = Vector(WhiteRook, BlackRook)
-  val queens  = Vector(WhiteQueen, BlackQueen)
-  val kings   = Vector(WhiteKing, BlackKing)
+  val rooks = Vector(WhiteRook, BlackRook)
+  val queens = Vector(WhiteQueen, BlackQueen)
+  val kings = Vector(WhiteKing, BlackKing)
 
-  val values           = findValues.toVector
+  val values = findValues.toVector
   val (whites, blacks) = (values.filter(_.isWhite), values.filterNot(_.isWhite))
-  val nameMap          = values.map(p => (p.shortName, p)).toMap
-  
+  val nameMap = values.map(p => (p.shortName, p)).toMap
+
   /** Retrieve a piece from it's index */
   def apply(index: Int): Piece = values(index)
-  
+
   /** Retrieve a piece from its shorthand identifier */
   def apply(shortName: String): Piece = nameMap(shortName)
-  
+
   /** Retrieve all pieces on a given side ordered by their index. */
   def apply(side: Side): Vector[Piece] = if (side.isWhite) whites else blacks
 
-  
   // Piece implementation
   case object WhitePawn extends Piece {
     val index = 0
@@ -75,11 +70,11 @@ object Piece extends Enum[Piece] {
       fpush | getAttackset(loc, whites, blacks)
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
+    def emptyBoardMoveset(loc: Square) = {
       emptyBoardMoves(loc.index)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
+    def emptyBoardControlset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
@@ -109,11 +104,11 @@ object Piece extends Enum[Piece] {
       emptyBoardControl(loc.index) & ~whites
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
+    def emptyBoardMoveset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
+    def emptyBoardControlset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
@@ -137,11 +132,11 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~whites
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
+    def emptyBoardMoveset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
+    def emptyBoardControlset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
@@ -165,11 +160,11 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~whites
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
+    def emptyBoardMoveset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
+    def emptyBoardControlset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
@@ -193,12 +188,12 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~whites
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
-      WhiteBishop.getEmptyBoardMoveset(loc) | WhiteRook.getEmptyBoardMoveset(loc)
+    def emptyBoardMoveset(loc: Square) = {
+      WhiteBishop.emptyBoardMoveset(loc) | WhiteRook.emptyBoardMoveset(loc)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
-      getEmptyBoardMoveset(loc)
+    def emptyBoardControlset(loc: Square) = {
+      emptyBoardMoveset(loc)
     }
   }
 
@@ -219,11 +214,11 @@ object Piece extends Enum[Piece] {
       emptyBoardControl(loc.index) & ~whites
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
+    def emptyBoardMoveset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
+    def emptyBoardControlset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
@@ -251,11 +246,11 @@ object Piece extends Enum[Piece] {
       fpush | getAttackset(loc, whites, blacks)
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
+    def emptyBoardMoveset(loc: Square) = {
       emptyBoardMoves(loc.index)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
+    def emptyBoardControlset(loc: Square) = {
       emptyBoardControl(loc.index)
     }
 
@@ -285,12 +280,12 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~blacks
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
-      WhiteKnight.getEmptyBoardMoveset(loc)
+    def emptyBoardMoveset(loc: Square) = {
+      WhiteKnight.emptyBoardMoveset(loc)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
-      WhiteKnight.getEmptyBoardControlset(loc)
+    def emptyBoardControlset(loc: Square) = {
+      WhiteKnight.emptyBoardControlset(loc)
     }
   }
 
@@ -311,12 +306,12 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~blacks
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
-      WhiteBishop.getEmptyBoardMoveset(loc)
+    def emptyBoardMoveset(loc: Square) = {
+      WhiteBishop.emptyBoardMoveset(loc)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
-      WhiteBishop.getEmptyBoardControlset(loc)
+    def emptyBoardControlset(loc: Square) = {
+      WhiteBishop.emptyBoardControlset(loc)
     }
   }
 
@@ -337,12 +332,12 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~blacks
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
-      WhiteRook.getEmptyBoardMoveset(loc)
+    def emptyBoardMoveset(loc: Square) = {
+      WhiteRook.emptyBoardMoveset(loc)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
-      WhiteRook.getEmptyBoardControlset(loc)
+    def emptyBoardControlset(loc: Square) = {
+      WhiteRook.emptyBoardControlset(loc)
     }
   }
 
@@ -363,12 +358,12 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~blacks
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
-      BlackBishop.getEmptyBoardMoveset(loc) | BlackRook.getEmptyBoardMoveset(loc)
+    def emptyBoardMoveset(loc: Square) = {
+      BlackBishop.emptyBoardMoveset(loc) | BlackRook.emptyBoardMoveset(loc)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
-      getEmptyBoardMoveset(loc)
+    def emptyBoardControlset(loc: Square) = {
+      emptyBoardMoveset(loc)
     }
   }
 
@@ -389,12 +384,12 @@ object Piece extends Enum[Piece] {
       getControlset(loc, whites, blacks) & ~blacks
     }
 
-    def getEmptyBoardMoveset(loc: Square) = {
-      WhiteKing.getEmptyBoardMoveset(loc)
+    def emptyBoardMoveset(loc: Square) = {
+      WhiteKing.emptyBoardMoveset(loc)
     }
 
-    def getEmptyBoardControlset(loc: Square) = {
-      WhiteKing.getEmptyBoardControlset(loc)
+    def emptyBoardControlset(loc: Square) = {
+      WhiteKing.emptyBoardControlset(loc)
     }
   }
 }

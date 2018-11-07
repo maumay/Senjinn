@@ -1,7 +1,7 @@
 package senjinn.moves
 
 import senjinn.base.{CastleZone, Piece}
-import senjinn.board.{BoardState, MoveReverser}
+import senjinn.board.{Board, MoveReverser}
 
 /**
  * Represents the act of castling in a chess game.
@@ -16,7 +16,7 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
 
   override def toCompactString = zone.toString
 
-  override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def updatePieceLocations(state: Board, reverser: MoveReverser) {
     val king = Piece(state.active)(5)
     val rook = Piece(state.active)(3)
     val plocs = state.pieceLocations
@@ -31,7 +31,7 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
     state.clock += 1
   }
 
-  override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def revertPieceLocations(state: Board, reverser: MoveReverser) {
     val king = Piece(state.active)(5)
     val rook = Piece(state.active)(3)
     val plocs = state.pieceLocations

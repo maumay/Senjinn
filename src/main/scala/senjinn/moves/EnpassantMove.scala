@@ -1,7 +1,7 @@
 package senjinn.moves
 
 import senjinn.base.{Square, CastleZone, Piece}
-import senjinn.board.{BoardState, MoveReverser}
+import senjinn.board.{Board, MoveReverser}
 
 /**
  * Represents the act of enpassant in a chess game.
@@ -17,7 +17,7 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
 
   override def toCompactString = s"E$source$target"
 
-  override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def updatePieceLocations(state: Board, reverser: MoveReverser) {
     val activePawn = Piece(state.active)(0)
     val passivePawn = Piece(state.passive)(0)
     val plocs = state.pieceLocations
@@ -31,7 +31,7 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
     state.clock = 0
   }
 
-  override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def revertPieceLocations(state: Board, reverser: MoveReverser) {
     val activePawn = Piece(state.active)(0)
     val passivePawn = Piece(state.passive)(0)
     val plocs = state.pieceLocations

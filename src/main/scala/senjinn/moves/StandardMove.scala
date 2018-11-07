@@ -4,7 +4,7 @@ import java.lang.Math.abs
 
 import senjinn.base.{boardsquare2long}
 import senjinn.base.{Square, SquareSet, CastleZone, DevPiece, Dir}
-import senjinn.board.{BoardState, MoveReverser}
+import senjinn.board.{Board, MoveReverser}
 
 /**
  * Represents the act of a 'standard' move in a chess game.
@@ -13,9 +13,12 @@ import senjinn.board.{BoardState, MoveReverser}
 class StandardMove private[moves](val source: Square, val target: Square) extends ChessMove
 {
   // StandardMove specifics
-  val cord: SquareSet = Dir.ofLineConnecting(source, target) match {
-    case Some(d) => SquareSet(source.allSquares(d, 8).takeWhile(_ != target).foldLeft(0L)(_ | _))
-    case None    => SquareSet()
+  val cord: SquareSet = {
+    val inner = Dir.ofLineConnecting(source, target) match {
+      case Some(d) => SquareSet(source.allSquares(d, 8).takeWhile(_ != target).foldLeft(0L)(_ | _))
+      case None    => SquareSet()
+    }
+    inner | target
   }
   
   // ChessMove API
@@ -41,7 +44,7 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
     case _          => CastleZone.emptySet
   }
   
-  override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def updatePieceLocations(state: Board, reverser: MoveReverser) {
     val plocs = state.pieceLocations
     val moving = plocs.pieceAt(source, state.active).get
     val removing = plocs.pieceAt(target, state.passive)
@@ -64,7 +67,7 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
     else {state.clock += 1}
   }
 
-  override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def revertPieceLocations(state: Board, reverser: MoveReverser) {
     val plocs = state.pieceLocations
     val previouslyMoved = plocs.pieceAt(target, state.active).get
     plocs.removeSquare(previouslyMoved, target)

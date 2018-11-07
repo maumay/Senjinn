@@ -1,7 +1,7 @@
 package senjinn.moves
 
 import senjinn.base.{Square, CastleZone, Piece}
-import senjinn.board.{BoardState, MoveReverser}
+import senjinn.board.{Board, MoveReverser}
 
 /**
  * Represents the act of pawn promotion in a chess game.
@@ -16,7 +16,7 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
 
   override def toCompactString = s"$source$target$piecetype"
 
-  override def updatePieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def updatePieceLocations(state: Board, reverser: MoveReverser) {
     val pt2is = PromotionMove.piecetype2indexshift
     val activePawn = Piece(state.active)(0)
     val promotedPiece = Piece.values(activePawn.index + pt2is(piecetype))
@@ -31,7 +31,7 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
     state.clock = 0
   }
 
-  override def revertPieceLocations(state: BoardState, reverser: MoveReverser) {
+  override def revertPieceLocations(state: Board, reverser: MoveReverser) {
     val pt2is = PromotionMove.piecetype2indexshift
     val activePawn = Piece(state.active)(0)
     val promotedPiece = Piece.values(activePawn.index + pt2is(piecetype))

@@ -18,9 +18,11 @@ class SquareSet private(val src: Long) extends AnyVal
   
   def unary_~ = SquareSet(~src)
   
-  def intersects(square: Square): Boolean = {
-    (square.loc & src) != 0
+  def intersects(square: SquareSet): Boolean = {
+    (square.src & src) != 0
   }
+  
+  def size = java.lang.Long.bitCount(src)
   
   def squares: Iterator[Square] = (0 to 63).iterator
                                        .filter(i => ((1L << i) & src) != 0)

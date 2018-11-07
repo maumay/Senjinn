@@ -4,8 +4,7 @@ package senjinn.board
  * Fixed size cache which tracks the hashed values of states of play
  * over time.
  */
-class HashCache private(private val cache: Array[Long], private var moveCount: Int)
-{
+class HashCache private (private val cache: Array[Long], private var moveCount: Int) {
   private var cacheIndex: Int = moveCount % HashCache.size
 
   def increment(newPosition: Long): Long = {
@@ -30,7 +29,7 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
       var index = 1
       while (index < HashCache.size && samecount < 3) {
         val next = cpy(index)
-        if (next == last) samecount += 1 else {samecount = 1; last = next}
+        if (next == last) samecount += 1 else { samecount = 1; last = next }
         index += 1
       }
       samecount == 3
@@ -42,7 +41,7 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
   def currIndex = cacheIndex
   def copy = new HashCache(cache.clone(), moveCount)
   def copyCache = cache.clone()
-  
+
   // Object API
   override def toString(): String = {
     import java.util.Arrays
@@ -59,8 +58,7 @@ class HashCache private(private val cache: Array[Long], private var moveCount: I
   override def hashCode = cache.toList.##
 }
 
-object HashCache
-{
+object HashCache {
   val size = 12
 
   def apply(): HashCache = {

@@ -1,6 +1,7 @@
 package senjinn.board
 
 import senjinn.base.{Square, SquareSet, Side, Piece, long2squareset}
+
 import senjinn.eval.PieceSquareTableSet
 
 
@@ -39,6 +40,10 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   
   
   // Instance methods
+  def kingLoc(side: Side): Square = {
+    _locs(if (side.isWhite) 5 else 11).squares.next()
+  }
+  
   def contains(piece: Piece, loc: Square): Boolean = {
     locs(piece).intersects(loc)
   }
@@ -73,11 +78,13 @@ class PieceLocations private(private val _locs: Array[Long]) extends Iterable[Sq
   
   // getters
   def locs(piece: Piece): SquareSet = _locs(piece.index)
+  def locs(side: Side): SquareSet = if (side.isWhite) whites else blacks
   def hash = _hash
   def midgameEval = _midgameEval
   def endgameEval = _endgameEval
   def whites = _whites
   def blacks = _blacks
+  def all = whites | blacks
   
   def copy = new PieceLocations(_locs.clone())
 
