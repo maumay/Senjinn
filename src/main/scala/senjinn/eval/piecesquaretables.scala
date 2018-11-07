@@ -24,6 +24,40 @@ object PieceValues
 }
 
 
+class PieceSquareTableSet private(private val tables: Vector[PieceSquareTable])
+{
+   require(tables.length == 12)
+
+   def value(piece: ChessPiece, location: Square): Int = {
+     tables(piece.index).valueAt(location)
+   }
+}
+
+object PieceSquareTableSet
+{
+   import senjinn.eval.PieceSquareTable.{parse}
+   import senjinn.base.{loadResource, Side}
+
+   private def pkg = getClass.getPackage
+   private def midgameLocators = ChessPiece.whites.map(p => (pkg, p.shortName + "-midgame"))
+   private def endgameLocators = ChessPiece.whites.map(p => (pkg, p.shortName + "-endgame"))
+
+   val midgame: PieceSquareTableSet = {
+     val white = PieceValues.midgame
+       .zip(midgameLocators)
+       .map(p => parse(p._1, loadResource(p._2)))
+     new PieceSquareTableSet((white ++ white.map(_.invert)).toVector)
+   }
+
+   val endgame: PieceSquareTableSet = {
+     val white = PieceValues.endgame
+       .zip(midgameLocators)
+       .map(p => parse(p._1, loadResource(p._2)))
+     new PieceSquareTableSet((white ++ white.map(_.invert)).toVector)
+   }
+}
+
+
 private class PieceSquareTable private (private val values: Array[Int])
 {
    require(values.length == 64)
@@ -48,38 +82,5 @@ private object PieceSquareTable
      val intExtractor = (line: String) => np.findAllMatchIn(line).map(_.group(0).toInt).toVector
      val parsedLines = lines.reverseMap(intExtractor).flatMap(_.reverse)
      PieceSquareTable(piecevalue, parsedLines)
-   }
-}
-
-class PieceSquareTableSet private(private val tables: Vector[PieceSquareTable])
-{
-   require(tables.length == 12)
-
-   def value(piece: ChessPiece, location: Square): Int = {
-     tables(piece.index).valueAt(location)
-   }
-}
-
-object PieceSquareTableSet
-{
-   import senjinn.eval.PieceSquareTable.{ parse }
-   import senjinn.base.{loadResource, Side}
-
-   private def pkg = getClass.getPackage
-   private def midgameLocators = ChessPiece.whites.map(p => (pkg, p.shortName + "-midgame"))
-   private def endgameLocators = ChessPiece.whites.map(p => (pkg, p.shortName + "-endgame"))
-
-   val midgame: PieceSquareTableSet = {
-     val white = PieceValues.midgame
-       .zip(midgameLocators)
-       .map(p => parse(p._1, loadResource(p._2)))
-     new PieceSquareTableSet((white ++ white.map(_.invert)).toVector)
-   }
-
-   val endgame: PieceSquareTableSet = {
-     val white = PieceValues.endgame
-       .zip(midgameLocators)
-       .map(p => parse(p._1, loadResource(p._2)))
-     new PieceSquareTableSet((white ++ white.map(_.invert)).toVector)
    }
 }

@@ -2,6 +2,7 @@ package senjinn.board;
 
 import org.scalatest.FlatSpec
 
+
 class HashCacheTest extends FlatSpec
 {
   "The cache" must "correctly override elements upon incrementing" in {
