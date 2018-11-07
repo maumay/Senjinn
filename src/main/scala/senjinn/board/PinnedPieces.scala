@@ -9,9 +9,9 @@ object PinnedPieces {
   private val blackPinners = Vector(BlackBishop, BlackRook, BlackQueen)
 
   /** Locations of pinned pieces mapped to the areas they are constrained to. */
-  type PinnedPieces = Map[Square, SquareSet]
+  type Descriptor = Map[Square, SquareSet]
 
-  def compute(board: Board): PinnedPieces = {
+  def compute(board: Board): Descriptor = {
     val plocs = board.pieceLocations
     val activeLocations = plocs.locs(board.active)
     val allLocations = plocs.all
