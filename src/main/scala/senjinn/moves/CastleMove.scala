@@ -51,7 +51,11 @@ final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
 
 object CastleMove
 {
-  def apply(identifier: String) = {
+  def apply(zone: CastleZone): CastleMove = {
+    castleMove(zone)
+  }
+  
+  def apply(identifier: String): CastleMove = {
     castleMove(CastleZone(identifier))
   }
 }

@@ -1,7 +1,7 @@
 package senjinn.board
 
+import scala.collection.{mutable => mutable}
 import senjinn.base.{Square, SquareSet, Side, Piece, long2squareset}
-
 import senjinn.eval.PieceSquareTableSet
 
 
@@ -10,6 +10,7 @@ import senjinn.eval.PieceSquareTableSet
   */
 class PieceLocations private(private val _locs: Array[Long]) extends Iterable[SquareSet]
 {
+  
   // Instance variables
   /** Self-updating hash value of all the piece-square features. */
   private var _hash: Long = {
@@ -118,4 +119,23 @@ object PieceLocations
     // null
     throw new RuntimeException
   }
+}
+
+private class Metadata {
+  
+}
+
+private class LocationTracker(initialLocations: Iterable[Square]) extends Iterable[Square] {
+  private val explicitLocationSet = initialLocations.to[mutable.Set].seq
+  private var compactLocationSet = initialLocations.foldLeft(0L)(_|_)
+  
+  def allLocs: SquareSet = compactLocationSet
+  def contains(square: Square) = compactLocationSet intersects square
+  def pieceCount = explicitLocationSet.size
+  def copy = new LocationTracker(explicitLocationSet)
+  
+  // Iterable API
+  override def iterator = explicitLocationSet.iterator
+  
+  // Object API
 }

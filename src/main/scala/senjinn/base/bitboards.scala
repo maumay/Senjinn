@@ -48,6 +48,8 @@ object BasicBitboards
   def genEmptyBoardBitboards(dirs: Iterable[Dir], proximity: Int = 8): Array[Long] = {
     Square.values.map(sq => sq.allSquares(dirs, proximity).foldLeft(0L)(_ | _.loc)).toArray
   }
+  
+  val universal = (0 until 8).map(rank(_)).foldLeft(0L)(_|_)
 }
 
 object MagicBitboards
