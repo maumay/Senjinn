@@ -1,7 +1,7 @@
 package senjinn.parsers
 
 import senjinn.base.{Square, Dir}
-import senjinn.moves.{ChessMove, StandardMove, PromotionMove, EnpassantMove, CastleMove}
+import senjinn.moves.{Move, StandardMove, PromotionMove, EnpassantMove, CastleMove}
 
 /**
  * Trait which exposes a single method for parsing shorthand
@@ -14,7 +14,7 @@ trait MoveParsing
    * Parses moves described by my shorthand notation defined
    * to more easily write test cases.
    */
-  final def parseMoves(encodedMoves: String): Vector[ChessMove] = {
+  final def parseMoves(encodedMoves: String): Vector[Move] = {
     val em = encodedMoves.trim.toUpperCase
     require(em.matches(ChessRegex.shorthandMove.regex))
     em.charAt(0) match {
@@ -26,16 +26,16 @@ trait MoveParsing
     }
   }
   
-  private def parseCastlingMoves(encodedMoves: String): Vector[ChessMove] = {
+  private def parseCastlingMoves(encodedMoves: String): Vector[Move] = {
     ChessRegex.castleZone.findAllIn(encodedMoves).map(CastleMove(_)).toVector
   }
   
-  private def parseEnpassantMove(encodedMove: String): Vector[ChessMove] = {
+  private def parseEnpassantMove(encodedMove: String): Vector[Move] = {
     val squares = ChessRegex.square.findAllIn(encodedMove).map(Square(_)).toVector
     Vector(EnpassantMove(squares.head, squares.last))
   }
   
-  private def parsePromotionMoves(encodedMoves: String): Vector[ChessMove] = {
+  private def parsePromotionMoves(encodedMoves: String): Vector[Move] = {
     val em = encodedMoves.trim.toUpperCase
     val promotionresult = "[NBRQ]".r.findAllIn(em).toVector.last
     val (mult, cord) = (ChessRegex.multiTarget.regex, ChessRegex.cord.regex)
@@ -49,7 +49,7 @@ trait MoveParsing
     }
   }
   
-  private def parseStandardMoves(encodedMove: String): Vector[ChessMove] = {
+  private def parseStandardMoves(encodedMove: String): Vector[Move] = {
     if (encodedMove.matches(s"S\\[$ChessRegex.doubleSquare\\]")) {
       val squares = ChessRegex.square.findAllMatchIn(encodedMove)
       .map(m => Square(m.matched)).toVector

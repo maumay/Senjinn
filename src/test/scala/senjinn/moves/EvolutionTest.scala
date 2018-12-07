@@ -11,7 +11,7 @@ import senjinn.board.{ Board, HashCache, MoveReverser }
 class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
   
   val testpkg: Package = getClass.getPackage
-  type TestCaseArgs = (ChessMove, Board, Board)
+  type TestCaseArgs = (Move, Board, Board)
   
   testCaseIterator foreach { testcase => 
     val (move, start, end) = testcase
@@ -58,7 +58,7 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
     (parseMove(lines.head), start, end2)
   }
 
-  private def parseMove(encoded: String): ChessMove = {
+  private def parseMove(encoded: String): Move = {
     import senjinn.parsers.ChessRegex.{ castleZone => czregex }
     val lower = encoded.toLowerCase
     val (src, target) = "[a-h][1-8]".r.findAllIn(lower).toVector.splitAt(1)

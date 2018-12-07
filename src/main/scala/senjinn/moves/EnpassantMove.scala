@@ -6,7 +6,7 @@ import senjinn.board.{Board, MoveReverser}
 /**
  * Represents the act of enpassant in a chess game.
  */
-final class EnpassantMove private[moves](val source: Square, val target: Square) extends ChessMove
+final class EnpassantMove private[moves](val source: Square, val target: Square) extends Move
 {
   val enpassantSquare = if (source.rank < target.rank) target >> 8 else target << 8
   

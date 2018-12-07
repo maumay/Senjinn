@@ -8,7 +8,7 @@ import senjinn.board.{Board, MoveReverser}
  * made by a player which evolves the state of some
  * state of play.
  */
-trait ChessMove
+trait Move
 {
   private[moves] val source: Square
   private[moves] val target: Square

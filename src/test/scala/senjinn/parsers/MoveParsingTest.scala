@@ -1,13 +1,13 @@
 package senjinn.parsers
 
 import org.scalatest.FlatSpec
-import senjinn.moves.{ChessMove, StandardMove, CastleMove, EnpassantMove, PromotionMove}
+import senjinn.moves.{Move, StandardMove, CastleMove, EnpassantMove, PromotionMove}
 
 /**
  */
 class MoveParsingTest extends FlatSpec with MoveParsing
 {
-  val validParseCases = Map[String, Set[ChessMove]](
+  val validParseCases = Map[String, Set[Move]](
       "s[a1->a3]" -> Set(StandardMove("a1", "a2"), StandardMove("a1", "a3")),
       "S[a1->{ a2 a3  }]" -> Set(StandardMove("a1", "a2"), StandardMove("a1", "a3")),
       

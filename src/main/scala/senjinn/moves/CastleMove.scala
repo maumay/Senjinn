@@ -6,7 +6,7 @@ import senjinn.board.{Board, MoveReverser}
 /**
  * Represents the act of castling in a chess game.
  */
-final class CastleMove private[moves](val zone: CastleZone) extends ChessMove
+final class CastleMove private[moves](val zone: CastleZone) extends Move
 {
   // ChessMove API
   override val (source, target) = (zone.kingSource, zone.kingTarget)

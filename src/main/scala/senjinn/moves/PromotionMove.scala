@@ -7,7 +7,7 @@ import senjinn.board.{Board, MoveReverser}
  * Represents the act of pawn promotion in a chess game.
  */
 final class PromotionMove private[moves](val source: Square, val target: Square, val piecetype: Char)
-    extends ChessMove
+    extends Move
 {
   // ChessMove API
   override val rightsRemoved = CastleZone.emptySet
@@ -67,6 +67,14 @@ object PromotionMove
   
   def apply(source: String, target: String, piecetype: String): PromotionMove = {
     apply(Square(source), Square(target), piecetype)
+  }
+  
+  def apply(source: Square, dest: Square): Iterator[PromotionMove] = {
+    Iterator(
+        new PromotionMove(source, dest, 'n'),
+        new PromotionMove(source, dest, 'b'),
+        new PromotionMove(source, dest, 'r'),
+        new PromotionMove(source, dest, 'q'))
   }
 
   val piecetype2indexshift = Map[Char, Int](
