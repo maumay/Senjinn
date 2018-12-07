@@ -15,7 +15,9 @@ object SquareControl {
   def compute(board: Board, piece: Piece): SquareSet = if (piece.isPawn) {
     computePawnControl(board, piece)
   } else {
-    val (whites, blacks) = (board.pieceLocations.whites, board.pieceLocations.blacks)
+    val plocs = board.pieceLocations
+    val enemyKingLoc = plocs.kingLoc(Side.other(piece.side))
+    val (whites, blacks) = (plocs.whites - enemyKingLoc, plocs.blacks - enemyKingLoc)
     board.pieceLocations.locs(piece).squares
       .map(piece.getControlset(_, whites, blacks)).foldLeft(0L)(_ | _)
   }
