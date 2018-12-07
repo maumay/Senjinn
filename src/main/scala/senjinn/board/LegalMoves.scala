@@ -1,10 +1,11 @@
 package senjinn.board
 
 import senjinn.moves.{Move, CastleMove}
-import senjinn.base.{CastleZone, SquareSet, Square, Piece}
+import senjinn.base.{CastleZone, SquareSet, Square, Piece, Dir}
 import senjinn.base.BasicBitboards
 import senjinn.moves.PromotionMove
 import senjinn.moves.StandardMove
+import senjinn.moves.EnpassantMove
 
 /**
  * 
@@ -21,7 +22,7 @@ object LegalMoves {
     val inCheck = passiveControl intersects activeKingLoc
     val castlingAllowed = !inCheck && !forceAttacks && board.castleStatus.status(active).isEmpty
     
-    var moves = if (castlingAllowed) computeCastlingMoves(board, passiveControl) else Iterator()
+    val castleMoves = if (castlingAllowed) computeCastlingMoves(board, passiveControl) else Iterator()
     var moveAreaConstraint = if (forceAttacks) plocs.locs(passive) else BasicBitboards.universal
     
     if (inCheck) {
@@ -37,9 +38,10 @@ object LegalMoves {
       }
     }
     
-    
-    
-    throw new RuntimeException
+    val nonKingMoves = Piece(active).iterator.take(5)
+    .flatMap(computeNonKingMoves(board, _, pinnedPieces, moveAreaConstraint))
+    val kingConstraint = if (forceAttacks) plocs.locs(passive) \ passiveControl else ~passiveControl
+    castleMoves ++ nonKingMoves ++ computeKingMoves(board, activeKingLoc, kingConstraint)
   }
   
   private def computeNonKingMoves(board: Board, piece: Piece, 
@@ -50,7 +52,33 @@ object LegalMoves {
     else {
       val plocs = board.pieceLocations
       val (w, b) = (plocs.whites, plocs.blacks)
-      throw new RuntimeException
+      val pinnedPartition = plocs.locs(piece).squares.span(pinnedPieces contains _)
+      
+      val pinnedContribution = pinnedPartition._1.flatMap(sq => {
+        val ac = areaConstraint & pinnedPieces(sq)
+        bitboard2moves(piece, sq, piece.getMoveset(sq, w, b) & ac)
+      })
+      
+      val notPinnedContribution = pinnedPartition._2.flatMap(sq => {
+        bitboard2moves(piece, sq, piece.getMoveset(sq, w, b) & areaConstraint)
+      })
+
+      val epContributions = board.enpassant match {
+        case None     => Iterator()
+        case Some(ep) => {
+          val locs = plocs.locs(piece)
+          val searchDirs = if (piece.isWhite) List(Dir.sw, Dir.se) else List(Dir.nw, Dir.ne)
+          searchDirs.iterator.flatMap(ep.nextSquare(_)).filter(sq => {
+            if (locs intersects sq) {
+              if (pinnedPieces contains sq) pinnedPieces(sq) intersects ep else true
+            } else {
+              false
+            }
+          }).map(sq => EnpassantMove(sq, ep))
+        }
+      }
+      
+      pinnedContribution ++ notPinnedContribution ++ epContributions
     }
   }
   
