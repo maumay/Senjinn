@@ -12,7 +12,7 @@ class SquareSet private(val src: Long) extends AnyVal
   
   def ^(other: SquareSet) = SquareSet(src ^ other.src)
   
-  def -(other: SquareSet) = SquareSet(src & ~other.src)
+  def \(other: SquareSet) = SquareSet(src & ~other.src)
   
   def <<(shift: Int) = SquareSet(src << shift)
   

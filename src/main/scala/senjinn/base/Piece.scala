@@ -14,6 +14,10 @@ sealed trait Piece extends Moveable with EnumEntry {
 
   def isWhite = side.isWhite
   def isPawn = (index % 6) == 0
+  def isSlider = (index % 6) match {
+    case x if x == 0 || x == 1 || x == 5 => false
+    case _                               => true
+  }
 
   /**
    * Get the set of squares this piece can legally move to if it was the only piece on the
