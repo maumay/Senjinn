@@ -5,16 +5,19 @@ import senjinn.parsers.MoveParsing
 import senjinn.parsers.BoardParsing
 import senjinn.base.{loadResource}
 import senjinn.board.{ Board, HashCache, MoveReverser }
+import senjinn.parsers.FileLoadingTest
 
 /**
  */
-class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
+class EvolutionTest extends FlatSpec with FileLoadingTest with MoveParsing with BoardParsing {
   
-  val testpkg: Package = getClass.getPackage
+  executeAllTestCases()
+  
+  // FileLoadingTest API
   type TestCaseArgs = (Move, Board, Board)
   
-  testCaseIterator foreach { testcase => 
-    val (move, start, end) = testcase
+  override def performTest(args: TestCaseArgs): Unit = {
+    val (move, start, end) = args
     s"The move ${move.toCompactString}" must "evolve and devolve correctly" in {
       val startcpy = start.copy
       assertBoardstatesEqual(start, startcpy)
@@ -24,9 +27,9 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
     	move.undoMove(start, reverser)
     	assertBoardstatesEqual(startcpy, start)
     }
-  } 
+  }
   
-  def assertBoardstatesEqual(expected: Board, actual: Board) {
+  private def assertBoardstatesEqual(expected: Board, actual: Board) {
     val (e, a) = (expected, actual)
     assert(e.pieceLocations == a.pieceLocations)
     assert(e.hashCache == a.hashCache)
@@ -37,8 +40,7 @@ class EvolutionTest extends FlatSpec with MoveParsing with BoardParsing {
     assert(e.active == a.active)
   }
   
-  
-  def testCaseIterator: Iterator[TestCaseArgs] = {
+  override def testCaseIterator: Iterator[TestCaseArgs] = {
     (0 until 40).iterator
       .map(n => "case" + ("0" * (3 - n.toString.length)) + n.toString)
       .map(name => loadResource(testpkg, name))

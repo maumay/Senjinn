@@ -12,6 +12,11 @@ import senjinn.moves.EnpassantMove
  */
 object LegalMoves {
   
+  // API
+  def computeMoves(board: Board): Iterator[Move] = computeMoves(board, false)
+  def computeAttacks(board: Board): Iterator[Move] = computeMoves(board, true)
+  
+  // Implementation
   private def computeMoves(board: Board, forceAttacks: Boolean): Iterator[Move] = {
     val (active, passive) = (board.active, board.passive)
     val plocs = board.pieceLocations
