@@ -13,5 +13,5 @@ trait FileLoadingTest
   protected def testCaseIterator: Iterator[TestCaseArgs]
   protected def performTest(args: TestCaseArgs): Unit
   
-  final def executeAllTestCases(): Unit = { testCaseIterator foreach {performTest(_)} }
+  protected final def executeAllTestCases(): Unit = { testCaseIterator foreach {performTest(_)} }
 }
