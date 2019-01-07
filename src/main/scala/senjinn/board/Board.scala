@@ -33,7 +33,7 @@ class Board(
 		  hashCache.copy, castleStatus.copy, piecesDeveloped.to[mutable.Set],
 		  clock, enpassant, _active)
   
-
+  // Object API
   override def equals(x: Any) = {
     x.isInstanceOf[Board] && {
       val o = x.asInstanceOf[Board]

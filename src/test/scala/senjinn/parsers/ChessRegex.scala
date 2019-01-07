@@ -13,7 +13,7 @@ object ChessRegex
   val doubleSquare: Regex = s"($square +$square)".r
   val cord: Regex = s"($sq$arrow$sq)".r
   val multiTarget: Regex = s"($sq$arrow\\{( *$square *)+\\})".r
-  val shorthandMove: Regex = raw"([sScCeEpP]\[[a-hA-H1-8kKqQwW \-\>\{\}]+( [NBRG])?\])".r
+  val shorthandMove: Regex = raw"([SCEP]\[[a-hA-H1-8kKqQwW \-\>\{\}]+( [NBRG])?\])".r
   val castleZone = "(([wW][kK])|([wW][qQ])|([bB][kK])|([bB][qQ]))".r
   
   // Board state parsing regex

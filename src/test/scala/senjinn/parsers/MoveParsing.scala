@@ -21,10 +21,10 @@ trait MoveParsing
   final def parseMoves(encodedMoves: String): Vector[Move] = {
     val em = encodedMoves.trim.toUpperCase
     ChessRegex.shorthandMove.findAllIn(em).flatMap(m => m(0) match {
-      case 'S' => parseStandardMoves(em)
-      case 'P' => parsePromotionMoves(em)
-      case 'E' => parseEnpassantMove(em)
-      case 'C' => parseCastlingMoves(em)
+      case 'S' => parseStandardMoves(m)
+      case 'P' => parsePromotionMoves(m)
+      case 'E' => parseEnpassantMove(m)
+      case 'C' => parseCastlingMoves(m)
       case _   => throw new AssertionError
     }).toVector
   }
@@ -53,7 +53,7 @@ trait MoveParsing
   }
   
   private def parseStandardMoves(encodedMove: String): Vector[Move] = {
-    if (encodedMove.matches(s"S\\[$ChessRegex.doubleSquare\\]")) {
+    if (encodedMove.matches(s"S\\[${ChessRegex.doubleSquare}\\]")) {
       val squares = ChessRegex.square.findAllMatchIn(encodedMove)
       .map(m => Square(m.matched)).toVector
       Vector(StandardMove(squares.head, squares.last))
@@ -71,7 +71,7 @@ trait MoveParsing
     (cord, mult) match {
       case (Some(x), None) => x
       case (None, Some(x)) => x
-      case _               => throw new RuntimeException
+      case _               => throw new RuntimeException(encodedMoves)
     }
   }
   

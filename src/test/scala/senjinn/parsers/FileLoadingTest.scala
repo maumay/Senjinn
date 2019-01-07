@@ -18,7 +18,7 @@ trait FileLoadingTest {
     testCaseIterator foreach { performTest(_) }
   }
   
-  private final def testCaseIterator: Iterator[TestCaseArgs] = {
+  protected final def testCaseIterator: Iterator[TestCaseArgs] = {
     resourceNameSequence.iterator
     .map(loadResource(testpkg, _))
     .map(parseTestFile(_))

@@ -16,7 +16,7 @@ import senjinn.base.Piece._
  */
 class PieceIntegrationTest extends FlatSpec
 {
-  val testResource = (getClass.getPackage, "movementIntegrationTestData")
+  val testResource = (getClass.getPackage, "pieces/movementIntegrationTestData")
 
   val positions = processResource(testResource, {buf =>
     import scala.collection.JavaConversions._, java.lang.Long.parseUnsignedLong

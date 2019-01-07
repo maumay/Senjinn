@@ -19,7 +19,7 @@ class LegalMovesTest extends FlatSpec with FileLoadingTest with MoveParsing with
   
   override def resourceNameSequence: Seq[String] = {
     (1 until 11).iterator
-      .map(n => "case" + ("0" * (3 - n.toString.length)) + n.toString)
+      .map(n => s"legalmoves/case${("0" * (3 - n.toString.length))}${n.toString}")
       .toSeq
   }
   
@@ -29,8 +29,22 @@ class LegalMovesTest extends FlatSpec with FileLoadingTest with MoveParsing with
     val expectedAttackLines = lines.dropWhile(!_.startsWith("---")).drop(1)
     (board, parseMoves(expectedMoveLines).toSet, parseMoves(expectedAttackLines).toSet)
   }
-  
+
   override def performTest(args: TestCaseArgs): Unit = {
-    throw new RuntimeException
+    val (board, expectedMoves, expectedattacks) = args
+    "Computed moves" must "match expected moves" in {
+      val actualMoves = LegalMoves.computeMoves(board).toSet
+      assert(expectedMoves == actualMoves, formatDifferences(expectedMoves, actualMoves))
+    }
+    "Computed attacks" must "match expected attacks" in {
+      val actualAttacks = LegalMoves.computeAttacks(board).toSet
+      assert(expectedattacks == actualAttacks, formatDifferences(expectedattacks, actualAttacks))
+    }
+  }
+
+  private def formatDifferences(expected: Set[Move], actual: Set[Move]): String = {
+    val missing = (expected -- actual).iterator.map(_.toString()).toSeq.sorted
+    val extra = (actual -- expected).iterator.map(_.toString()).toSeq.sorted
+    s"[$missing were expected but were missing. $extra were not expected but were present]"
   }
 }

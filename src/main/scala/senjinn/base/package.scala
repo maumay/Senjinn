@@ -67,7 +67,16 @@ package object base
     import java.io._
     val absname = "/" + locator._1.getName.replace('.', '/') + "/" + locator._2
     val in = getClass.getResourceAsStream(absname)
-    autoClose(new BufferedReader(new InputStreamReader(in)))(action)
+    try {
+      val buf = new BufferedReader(new InputStreamReader(in))
+      autoClose(buf)(action)
+    }
+    catch {
+      case ex: java.lang.NullPointerException => {
+        println(locator)
+        throw ex
+      }
+    }
   }
   
   def autoClose[C <: java.io.Closeable, R](src: C)(action: C => R): R = {
