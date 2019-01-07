@@ -10,20 +10,23 @@ import senjinn.moves.{Move, StandardMove, PromotionMove, EnpassantMove, CastleMo
  */
 trait MoveParsing
 {
+  final def parseMoves(encodedMoves: Seq[String]): Vector[Move] = {
+    encodedMoves.flatMap(parseMoves(_)).toVector
+  }
+  
   /**
    * Parses moves described by my shorthand notation defined
    * to more easily write test cases.
    */
   final def parseMoves(encodedMoves: String): Vector[Move] = {
     val em = encodedMoves.trim.toUpperCase
-    require(em.matches(ChessRegex.shorthandMove.regex))
-    em.charAt(0) match {
+    ChessRegex.shorthandMove.findAllIn(em).flatMap(m => m(0) match {
       case 'S' => parseStandardMoves(em)
       case 'P' => parsePromotionMoves(em)
       case 'E' => parseEnpassantMove(em)
       case 'C' => parseCastlingMoves(em)
       case _   => throw new AssertionError
-    }
+    }).toVector
   }
   
   private def parseCastlingMoves(encodedMoves: String): Vector[Move] = {

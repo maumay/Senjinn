@@ -40,14 +40,13 @@ class EvolutionTest extends FlatSpec with FileLoadingTest with MoveParsing with 
     assert(e.active == a.active)
   }
   
-  override def testCaseIterator: Iterator[TestCaseArgs] = {
+  override def resourceNameSequence: Seq[String] = {
     (0 until 40).iterator
       .map(n => "case" + ("0" * (3 - n.toString.length)) + n.toString)
-      .map(name => loadResource(testpkg, name))
-      .map(parseTestFile(_))
+      .toSeq
   }
 
-  private def parseTestFile(lines: Seq[String]): TestCaseArgs = {
+  override def parseTestFile(lines: Seq[String]): TestCaseArgs = {
     import HashCache.{ size => hcachesze }
     val initialMoveCount = 20
     val start = parseBoard(lines.slice(1, 10), initialMoveCount)
