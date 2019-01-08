@@ -11,7 +11,7 @@ trait FileLoadingTest {
   
   protected type TestCaseArgs
   protected def resourceNameSequence: Seq[String]
-  protected def parseTestFile(lines: Seq[String]): TestCaseArgs
+  protected def parseTestFile(fileName: String, lines: Seq[String]): TestCaseArgs
   protected def performTest(args: TestCaseArgs): Unit
 
   protected final def executeAllTestCases(): Unit = {
@@ -20,7 +20,6 @@ trait FileLoadingTest {
   
   protected final def testCaseIterator: Iterator[TestCaseArgs] = {
     resourceNameSequence.iterator
-    .map(loadResource(testpkg, _))
-    .map(parseTestFile(_))
+    .map(name => parseTestFile(name, loadResource(testpkg, name)))
   }
 }

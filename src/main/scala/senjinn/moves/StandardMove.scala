@@ -86,6 +86,8 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
   }
   
   override def hashCode(): Int = (source, target).##
+  
+  override def toString(): String = toCompactString
 }
 
 object StandardMove

@@ -50,6 +50,8 @@ final class PromotionMove private[moves](val source: Square, val target: Square,
   }
   
   override def hashCode(): Int = (source, target, piecetype).##
+  
+  override def toString(): String = toCompactString
 }
 
 object PromotionMove

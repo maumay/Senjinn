@@ -47,6 +47,8 @@ final class CastleMove private[moves](val zone: CastleZone) extends Move
   }
   
   override def hashCode(): Int = zone.##
+  
+  override def toString(): String = toCompactString
 }
 
 object CastleMove

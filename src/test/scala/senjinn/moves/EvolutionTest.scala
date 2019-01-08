@@ -46,7 +46,7 @@ class EvolutionTest extends FlatSpec with FileLoadingTest with MoveParsing with 
       .toSeq
   }
 
-  override def parseTestFile(lines: Seq[String]): TestCaseArgs = {
+  override def parseTestFile(filename: String, lines: Seq[String]): TestCaseArgs = {
     import HashCache.{ size => hcachesze }
     val initialMoveCount = 20
     val start = parseBoard(lines.slice(1, 10), initialMoveCount)

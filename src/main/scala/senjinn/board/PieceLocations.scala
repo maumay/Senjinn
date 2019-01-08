@@ -10,7 +10,6 @@ import senjinn.eval.PieceSquareTableSet
   */
 class PieceLocations private(private val _locs: Array[Long]) extends Iterable[SquareSet]
 {
-  
   // Instance variables
   /** Self-updating hash value of all the piece-square features. */
   private var _hash: Long = {
@@ -121,11 +120,8 @@ object PieceLocations
   }
 }
 
-private class Metadata {
-  
-}
-
-private class LocationTracker(initialLocations: Iterable[Square]) extends Iterable[Square] {
+private class LocationTracker(initialLocations: Iterable[Square]) extends Iterable[Square] 
+{
   private val explicitLocationSet = initialLocations.to[mutable.Set].seq
   private var compactLocationSet = initialLocations.foldLeft(0L)(_|_)
   
@@ -136,6 +132,4 @@ private class LocationTracker(initialLocations: Iterable[Square]) extends Iterab
   
   // Iterable API
   override def iterator = explicitLocationSet.iterator
-  
-  // Object API
 }

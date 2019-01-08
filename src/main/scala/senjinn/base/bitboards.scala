@@ -27,7 +27,7 @@ object BasicBitboards
   
   def diag(index: Int): SquareSet = diagonals(index)
   
-  val diagonals: Array[Long] = {
+  private val diagonals: Array[Long] = {
     (0 to 14)
     .map(i => if (i < 8) i else 8 *(i - 7) + 7)
     .map(Square(_))
@@ -37,7 +37,7 @@ object BasicBitboards
   
   def adiag(index: Int): SquareSet = antidiagonals(index)
   
-  val antidiagonals: Array[Long] = {
+  private val antidiagonals: Array[Long] = {
     (0 to 14)
     .map(i => if (i < 8) 7 - i else 8 *(i - 7))
     .map(Square(_))

@@ -49,6 +49,8 @@ final class EnpassantMove private[moves](val source: Square, val target: Square)
   }
   
   override def hashCode(): Int = (source, target).##
+  
+  override def toString(): String = toCompactString
 }
 
 object EnpassantMove
