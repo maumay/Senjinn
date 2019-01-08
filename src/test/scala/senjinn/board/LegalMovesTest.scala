@@ -8,7 +8,7 @@ import senjinn.moves.Move
 import senjinn.base.{loadResource}
 
 /**
- * 
+ * TODO - currently case003 fails because the pinned piece is not taken into account correctly.
  */
 class LegalMovesTest extends FlatSpec with FileLoadingTest with MoveParsing with BoardParsing
 {
