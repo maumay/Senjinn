@@ -18,7 +18,7 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
       case Some(d) => SquareSet(source.allSquares(d, 8).takeWhile(_ != target).foldLeft(0L)(_ | _))
       case None    => SquareSet()
     }
-    inner | target
+    source | inner | target
   }
   
   // ChessMove API

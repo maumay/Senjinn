@@ -20,8 +20,8 @@ object PinnedPieces {
 
     passivePinners.iterator
       .flatMap(p => plocs.locs(p).squares.filter(p.emptyBoardMoveset(_) intersects activeKingLocation))
-      .map(StandardMove(_, activeKingLocation).cord ^ activeKingLocation)
-      .filter(cord => (cord & activeLocations).size == 1 && (cord & allLocations).size == 2)
+      .map(sq => StandardMove(sq, activeKingLocation).cord ^ activeKingLocation ^ sq)
+      .filter(cord => (cord & activeLocations).size == 1)//(cord & activeLocations).size == 1 && 
       .map(cord => ((cord & activeLocations).squares.next(), cord))
       .toMap
   }
