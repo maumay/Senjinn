@@ -57,7 +57,7 @@ object LegalMoves {
     else {
       val plocs = board.pieceLocations
       val (w, b) = (plocs.whites, plocs.blacks)
-      val pinnedPartition = plocs.locs(piece).squares.span(pinnedPieces contains _)
+      val pinnedPartition = plocs.locs(piece).squares.partition(pinnedPieces contains _)
       
       val pinnedContribution = pinnedPartition._1.flatMap(sq => {
         val ac = areaConstraint & pinnedPieces(sq)
