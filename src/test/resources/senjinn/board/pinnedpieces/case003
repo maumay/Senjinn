@@ -1,0 +1,11 @@
+white_pieces: (a7 d4 f2 g2) (f5 c3) (a4) (b1 h1) () (e1)
+black_pieces: (a2 d5 f7 g7 h7) (f4 c6) (g6 a5) (b8 h8) () (e8)
+half_move_clock: 25
+castling_rights: wk bk
+white_castle_status: none
+black_castle_status: none
+developed_pieces: none
+active_side: black
+enpassant_square: none
+
+c6

@@ -12,7 +12,10 @@ class PinnedPiecesTest extends FlatSpec with FileLoadingTest with BoardParsing
   
     type TestCaseArgs = (String, Board, Set[Square])
   
-    def resourceNameSequence: Seq[String] = Seq("pinnedpieces/case001", "pinnedpieces/case002")
+    def resourceNameSequence: Seq[String] = Seq(
+        "pinnedpieces/case001", 
+        "pinnedpieces/case002",
+        "pinnedpieces/case003")
     
     def parseTestFile(fileName: String, lines: Seq[String]): TestCaseArgs = {
       val (boardLines, pinnedLine) = (lines.take(9), s"${lines.last.trim.toUpperCase} ")
