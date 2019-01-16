@@ -46,7 +46,7 @@ sealed abstract class CastleZone(val kingSource: Square, val kingTarget: Square)
 }
 
 /**
- * Defines the instances of the sealed class of the same name as well
+ * Defines the instances of the sealed class `[[CastleZone]]` as well
  * as providing some useful related definitions.
  */
 object CastleZone extends Enum[CastleZone]
