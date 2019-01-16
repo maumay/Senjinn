@@ -45,8 +45,24 @@ sealed abstract class CastleZone(val kingSource: Square, val kingTarget: Square)
   }
 }
 
+/**
+ * Defines the instances of the sealed class of the same name as well
+ * as providing some useful related definitions.
+ */
 object CastleZone extends Enum[CastleZone]
 {
+  /**
+   * Retrieves an instance by it's abbreviated String name. More specifically:
+   * 
+   *  - "wk" maps to WhiteKing
+   *  - "wq" maps to WhiteQueen
+   *  - "bk" maps to BlackKingside
+   *  - "bq" maps to BlackQueenside
+   * 
+   * The string inputs are case-insensitive.
+   * 
+   * @param identifier the shorthand string denoting the required area.
+   */
   def apply(identifier: String): CastleZone = {
     identifier.toLowerCase match {
       case x if x == "wk" => WhiteKing
@@ -57,20 +73,33 @@ object CastleZone extends Enum[CastleZone]
     }
   }
   
+  /** Vector containing all `[[CastleZone]]` instances. */
   val values = findValues.toVector
   
+  /** Set of no `[[CastleZone]]` instances. */
   val emptySet: Set[CastleZone]      = Set[CastleZone]()
+  /** Singleton set containing the WhiteKing `[[CastleZone]]` instance. */
   val whiteKingSet: Set[CastleZone]  = Set(WhiteKing)
+  /** Singleton set containing the WhiteQueen `[[CastleZone]]` instance. */
   val whiteQueenSet: Set[CastleZone] = Set(WhiteQueen)
+  /** Set containing the white `[[CastleZone]]` instances. */
   val whiteSet: Set[CastleZone]      = Set(WhiteKing, WhiteQueen)
+  /** Singleton set containing the BlackKingside `[[CastleZone]]` instance. */
   val blackKingSet: Set[CastleZone]  = Set(BlackKing)
+  /** Singleton set containing the BlackQueenside `[[CastleZone]]` instance. */
   val blackQueenSet: Set[CastleZone] = Set(BlackQueen)
+  /** Set containing the black `[[CastleZone]]` instances. */
   val blackSet: Set[CastleZone]      = Set(BlackKing, BlackQueen)
+  /** Set containing all `[[CastleZone]]` instances. */
   val completeSet: Set[CastleZone]   = values.to[Set]
   
   import Square.{e1, g1, c1, g8, e8, c8}
+  /** Represents the white king side castling area */
   case object WhiteKing  extends CastleZone(e1, g1)
+  /** Represents the white queen side castling area */
   case object WhiteQueen extends CastleZone(e1, c1)
+  /** Represents the black king side castling area */
   case object BlackKing  extends CastleZone(e8, g8)
+  /** Represents the black queen side castling area */
   case object BlackQueen extends CastleZone(e8, c8)
 }
