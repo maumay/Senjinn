@@ -14,6 +14,9 @@ trait FileLoadingTest {
   protected def parseTestFile(fileName: String, lines: Seq[String]): TestCaseArgs
   protected def performTest(args: TestCaseArgs): Unit
 
+  /**
+   * [[scala.Option]]
+   */
   protected final def executeAllTestCases(): Unit = {
     testCaseIterator foreach { performTest(_) }
   }

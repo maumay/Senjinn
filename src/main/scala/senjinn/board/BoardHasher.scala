@@ -5,20 +5,6 @@ import senjinn.base.{Square, CastleZone, Side, Piece}
 
 object BoardHasher 
 {
-  /* Implementation details */
-  private type Arr       = Array[Long]
-  private type SquareArr = Array[Arr]
-  
-  private val prng = new java.util.Random(0x110894L)
-  private val genLong: Any => Long = _ => prng.nextLong()
-  
-  private val squareFeatures: SquareArr = {
-    Piece.values.map(i => Square.values.map(genLong).toArray).toArray
-  }
-  
-  private val castleFeatures: Arr = CastleZone.values.map(genLong).toArray
-  private val enpassantFeatures: Arr = (1 to 8).map(genLong).toArray
-  
   // Api
   def squareFeature(piece: Piece, square: Square) = squareFeatures(piece.index)(square.index)
   
@@ -34,4 +20,18 @@ object BoardHasher
     val castlingHash = castling.rights.map(castleFeature(_)).foldLeft(0L)(_ ^ _)
     activehash ^ enpassantHash ^ castlingHash
   }
+  
+  /* Implementation details */
+  private type Arr       = Array[Long]
+  private type SquareArr = Array[Arr]
+  
+  private val prng = new java.util.Random(0x110894L)
+  private val genLong: Any => Long = _ => prng.nextLong()
+  
+  private val squareFeatures: SquareArr = {
+    Piece.values.map(i => Square.values.map(genLong).toArray).toArray
+  }
+  
+  private val castleFeatures: Arr = CastleZone.values.map(genLong).toArray
+  private val enpassantFeatures: Arr = (1 to 8).map(genLong).toArray
 }
