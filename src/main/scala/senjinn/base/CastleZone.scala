@@ -2,14 +2,30 @@ package senjinn.base
 
 import enumeratum._
 
-
+/**
+ * Represents the four areas on the board where the special action of castling
+ * may take place.
+ * @param kingSource the required location of the king prior to castling
+ * in this area.
+ * @param kingTarget the location of the king after castling in this area
+ * has taken place.
+ */
 sealed abstract class CastleZone(val kingSource: Square, val kingTarget: Square) extends EnumEntry
 {
-  val (isWhiteZone, isKingsideZone) = (kingSource.rank == 0, kingTarget.file - kingSource.file < 0)
+  /** Denotes the player this area applies to. */
+  val isWhiteZone = kingSource.rank == 0
+  /** Denotes the side of the board this area resides in */
+  val isKingsideZone = kingTarget.file - kingSource.file < 0
   
+  /** Required location of appropriate rook prior to castling in this area. */
   val rookSource = if (isKingsideZone) kingSource >> 3 else kingSource << 4
+  /** Location of appropriate rook after castling in this area. */
   val rookTarget = if (isKingsideZone) kingTarget << 1 else kingTarget >> 1
   
+  /** 
+   * Squares required to be free of enemy control before castling can take 
+   * place in this area.
+   */
   val requiredUncontrolled = if (isKingsideZone) {
     (0 to 2).map(i => (kingSource >> i): SquareSet).reduce(_|_)
   }
@@ -17,6 +33,10 @@ sealed abstract class CastleZone(val kingSource: Square, val kingTarget: Square)
     (0 to 2).map(i => (kingSource << i): SquareSet).reduce(_|_)
   }
   
+  /**
+   * Squares required to be clear of any pieces before castling can take
+   * place in this area.
+   */
   val requiredClear = if (isKingsideZone) {
     (1 to 2).map(i => (kingSource >> i): SquareSet).reduce(_|_)
   }
