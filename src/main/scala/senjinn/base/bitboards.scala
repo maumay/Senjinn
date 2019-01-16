@@ -80,12 +80,18 @@ object BasicBitboards
   val universal: SquareSet = (0 until 8).map(rank(_)).foldLeft(0L)(_|_)
 }
 
+/**
+ * Provides methods for computing the control sets of bishops and rooks on arbitrary
+ * boards.
+ */
 object MagicBitboards
 {
   // Api
   /**
-   * Given the location of a rook and the locations of all pieces on the board this
-   * function efficiently calculates the control set of the rook.
+   * Uses the 'magic bitboard' technique to compute the control set of a rook.
+   * @param loc the location of the rook on the board.
+   * @param pieces the location of all the other pieces on the board.
+   * @return the set of squares controlled by the rook on the board.
    */
   def getRookControlset(loc: Square, pieces: SquareSet): SquareSet = {
     val occupancyvariation = pieces & rookOccMasks(loc.index)
@@ -95,8 +101,10 @@ object MagicBitboards
   }
   
   /**
-   * Given the location of a bishop and the locations of all pieces on the board this
-   * function efficiently calculates the control set of the bishop.
+   * Uses the 'magic bitboard' technique to compute the control set of a bishop.
+   * @param loc the location of the bishop on the board.
+   * @param pieces the location of all the other pieces on the board.
+   * @return the set of squares controlled by the bishop on the board.
    */
   def getBishControlset(loc: Square, pieces: SquareSet): SquareSet = {
     val occupancyvariation = pieces & bishOccMasks(loc.index)
