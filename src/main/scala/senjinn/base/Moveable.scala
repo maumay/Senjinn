@@ -36,4 +36,24 @@ trait Moveable {
    *  @param blacks the locations of all the black pieces.
    */
   def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
+  
+  /**
+   * Compute the set of squares this piece can legally move to if it was 
+   * the only piece on the board.
+   *  
+   * @param loc the location of this piece.
+   */
+  def emptyBoardMoveset(loc: Square): SquareSet = {
+    getMoveset(loc, 0L, 0L)
+  }
+
+  /**
+   * Get the set of squares this piece controls if it was the only piece on 
+   * the board.
+   * 
+   * @param loc the location of this piece.
+   */
+  def emptyBoardControlset(loc: Square): SquareSet = {
+    getControlset(loc, 0L, 0L)
+  }
 }
