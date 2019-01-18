@@ -2,44 +2,99 @@ package senjinn.base
 
 import enumeratum._
 
-
+/**
+ * Represents one of the 64 squares on a chess board.
+ */
 sealed abstract class Square(val index: Int) extends EnumEntry {
-  
-  val (loc, rank, file) = (1L << index, index / 8, index % 8)
 
+  /** A bitboard of cardinality 1 representing the location of this square. */
+  val loc = 1L << index
+  /** The index of the rank this square resides on */
+  val rank = index / 8
+  /** The index of the file this square resides on. */
+  val file = index % 8
+
+  /**
+   * Performs a logical or operation on the location of this and that square.
+   * @param other the other square to use in the binary or operation.
+   */
   def |(other: Square): SquareSet = {
     SquareSet(loc | other.loc)
   }
 
+  /**
+   * Performs a left bit-shift operation on this square.
+   * @param shift the number of places to shift this square to the left.
+   * @return the square whose location is given by applying the given left shift to
+   * this squares location.
+   */
   def <<(shift: Int): Square = {
     Square(index + shift)
   }
 
+  /**
+   * Performs a right bit-shift operation on this square.
+   * @param shift the number of places to shift this square to the right.
+   * @return the square whose location is given by applying the given right shift to
+   * this squares location.
+   */
   def >>(shift: Int): Square = {
     Square(index - shift)
   }
 
+  /**
+   * Performs a logical 'not' operation on this square.
+   * @return the bitboard representing all squares except this square.
+   */
   def unary_~ = {
     SquareSet(~loc)
   }
 
+  /**
+   * Tests if this square intersects the given bitboard, i.e. if the bitboard
+   * contains this square.
+   * @param squares the set of squares to test membership of.
+   */
   def intersects(squares: SquareSet): Boolean = {
     squares.intersects(this)
   }
 
+  /**
+   * Finds the next square in a given direction from this square.
+   * @param dir the direction to search in.
+   * @return the next square if it exists, nothing otherwise.
+   */
   def nextSquare(dir: Dir): Option[Square] = {
     Square(rank + dir.deltaRank, file + dir.deltaFile)
   }
 
+  /**
+   * Computes how many squares are left in a given direction.
+   * @param the direction to search in.
+   */
   def squaresLeft(dir: Dir): Int = nextSquare(dir) match {
     case None     => 0
     case Some(sq) => 1 + sq.squaresLeft(dir)
   }
 
+  /**
+   * Finds all squares in all of the directions given which are within (inclusive) a
+   * given distance (measured in number of steps away from this square).
+   * @param dirs the directions to search in.
+   * @param proximity the maximum number of steps away from this square that will be
+   * searched.
+   */
   def allSquares(dirs: Iterable[Dir], proximity: Int = 8): Vector[Square] = {
     dirs.iterator.flatMap(dir => allSquares(dir, proximity)).toVector
   }
 
+  /**
+   * Finds all squares in the given direction which are within (inclusive) a given 
+   * distance (measured in number of steps away from this square).
+   * @param dirs the direction to search in.
+   * @param proximity the maximum number of steps away from this square that will be
+   * searched.
+   */
   def allSquares(dir: Dir, proximity: Int): Vector[Square] = proximity match {
     case 0 => Vector()
     case _ => nextSquare(dir) match {
@@ -49,8 +104,16 @@ sealed abstract class Square(val index: Int) extends EnumEntry {
   }
 }
 
+/**
+ * Companion object to `[[Square]]` which defines the possible values and some 
+ * related functions.
+ */
 object Square extends Enum[Square] {
-  
+
+  /**
+   * Recovers a square from its name, the input is case-insensitive.
+   * @param name the name of the required square.
+   */
   def apply(name: String): Square = {
     val lower = name.toLowerCase.trim
     if (lower.matches("[a-h][1-8]")) {
@@ -70,10 +133,6 @@ object Square extends Enum[Square] {
   def apply(index: Int): Square = {
     values(index)
   }
-
-  //  def unapply(square: Square2) = {
-  //    Some((square.index, square.loc))
-  //  }
 
   val values = findValues.toVector
 
