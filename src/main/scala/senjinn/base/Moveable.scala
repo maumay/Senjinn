@@ -2,27 +2,38 @@ package senjinn.base
 
 
 /**
- * Supertype of all chesspieces.  
+ * Behaviour required for moving on a chess board. 
  */
 trait Moveable {
   
   /** 
-   *  Get the set of squares this piece is controlling given the locations of all pieces
-   *  on the board.
+   *  Compute the set of squares this piece is controlling on the board.
+   *  
+   *  @param loc the location of this piece
+   *  @param whites the locations of all the white pieces.
+   *  @param blacks the locations of all the black pieces.
    */
   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
   
   /** 
-   *  Get the set of squares this piece can 'legally' move to which would result in a capture 
-   *  of an enemy given the location of all pieces on the board. Note that this method is
-   *  <b>not</b> expected to take into account illegal moves where the king is put into check.
+   *  Compute the set of squares this piece can move to which would result
+   *  in a capture of an enemy. This method is __not__ expected to take 
+   *  into account illegal moves where the king is put into check.
+   *  
+   *  @param loc the location of this piece
+   *  @param whites the locations of all the white pieces.
+   *  @param blacks the locations of all the black pieces.
    */
   def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
   
   /** 
-   *  Get the set of squares this piece can 'legally' move to given the location of all pieces.
-   *  Note that this method is <b>not</b> expected to take into account illegal moves where 
-   *  the king is put into check.
+   *  Get the set of squares this piece can move to. This method is __not__ 
+   *  expected to take into account illegal moves where the king is put 
+   *  into check.
+   *  
+   *  @param loc the location of this piece
+   *  @param whites the locations of all the white pieces.
+   *  @param blacks the locations of all the black pieces.
    */
   def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
 }
