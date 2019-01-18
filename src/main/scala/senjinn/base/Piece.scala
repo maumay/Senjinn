@@ -5,12 +5,11 @@ import senjinn.base.BasicBitboards.{ genEmptyBoardBitboards }
 import enumeratum._
 
 /**
- * Abstraction of a piece which can take part
- * in a game of chess.
+ * Abstraction of a piece which can take part in a game of chess.
  */
-sealed trait Piece extends Moveable with EnumEntry 
-{
-  /** 
+sealed trait Piece extends Moveable with EnumEntry {
+
+  /**
    * The unique integer identifier for this piece.
    *  - WhitePawn:	 0
    *  - WhiteKnight: 1
@@ -26,19 +25,19 @@ sealed trait Piece extends Moveable with EnumEntry
    *  - BlackKing:  11
    */
   val index: Int
-  
+
   /** The side this piece belongs to */
   val side: Side
-  
+
   /** A unique short string identifier for this piece */
   val shortName: String
 
   def isWhite = side.isWhite
   def isPawn = (index % 6) == 0
-  
-  /** 
-   * Flag indicating if this piece can take multiple
-   * steps in one direction when it moves.
+
+  /**
+   * Flag indicating if this piece can take multiple steps in one direction when it
+   * moves.
    */
   def isSlider = (index % 6) match {
     case x if x == 0 || x == 1 || x == 5 => false
@@ -46,8 +45,8 @@ sealed trait Piece extends Moveable with EnumEntry
   }
 }
 
-object Piece extends Enum[Piece] 
-{
+object Piece extends Enum[Piece] {
+
   val pawns = Vector(WhitePawn, BlackPawn)
   val knights = Vector(WhiteKnight, BlackKnight)
   val bishops = Vector(WhiteBishop, BlackBishop)
@@ -66,13 +65,12 @@ object Piece extends Enum[Piece]
   def apply(shortName: String): Piece = nameMap(shortName)
 
   /** Retrieve all pieces on a given side ordered by their index. */
-  def apply(side: Side): Vector[Piece] = if (side.isWhite) 
+  def apply(side: Side): Vector[Piece] = if (side.isWhite)
     whites else blacks
 
   // ------------------------------------------------------------------------
   // Piece implementation
-  case object WhitePawn extends Piece 
-  {
+  case object WhitePawn extends Piece {
     val index = 0
     val side = Side.White
     val shortName = "wp"
@@ -89,8 +87,9 @@ object Piece extends Enum[Piece]
       val li = loc.index
       val empty = ~(whites | blacks)
       val push = (1L << (li + 8)) & empty
-      val fpush = if (li < 16 && push != 0) push | ((1L << (li + 16)) & empty) else push
-      fpush | getAttackset(loc, whites, blacks)
+      val couldMoveTwo = li < 16 && push != 0
+      val moves = if (couldMoveTwo) push | ((1L << (li + 16)) & empty) else push
+      moves | getAttackset(loc, whites, blacks)
     }
 
     private val emptyBoardMoves: Array[Long] = {
@@ -99,7 +98,8 @@ object Piece extends Enum[Piece]
       arr
     }
 
-    private val emptyBoardControl: Array[Long] = genEmptyBoardBitboards(pmd("wpa"), 1)
+    private val emptyBoardControl: Array[Long] =
+      genEmptyBoardBitboards(pmd("wpa"), 1)
   }
 
   case object WhiteKnight extends Piece {
@@ -184,7 +184,8 @@ object Piece extends Enum[Piece]
     val shortName = "wq"
 
     def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
-      WhiteBishop.getControlset(loc, whites, blacks) | WhiteRook.getControlset(loc, whites, blacks)
+      (WhiteBishop.getControlset(loc, whites, blacks)
+        | WhiteRook.getControlset(loc, whites, blacks))
     }
 
     def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
@@ -241,8 +242,9 @@ object Piece extends Enum[Piece]
       val li = loc.index
       val empty = ~(whites | blacks)
       val push = (1L << (li - 8)) & empty
-      val fpush = if (li > 47 && push != 0) push | ((1L << (li - 16)) & empty) else push
-      fpush | getAttackset(loc, whites, blacks)
+      val couldMoveTwo = li > 47 && push != 0
+      val moves = if (couldMoveTwo) push | ((1L << (li - 16)) & empty) else push
+      moves | getAttackset(loc, whites, blacks)
     }
 
     private val emptyBoardMoves: Array[Long] = {
@@ -330,7 +332,8 @@ object Piece extends Enum[Piece]
     val shortName = "bq"
 
     def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet) = {
-      BlackBishop.getControlset(loc, whites, blacks) | BlackRook.getControlset(loc, whites, blacks)
+      (BlackBishop.getControlset(loc, whites, blacks)
+        | BlackRook.getControlset(loc, whites, blacks))
     }
 
     def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet) = {

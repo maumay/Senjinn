@@ -16,9 +16,9 @@ trait Moveable {
   def getControlset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
   
   /** 
-   *  Compute the set of squares this piece can move to which would result
-   *  in a capture of an enemy. This method is __not__ expected to take 
-   *  into account illegal moves where the king is put into check.
+   *  Compute the set of squares this piece can move to which would result in a 
+   *  capture of an enemy. This method is __not__ expected to take into account 
+   *  illegal moves where the king is put into check.
    *  
    *  @param loc the location of this piece
    *  @param whites the locations of all the white pieces.
@@ -27,9 +27,8 @@ trait Moveable {
   def getAttackset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
   
   /** 
-   *  Get the set of squares this piece can move to. This method is __not__ 
-   *  expected to take into account illegal moves where the king is put 
-   *  into check.
+   *  Get the set of squares this piece can move to. This method is __not__  expected 
+   *  to take into account illegal moves where the king is put into check.
    *  
    *  @param loc the location of this piece
    *  @param whites the locations of all the white pieces.
@@ -38,8 +37,8 @@ trait Moveable {
   def getMoveset(loc: Square, whites: SquareSet, blacks: SquareSet): SquareSet
   
   /**
-   * Compute the set of squares this piece can legally move to if it was 
-   * the only piece on the board.
+   * Compute the set of squares this piece can legally move to if it was the only
+   * piece on the board.
    *  
    * @param loc the location of this piece.
    */
@@ -48,8 +47,7 @@ trait Moveable {
   }
 
   /**
-   * Get the set of squares this piece controls if it was the only piece on 
-   * the board.
+   * Get the set of squares this piece controls if it was the only piece on the board.
    * 
    * @param loc the location of this piece.
    */
