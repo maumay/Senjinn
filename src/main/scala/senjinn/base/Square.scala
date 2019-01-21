@@ -113,16 +113,24 @@ object Square extends Enum[Square] {
   /**
    * Recovers a square from its name, the input is case-insensitive.
    * @param name the name of the required square.
+   * @return the matching square if the provided name is valid, nothing otherwise.
    */
-  def apply(name: String): Square = {
+  def apply(name: String): Option[Square] = {
     val lower = name.toLowerCase.trim
     if (lower.matches("[a-h][1-8]")) {
-      values(('h' - lower(0)) + 8 * (lower(1) - '1'))
+      Some(values(('h' - lower(0)) + 8 * (lower(1) - '1')))
     } else {
-      throw new RuntimeException()
+      None
     }
   }
 
+  /**
+   * Retrieves a square from its rank and file coordinates.
+   * @param rank the index of the rank the required square resides on.
+   * @param file the index of the file the required square resides on.
+   * @return the matching square if the provided coordinates are valid, nothing
+   * otherwise.
+   */
   def apply(rank: Int, file: Int): Option[Square] = {
     val inRange: Int => Boolean = x => -1 < x && x < 8
     if (inRange(rank) && inRange(file)) {
@@ -130,10 +138,15 @@ object Square extends Enum[Square] {
     } else { None }
   }
 
+  /**
+   * Retrieves a square from it's index. throws an exception if the provided index is
+   * less than 0 or larger than 63.
+   */
   def apply(index: Int): Square = {
     values(index)
   }
 
+  /** Vector containing all the different instances of `[[Square]]`. */
   val values = findValues.toVector
 
   // First rank

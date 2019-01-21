@@ -107,19 +107,22 @@ class BoardSquareTest extends FlatSpec
     }
   })
 
-  Map(a3 -> "a3", b6 -> "b6", f1 -> "f1", d8 -> "d8").foreach(pair => {
-    val (sq, sqStr) = pair
-    s"The square $sq" must s"be constructable from the string $sqStr" in {
-      assert(sq.toString == sqStr)
-      assert(sq == Square(sqStr))
-    }
-  })
-
-  Seq("d0", "g10", "p3", "k8").foreach(str => {
-    s"The string $str" must s"not construct any square" in  {
-      assertThrows[RuntimeException] {Square(str)}
-    }
-  })
+  Map(
+    "a3" -> Some(a3),
+    "b6" -> Some(b6),
+    "f1" -> Some(f1),
+    "d8" -> Some(d8),
+    "d0" -> None,
+    "g10" -> None,
+    "p3" -> None,
+    "k8" -> None)
+    .foreach(pair => {
+      val (str, sq) = pair
+      s"The string $str" must "map to square $sq" in {
+        assert(sq == Square(str))
+        sq.foreach(s => assert(str == s.toString))
+      }
+    })
 
   Map((2, 7) -> Some(a3), (4, 5) -> Some(c5), (5, 8) -> None).foreach(pair => {
     val ((r, f), sq) = pair

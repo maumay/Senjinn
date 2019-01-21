@@ -68,7 +68,10 @@ object PromotionMove
   }
   
   def apply(source: String, target: String, piecetype: String): PromotionMove = {
-    apply(Square(source), Square(target), piecetype)
+    (Square(source), Square(target)) match {
+      case (Some(s), Some(t)) => apply(s, t, piecetype)
+      case _                  => throw new RuntimeException
+    }
   }
   
   def apply(source: Square, dest: Square): Iterator[PromotionMove] = {

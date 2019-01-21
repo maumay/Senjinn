@@ -92,7 +92,14 @@ class StandardMove private[moves](val source: Square, val target: Square) extend
 
 object StandardMove
 {
-  def apply(source: Square, target: Square): StandardMove = standardMove(source, target)
+  def apply(source: Square, target: Square): StandardMove = {
+    standardMove(source, target)
+  }
   
-  def apply(source: String, target: String): StandardMove = apply(Square(source), Square(target))
+  def apply(source: String, target: String): StandardMove = {
+    (Square(source), Square(target)) match {
+      case (Some(s), Some(t)) => new StandardMove(s, t)
+      case _                  => throw new RuntimeException
+    }
+  }
 }

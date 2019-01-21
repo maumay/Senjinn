@@ -33,7 +33,7 @@ trait BoardParsing
     require(blackLocs.matches(ChessRegex.blackLocationsAttribute.regex), blackLocs)
     
     PieceLocations(ChessRegex.groupedSquares.findAllIn(whiteLocs + blackLocs)
-      .map(ChessRegex.square.findAllIn(_).map(Square(_)))
+      .map(ChessRegex.square.findAllIn(_).flatMap(Square(_)))
       .map(_.foldLeft(0L)(_|_)).toArray)
   }
 
@@ -66,7 +66,7 @@ trait BoardParsing
   private def parseDevelopedPieces(encoded: String): mutable.Set[DevPiece] = {
     require(encoded.matches(ChessRegex.developedPiecesAttribute.regex))
     ChessRegex.square.findAllIn(encoded)
-    .map(Square(_)).map(DevPiece(_).get).to[mutable.Set]
+    .flatMap(Square(_)).map(DevPiece(_).get).to[mutable.Set]
   }
   
   private def parseActiveSide(encoded: String): Side = {
@@ -77,7 +77,7 @@ trait BoardParsing
   
   private def parseEnpassantSquare(encoded: String): Option[Square] = {
     require(encoded.matches(ChessRegex.enpassantAttribute.regex))
-    ChessRegex.square.findFirstIn(encoded).map(Square(_))
+    ChessRegex.square.findFirstIn(encoded).flatMap(Square(_))
   }
   
   private def constructDummyHashCache(boardHash: Long, 

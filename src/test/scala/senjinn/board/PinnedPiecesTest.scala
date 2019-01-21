@@ -24,7 +24,7 @@ class PinnedPiecesTest extends FlatSpec with FileLoadingTest with BoardParsing
       } else {
         val sqrx = ChessRegex.square
         require(pinnedLine.matches(s"(${sqrx.regex} +)+"), s"$fileName $pinnedLine")
-        sqrx.findAllIn(pinnedLine).map(Square(_)).toSet
+        sqrx.findAllIn(pinnedLine).map(Square(_).get).toSet
       }
       (fileName, parseBoard(boardLines, 20), pinnedSquares)
     }

@@ -34,7 +34,7 @@ trait MoveParsing
   }
   
   private def parseEnpassantMove(encodedMove: String): Vector[Move] = {
-    val squares = ChessRegex.square.findAllIn(encodedMove).map(Square(_)).toVector
+    val squares = ChessRegex.square.findAllIn(encodedMove).flatMap(Square(_)).toVector
     Vector(EnpassantMove(squares.head, squares.last))
   }
   
@@ -47,7 +47,7 @@ trait MoveParsing
       targets.map(target => PromotionMove(src, target, promotionresult))
     }
     else {
-      val squares = ChessRegex.square.findAllIn(em).map(Square(_)).toVector
+      val squares = ChessRegex.square.findAllIn(em).flatMap(Square(_)).toVector
       Vector(PromotionMove(squares.head, squares.last, promotionresult))
     }
   }
@@ -55,7 +55,7 @@ trait MoveParsing
   private def parseStandardMoves(encodedMove: String): Vector[Move] = {
     if (encodedMove.matches(s"S\\[${ChessRegex.doubleSquare}\\]")) {
       val squares = ChessRegex.square.findAllMatchIn(encodedMove)
-      .map(m => Square(m.matched)).toVector
+      .flatMap(m => Square(m.matched)).toVector
       Vector(StandardMove(squares.head, squares.last))
     }
     else {
@@ -78,7 +78,7 @@ trait MoveParsing
   private def parseCord(x: String): (Square, Vector[Square]) = {
     val matchedSquares = ChessRegex.square
     .findAllMatchIn(x)
-    .map {m => Square(m.matched)}
+    .flatMap {m => Square(m.matched)}
     .toVector
     val (start, end) = (matchedSquares.head, matchedSquares.last)
     val dir = Dir.ofLineConnecting(start, end)
@@ -89,7 +89,7 @@ trait MoveParsing
   private def parseMultiTarget(x: String): (Square, Vector[Square]) = {
     val matchedSquares = ChessRegex.square
     .findAllMatchIn(x)
-    .map {m => Square(m.matched)}
+    .flatMap {m => Square(m.matched)}
     .toVector
     (matchedSquares.head, matchedSquares.drop(1))
   }
